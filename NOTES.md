@@ -23,7 +23,8 @@ return arg;
 
 ## Nest.js
 ### RootLayout({children})
-'children' is the entire content in page.tsx passed into 'RootLayout', eg, define header/sidebar in 'RootLayout', 'children' is the main home page.
+'children' is the entire content wrapped inside <RootLayout> (app/page.tsx);
+
 
 ## TODO
 - route group, 35:50

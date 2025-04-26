@@ -1,27 +1,33 @@
 "use client";
 
-import { useState } from 'react';
-import { Post } from '@/types';
+import {useMemo, useState} from 'react';
 import PostCard from './PostCard';
+import {useAppSelector} from "@/store/hooks";
 
-interface PostListProps {
-  posts: Post[];
-  loading: boolean;
-  error: string | null;
-}
+// interface PostListProps {
+//   posts: Post[];
+//   loading: boolean;
+//   error: string | null;
+// }
 
-export default function PostList({ posts, loading, error }: PostListProps) {
+export default function PostList() {
+  const { publicFeed, userFeed, loading, error } = useAppSelector((state: any) => state.post);
+  const posts = userFeed.length > 0 ? userFeed : publicFeed || []; // ensure posts is always an array
+
   const [sortBy, setSortBy] = useState<'recent' | 'likes' | 'comments'>('recent');
 
-  const sortedPosts = [...posts].sort((a, b) => {
-    if (sortBy === 'recent') {
-      return new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime();
-    } else if (sortBy === 'likes') {
-      return b.like_count - a.like_count;
-    } else {
-      return b.comment_count - a.comment_count;
-    }
-  });
+  const sortedPosts = useMemo(() => {
+    if (!Array.isArray(posts)) return [];
+    return [...posts].sort((a, b) => {
+      if (sortBy === 'recent') {
+        return new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime();
+      } else if (sortBy === 'likes') {
+        return b.like_count - a.like_count;
+      } else {
+        return b.comment_count - a.comment_count;
+      }
+    })
+  }, [posts, sortBy])
 
   if (loading) {
     return (
@@ -46,7 +52,7 @@ export default function PostList({ posts, loading, error }: PostListProps) {
     );
   }
 
-  if (posts.length === 0) {
+  if (!posts || posts.length === 0) {
     return (
       <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 text-center">
         <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No posts found</h3>
@@ -123,8 +129,12 @@ export default function PostList({ posts, loading, error }: PostListProps) {
       </div>
 
       <div className="space-y-6">
-        {sortedPosts.map((post) => (
-          <PostCard key={post.id} post={post} />
+        {sortedPosts && sortedPosts?.map((postWithLikeStatus) => (
+          <PostCard
+            key={postWithLikeStatus.post.id}
+            post={postWithLikeStatus.post}
+            isLiked={postWithLikeStatus.liked_by_user}
+          />
         ))}
       </div>
     </div>

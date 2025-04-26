@@ -84,7 +84,7 @@ const initialState: UserState = {
   error: null,
 };
 
-export const getUserProfile = createAsyncThunk(
+export const getUserProfile = createAsyncThunk<User, string, {rejectValue: string}>(
   'user/getUserProfile',
   async (userId: string, { rejectWithValue }) => {
     try {
@@ -96,7 +96,7 @@ export const getUserProfile = createAsyncThunk(
   }
 );
 
-export const followUser = createAsyncThunk(
+export const followUser = createAsyncThunk<FollowStatus, string, {rejectValue: string}>(
   'user/followUser',
   async (userId: string, { rejectWithValue }) => {
     try {
@@ -108,7 +108,7 @@ export const followUser = createAsyncThunk(
   }
 );
 
-export const unfollowUser = createAsyncThunk(
+export const unfollowUser = createAsyncThunk<FollowStatus, string, {rejectValue: string}>(
   'user/unfollowUser',
   async (userId: string, { rejectWithValue }) => {
     try {
@@ -120,7 +120,7 @@ export const unfollowUser = createAsyncThunk(
   }
 );
 
-export const getFollowStatus = createAsyncThunk(
+export const getFollowStatus = createAsyncThunk<FollowStatus, string, {rejectValue: string}>(
   'user/getFollowStatus',
   async (userId: string, { rejectWithValue }) => {
     try {
@@ -132,7 +132,7 @@ export const getFollowStatus = createAsyncThunk(
   }
 );
 
-export const searchUsers = createAsyncThunk(
+export const searchUsers = createAsyncThunk<User[], string, {rejectValue: string}>(
   'user/searchUsers',
   async (query: string, { rejectWithValue }) => {
     try {
@@ -144,14 +144,14 @@ export const searchUsers = createAsyncThunk(
   }
 );
 
-const userSlice = createSlice({
+const userSlice = createSlice<UserState>({
   name: 'user',
   initialState,
   reducers: {
-    clearUserError: (state) => {
+    clearUserError: (state: UserState) => {
       state.error = null;
     },
-    clearSearchResults: (state) => {
+    clearSearchResults: (state: UserState) => {
       state.searchResults = [];
     },
   },

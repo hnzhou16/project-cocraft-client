@@ -5,7 +5,7 @@ import ClientFeed from '../components/feed/ClientFeed';
 export default function Home() {
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Welcome Card - Moved to top */}
+      {/* Welcome Card */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
         <h2 className="text-xl font-bold text-gray-900 mb-4">Welcome to CoCraft</h2>
         <p className="text-gray-700 mb-4">

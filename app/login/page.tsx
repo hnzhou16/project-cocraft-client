@@ -3,12 +3,12 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import LoginForm from '../../components/auth/LoginForm';
-import { useAppSelector } from '../../store/hooks';
+import { useAppSelector } from '@/store/hooks';
 
 export default function LoginPage() {
   const { isAuthenticated } = useAppSelector((state: any) => state.auth);
   const router = useRouter();
-  
+
   useEffect(() => {
     // Redirect to home if already authenticated
     if (isAuthenticated) {

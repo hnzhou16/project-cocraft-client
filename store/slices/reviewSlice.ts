@@ -54,7 +54,7 @@ const initialState: ReviewState = {
   error: null,
 };
 
-export const getUserReviews = createAsyncThunk(
+export const getUserReviews = createAsyncThunk<Review[], string, {rejectValue: string}>(
   'review/getUserReviews',
   async (userId: string, { rejectWithValue }) => {
     try {
@@ -66,7 +66,7 @@ export const getUserReviews = createAsyncThunk(
   }
 );
 
-export const createReview = createAsyncThunk(
+export const createReview = createAsyncThunk<Review, CreateReviewPayload, {rejectValue: string}>(
   'review/createReview',
   async (reviewData: CreateReviewPayload, { rejectWithValue }) => {
     try {
@@ -78,7 +78,7 @@ export const createReview = createAsyncThunk(
   }
 );
 
-export const deleteReview = createAsyncThunk(
+export const deleteReview = createAsyncThunk<string, string, {rejectValue: string}>(
   'review/deleteReview',
   async (reviewId: string, { rejectWithValue }) => {
     try {
@@ -90,14 +90,14 @@ export const deleteReview = createAsyncThunk(
   }
 );
 
-const reviewSlice = createSlice({
+const reviewSlice = createSlice<ReviewState>({
   name: 'review',
   initialState,
   reducers: {
-    clearReviewError: (state) => {
+    clearReviewError: (state: ReviewState) => {
       state.error = null;
     },
-    clearReviews: (state) => {
+    clearReviews: (state: ReviewState) => {
       state.reviews = [];
     },
   },

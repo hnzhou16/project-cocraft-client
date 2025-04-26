@@ -3,8 +3,8 @@
 import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { fetchUserFeed } from '../../store/slices/postSlice';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { fetchUserFeed } from '@/store/slices/postSlice';
 import PostList from '../../components/post/PostList';
 
 export default function FeedPage() {

@@ -22,30 +22,30 @@ const initialState: AuthState = {
   error: null,
 };
 
-export const login = createAsyncThunk(
+export const login = createAsyncThunk<{user: User, token: string}, LoginPayload, {rejectValue: string}>(
   'auth/login',
   async (credentials: LoginPayload, { rejectWithValue }) => {
     try {
       // Get token from auth service
-      const token = await authService.login(credentials);
-      
+      const {data} = await authService.login(credentials);
+
       // Store token
-      authService.setToken(token);
+      authService.setToken(data);
       
       // Get user ID from token (you might need to decode JWT)
-      const userId = decodeToken(token);
+      const userId = decodeToken(data);
       
       // Get user details
       const user = await authService.getCurrentUser(userId);
       
-      return { user, token };
+      return { user, data };
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Login failed');
     }
   }
 );
 
-export const register = createAsyncThunk(
+export const register = createAsyncThunk<AuthResponse, RegisterPayload, {rejectValue: string}>(
   'auth/register',
   async (userData: RegisterPayload, { rejectWithValue }) => {
     try {
@@ -90,11 +90,11 @@ function decodeToken(token: string): string {
   return decoded?.user_id || decoded?.sub || '1'; // Fallback to '1' if no ID found
 }
 
-const authSlice = createSlice({
+const authSlice = createSlice<AuthState>({
   name: 'auth',
   initialState,
   reducers: {
-    clearError: (state) => {
+    clearError: (state: AuthState) => {
       state.error = null;
     },
   },

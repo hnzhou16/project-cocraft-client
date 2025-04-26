@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useAppSelector } from '../../store/hooks';
+import { useAppSelector } from '@/store/hooks';
 
 interface MainLayoutProps {
   children: React.ReactNode;

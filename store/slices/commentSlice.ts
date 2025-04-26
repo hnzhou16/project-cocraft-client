@@ -57,7 +57,7 @@ const initialState: CommentState = {
   error: null,
 };
 
-export const getPostComments = createAsyncThunk(
+export const getPostComments = createAsyncThunk<CommentWithParentAndUser[], string, {rejectValue: string}>(
   'comment/getPostComments',
   async (postId: string, { rejectWithValue }) => {
     try {
@@ -69,7 +69,7 @@ export const getPostComments = createAsyncThunk(
   }
 );
 
-export const createComment = createAsyncThunk(
+export const createComment = createAsyncThunk<Comment, {postId: string, commentData: CreateCommentPayload}, {rejectValue: string}>(
   'comment/createComment',
   async ({ postId, commentData }: { postId: string; commentData: CreateCommentPayload }, { rejectWithValue }) => {
     try {
@@ -81,7 +81,7 @@ export const createComment = createAsyncThunk(
   }
 );
 
-export const deleteComment = createAsyncThunk(
+export const deleteComment = createAsyncThunk<string, string, {rejectValue: string}>(
   'comment/deleteComment',
   async (commentId: string, { rejectWithValue }) => {
     try {
@@ -93,14 +93,14 @@ export const deleteComment = createAsyncThunk(
   }
 );
 
-const commentSlice = createSlice({
+const commentSlice = createSlice<CommentState>({
   name: 'comment',
   initialState,
   reducers: {
-    clearCommentError: (state) => {
+    clearCommentError: (state: CommentState) => {
       state.error = null;
     },
-    clearComments: (state) => {
+    clearComments: (state: CommentState) => {
       state.comments = [];
     },
   },

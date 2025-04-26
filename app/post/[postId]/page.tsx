@@ -3,9 +3,9 @@
 import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { fetchPostById } from '../../../store/slices/postSlice';
-import { fetchCommentsByPostId } from '../../../store/slices/commentSlice';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { fetchPostById } from '@/store/slices/postSlice';
+import { getPostComments } from '@/store/slices/commentSlice';
 import PostCard from '../../../components/post/PostCard';
 import CommentList from '../../../components/comment/CommentList';
 import AddCommentForm from '../../../components/comment/AddCommentForm';
@@ -22,7 +22,7 @@ export default function PostDetailPage() {
   useEffect(() => {
     if (postId) {
       dispatch(fetchPostById(postId as string));
-      dispatch(fetchCommentsByPostId(postId as string));
+      dispatch(getPostComments(postId as string));
     }
   }, [dispatch, postId]);
   
