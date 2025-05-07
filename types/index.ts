@@ -1,3 +1,14 @@
+export interface ApiResponse {
+  data: string;
+}
+
+export interface UserWithStats {
+  user: User;
+  post_count: number;
+  follower_count: number;
+  following_count: number;
+}
+
 // User types
 export interface User {
   id: string;
@@ -50,8 +61,8 @@ export interface LoginPayload {
 }
 
 export interface AuthResponse {
-  user: User;
   token: string;
+  user: User;
 }
 
 // Post types

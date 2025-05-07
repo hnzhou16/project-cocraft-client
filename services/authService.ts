@@ -1,53 +1,26 @@
-import { apiCall } from '../utils/apiUtils';
-import { AuthResponse, LoginPayload, RegisterPayload, User } from '../types';
+import {apiCall} from '@/utils/apiUtils';
+import {ApiResponse, LoginPayload, RegisterPayload, User, UserWithStats} from '@/types';
 
-export const authService = {
-  // Register a new user
-  register: async (userData: RegisterPayload): Promise<AuthResponse> => {
-    return apiCall<AuthResponse>('POST', '/authentication/user', userData);
+const authService = {
+  // TODO: Register a new user
+  register: async (userData: RegisterPayload): Promise<ApiResponse> => {
+    return apiCall<ApiResponse>('POST', '/authentication/user', userData);
   },
 
   // Login user
+  // directly call from loginAction - server component
   login: async (credentials: LoginPayload): Promise<string> => {
     return apiCall<string>('POST', '/authentication/token', credentials);
   },
 
-  // Activate user account
+  // TODO: Activate user account
   activateAccount: async (token: string): Promise<void> => {
     return apiCall<void>('PUT', `/user/activate/${token}`);
   },
 
   // Get current user
-  getCurrentUser: async (userId: string): Promise<User> => {
-    return apiCall<User>('GET', `/user/${userId}`);
-  },
-
-  // Store token in localStorage
-  setToken: (token: string): void => {
-    localStorage.setItem('token', token);
-  },
-
-  // Get token from localStorage
-  getToken: (): string | null => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('token');
-    }
-    return null;
-  },
-
-  // Remove token from localStorage
-  removeToken: (): void => {
-    localStorage.removeItem('token');
-  },
-
-  // Check if user is authenticated
-  isAuthenticated: (): boolean => {
-    return !!authService.getToken();
-  },
-
-  // Logout user
-  logout: (): void => {
-    authService.removeToken();
+  getCurrentUser: async (): Promise<UserWithStats> => {
+    return apiCall<UserWithStats>('GET', `/user/me`);
   },
 };
 

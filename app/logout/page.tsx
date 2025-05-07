@@ -2,8 +2,8 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAppDispatch } from '../../store/hooks';
-import { logout } from '../../store/slices/authSlice';
+import { useAppDispatch } from '@/store/hooks';
+import { logout } from '@/store/slices/authSlice';
 
 export default function LogoutPage() {
   const dispatch = useAppDispatch();

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { fetchUserById, followUser, unfollowUser, checkFollowStatus } from '../../store/slices/userSlice';
-import { fetchPostsByUser } from '../../store/slices/postSlice';
-import { User } from '../../types';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { getUserProfile, followUser, unfollowUser, getFollowStatus } from '@/store/slices/userSlice';
+import { fetchPostsByUserId } from '@/store/slices/postSlice';
+import { User } from '@/types';
 import PostList from '../post/PostList';
 
 interface UserProfileProps {
@@ -18,14 +18,14 @@ const UserProfile: React.FC<UserProfileProps> = ({ userId }) => {
   const [isCurrentUser, setIsCurrentUser] = useState(false);
   
   useEffect(() => {
-    dispatch(fetchUserById(userId));
-    dispatch(fetchPostsByUser({ userId }));
+    dispatch(getUserProfile(userId));
+    dispatch(fetchPostsByUserId({ userId }));
     
     if (currentUser && currentUser.id) {
       setIsCurrentUser(currentUser.id === userId);
       
       if (currentUser.id !== userId) {
-        dispatch(checkFollowStatus(userId));
+        dispatch(getFollowStatus(userId));
       }
     }
   }, [dispatch, userId, currentUser]);

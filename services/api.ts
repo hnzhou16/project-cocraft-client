@@ -1,57 +1,48 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-
 // Default API configuration
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
-// Create a custom axios instance
-const apiClient: AxiosInstance = axios.create({
-  baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-// Request interceptor for adding auth token
-apiClient.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token && config.headers) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-// Response interceptor for handling errors
-apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    // Handle specific error cases
-    if (error.response) {
-      // Server responded with a status code outside the 2xx range
-      if (error.response.status === 401) {
-        // Unauthorized - clear token and redirect to login
-        localStorage.removeItem('token');
-        window.location.href = '/login';
-      }
-    }
-    return Promise.reject(error);
-  }
-);
-
 // Generic API request method
 export const apiRequest = async <T>(
-  config: AxiosRequestConfig
-): Promise<T> => {
-  try {
-    const response: AxiosResponse<T> = await apiClient(config);
-    return response.data;
-  } catch (error) {
-    throw error;
+  config: {
+    method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
+    url: string,
+    data?: any,
+    params?: Record<string, string>,
   }
+): Promise<T> => {
+
+  const { method, url, data, params } = config;
+  const query = params
+    ? '?' + new URLSearchParams(params).toString()
+    : '';
+  const fullUrl = `${API_URL}${url}${query}`;
+
+  const options: RequestInit = {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  };
+
+  if (data && method !== 'GET') {
+    options.body = JSON.stringify(data);
+  }
+
+  // not need to wrap inside 'try', it's handled on apiUtils
+  const response = await fetch(fullUrl, options);
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || `Request failed with status ${response.status}`);
+  }
+
+  if (response.status !== 204) {
+    const result = await response.json();
+    return result.data as T;
+  }
+
+  return undefined as T;
 };
 
-export default apiClient;
+export default apiRequest;

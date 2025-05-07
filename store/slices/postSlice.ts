@@ -216,26 +216,22 @@ export const createPost = createAsyncThunk<Post, CreatePostPayload, { rejectValu
   }
 );
 
-// Fixed: Using a proper type for the parameter
 export const fetchPublicFeed = createAsyncThunk<Post[], PaginationQuery | undefined, { rejectValue: string }>(
   'post/fetchPublicFeed',
   async (pagination: PaginationQuery | undefined = undefined, {rejectWithValue}) => {
     try {
-      const {data} = await postService.getPublicFeed(pagination);
-      return data;
+      return await postService.getPublicFeed(pagination);
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch public feed');
     }
   }
 );
 
-// Fixed: Using a proper type for the parameter
 export const fetchUserFeed = createAsyncThunk<Post[], PaginationQuery | undefined, { rejectValue: string }>(
   'post/fetchUserFeed',
   async (pagination: PaginationQuery | undefined = undefined, {rejectWithValue}) => {
     try {
-      const {data} = await postService.getUserFeed(pagination);
-      return data;
+      return await postService.getUserFeed(pagination);
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch user feed');
     }
