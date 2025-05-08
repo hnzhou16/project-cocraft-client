@@ -45,14 +45,14 @@ export default function PostCard({post, isLiked = false}: PostCardProps) {
         {/* User Info */}
         <div className="flex items-center mb-4">
           <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
-            {post.user_id.charAt(0).toUpperCase()}
+            {post.username.charAt(0).toUpperCase()}
           </div>
           <div className="ml-3">
             <Link
               href={`/profile/${post.user_id}`}
               className="text-sm font-medium text-gray-900 hover:underline"
             >
-              User {post.user_id}
+              {post.username}
             </Link>
             <p className="text-xs text-gray-500">{formatDate(post.created_at)}</p>
           </div>

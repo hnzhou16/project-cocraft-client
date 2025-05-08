@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAppSelector } from '../../store/hooks';
+import { useAppSelector } from '@/store/hooks';
 import CreatePostForm from '../../components/post/CreatePostForm';
 
 export default function CreatePostPage() {

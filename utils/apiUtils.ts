@@ -5,6 +5,7 @@ import { apiRequest } from '@/services';
  * @param method HTTP method
  * @param endpoint API endpoint
  * @param data Request data (optional)
+ * @param token
  * @param params URL parameters (optional)
  * @returns Promise with the response data
  */
@@ -12,7 +13,8 @@ export async function apiCall<T>(
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
   endpoint: string,
   data?: any,
-  params?: Record<string, string>
+  params?: Record<string, string>,
+  token?: string,
 ): Promise<T> {
   try {
     // Prepare request config
@@ -21,6 +23,7 @@ export async function apiCall<T>(
       url: endpoint,
       data: data || undefined,
       params: params || undefined,
+      token: token || undefined,
       withCredentials: true,
     };
 

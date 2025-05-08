@@ -9,8 +9,8 @@ import {
 
 export const postService = {
   // Create a new post
-  createPost: async (postData: CreatePostPayload): Promise<Post> => {
-    return apiCall<Post>('POST', '/post', postData);
+  createPost: async (postData: CreatePostPayload, token: string): Promise<void> => {
+    return apiCall<void>('POST', '/post', postData, undefined, token);
   },
 
   // Get public feed

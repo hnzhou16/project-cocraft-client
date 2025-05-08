@@ -4,12 +4,6 @@ import {useMemo, useState} from 'react';
 import PostCard from './PostCard';
 import {useAppSelector} from "@/store/hooks";
 
-// interface PostListProps {
-//   posts: Post[];
-//   loading: boolean;
-//   error: string | null;
-// }
-
 export default function PostList() {
   const { publicFeed, userFeed, loading, error } = useAppSelector((state: any) => state.post);
   const posts = userFeed.length > 0 ? userFeed : publicFeed || []; // ensure posts is always an array
@@ -129,11 +123,11 @@ export default function PostList() {
       </div>
 
       <div className="space-y-6">
-        {sortedPosts && sortedPosts?.map((postWithLikeStatus) => (
+        {sortedPosts && sortedPosts?.map((post) => (
           <PostCard
-            key={postWithLikeStatus.post.id}
-            post={postWithLikeStatus.post}
-            isLiked={postWithLikeStatus.liked_by_user}
+            key={post.id}
+            post={post}
+            isLiked={post.liked_by_user}
           />
         ))}
       </div>

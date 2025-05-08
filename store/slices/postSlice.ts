@@ -204,23 +204,20 @@ const initialState: PostState = {
 };
 
 // createAsyncThunk<Return type(success), Input type(arg pass to thunk), Config(err type) >
-export const createPost = createAsyncThunk<Post, CreatePostPayload, { rejectValue: string }>(
-  'post/createPost',
-  async (postData: CreatePostPayload, {rejectWithValue}) => {
-    try {
-      const response = await postService.createPost(postData);
-      return response;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to create post');
-    }
-  }
-);
 
 export const fetchPublicFeed = createAsyncThunk<Post[], PaginationQuery | undefined, { rejectValue: string }>(
   'post/fetchPublicFeed',
   async (pagination: PaginationQuery | undefined = undefined, {rejectWithValue}) => {
     try {
-      return await postService.getPublicFeed(pagination);
+      const response = await postService.getPublicFeed(pagination);
+
+      const flattenedPosts: Post[] = response.map((pws) => ({
+        ...pws.post,
+        username: pws.username.split("_").join(" "),
+        likedByUser: pws.liked_by_user,
+      }))
+      console.log('postSlicePublic: ', flattenedPosts)
+      return flattenedPosts
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch public feed');
     }
@@ -231,7 +228,16 @@ export const fetchUserFeed = createAsyncThunk<Post[], PaginationQuery | undefine
   'post/fetchUserFeed',
   async (pagination: PaginationQuery | undefined = undefined, {rejectWithValue}) => {
     try {
-      return await postService.getUserFeed(pagination);
+      const response = await postService.getUserFeed(pagination)
+
+      // flatten posts data
+      const flattenedPosts: Post[] = response.map((pws) => ({
+        ...pws.post,
+        username: pws.username.split("_").join(" "),
+        likedByUser: pws.liked_by_user,
+      }))
+      console.log('postSlice: ', flattenedPosts)
+      return flattenedPosts;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch user feed');
     }
@@ -340,20 +346,6 @@ const postSlice = createSlice<PostState>({
   },
   extraReducers: (builder) => {
     builder
-      // Create Post
-      .addCase(createPost.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(createPost.fulfilled, (state, action: PayloadAction<Post>) => {
-        state.loading = false;
-        state.currentPost = action.payload;
-        state.userPosts = [action.payload, ...state.userPosts];
-      })
-      .addCase(createPost.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
       // Fetch Public Feed
       .addCase(fetchPublicFeed.pending, (state) => {
         state.loading = true;

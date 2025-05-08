@@ -69,6 +69,7 @@ export interface AuthResponse {
 export interface Post {
   id: string;
   user_id: string;
+  username: string;
   user_role: Role;
   title: string;
   content: string;
@@ -76,6 +77,7 @@ export interface Post {
   mentions?: string[];
   images?: string[];
   like_count: number;
+  likedByUser: boolean;
   comment_count: number;
   version: number;
   created_at?: string;
@@ -84,6 +86,7 @@ export interface Post {
 
 export interface PostWithLikeStatus {
   post: Post;
+  username: string;
   liked_by_user: boolean;
 }
 

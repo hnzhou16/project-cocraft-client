@@ -8,20 +8,27 @@ export const apiRequest = async <T>(
     url: string,
     data?: any,
     params?: Record<string, string>,
+    token?: string,
   }
 ): Promise<T> => {
 
-  const { method, url, data, params } = config;
+  const {method, url, data, params, token} = config;
   const query = params
     ? '?' + new URLSearchParams(params).toString()
     : '';
   const fullUrl = `${API_URL}${url}${query}`;
 
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+  };
+
+  if (token) {
+    headers['Cookie'] = `token=${token}`; // Only attach manually for server component actions
+  }
+
   const options: RequestInit = {
     method,
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers,
     credentials: 'include',
   };
 
