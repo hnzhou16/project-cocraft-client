@@ -17,6 +17,7 @@ export const apiRequest = async <T>(
     ? '?' + new URLSearchParams(params).toString()
     : '';
   const fullUrl = `${API_URL}${url}${query}`;
+  console.log(fullUrl)
 
   const headers: HeadersInit = {
     'Content-Type': 'application/json',

@@ -46,6 +46,34 @@ export enum Role {
   HomeOwner = "homeowner"
 }
 
+export const PUBLIC_ROLES: Role[] = [
+  Role.Contractor,
+  Role.Manufacturer,
+  Role.Designer,
+  Role.HomeOwner,
+]
+
+// use FeedFilterKey enum directly for type safety
+export enum FeedFilterKey {
+  Mentioned = "mentioned",
+  Following = "following",
+}
+
+export const INITIAL_FEED_FILTER_STATE: Record<FeedFilterKey, boolean> = {
+  [FeedFilterKey.Mentioned]: false, // computed property syntax, needed when key is stored in var/const
+  [FeedFilterKey.Following]: false,
+}
+
+// Pagination types
+export interface PaginationQuery {
+  limit?: number;
+  offset?: number;
+  sort?: "asc" | "desc";
+  following?: boolean;
+  mentioned?: boolean;
+  roles?: Role[];
+}
+
 // Authentication types
 export interface RegisterPayload {
   username: string;
@@ -88,6 +116,15 @@ export interface PostWithLikeStatus {
   post: Post;
   username: string;
   liked_by_user: boolean;
+}
+
+export interface GenerateImagePayload {
+  extension: string;
+}
+
+export interface GenerateImageResponse {
+  upload_url: string;
+  s3_key: string;
 }
 
 export interface CreatePostPayload {
@@ -156,14 +193,4 @@ export interface CreateReviewPayload {
   rated_user_id: string;
   score: number;
   comment: string;
-}
-
-// Pagination types
-export interface PaginationQuery {
-  limit?: number;
-  offset?: number;
-  sort?: "asc" | "desc";
-  following?: boolean;
-  mentioned?: boolean;
-  roles?: Role[];
 }

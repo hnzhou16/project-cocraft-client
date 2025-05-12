@@ -224,9 +224,9 @@ export const fetchPublicFeed = createAsyncThunk<Post[], PaginationQuery | undefi
   }
 );
 
-export const fetchUserFeed = createAsyncThunk<Post[], PaginationQuery | undefined, { rejectValue: string }>(
+export const fetchUserFeed = createAsyncThunk<Post[], PaginationQuery, { rejectValue: string }>(
   'post/fetchUserFeed',
-  async (pagination: PaginationQuery | undefined = undefined, {rejectWithValue}) => {
+  async (pagination: PaginationQuery, {rejectWithValue}) => {
     try {
       const response = await postService.getUserFeed(pagination)
 
