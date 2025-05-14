@@ -106,7 +106,6 @@ export interface Post {
   images?: string[];
   like_count: number;
   likedByUser: boolean;
-  comments: CommentWithParentAndUser[] | null;
   comment_count: number;
   version: number;
   created_at?: string;
@@ -136,7 +135,7 @@ export interface CreatePostPayload {
   title: string;
   content: string;
   tags?: string[];
-  images_path?: string[];
+  images?: string[];
 }
 
 export interface UpdatePostPayload {

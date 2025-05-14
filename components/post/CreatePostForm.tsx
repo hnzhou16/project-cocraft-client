@@ -23,13 +23,11 @@ const CreatePostForm: React.FC = () => {
   }, [state.success]);
 
   const handleUploadComplete = (newImages: UploadedImage[]) => {
-    console.log("newImages", newImages)
     setImages((prev) => [...prev, ...newImages]);
   };
 
   const handleRemoveImage = async (index: number) => {
     const imgToRemove = images[index];
-    console.log('imgToRemove: ', imgToRemove)
 
     try {
       await imageService.deleteImage(imgToRemove);

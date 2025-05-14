@@ -4,10 +4,11 @@ import {useState} from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {Post} from '@/types';
-import {useAppDispatch} from '@/store/hooks';
-import {fetchPostComments, toggleLike} from '@/store/slices/postSlice';
-import {getPostComments} from "@/store/slices/commentSlice";
+import {useAppDispatch, useAppSelector} from '@/store/hooks';
+import {toggleLike} from '@/store/slices/postSlice';
+import {getPostComments, toggleCommentVisibility} from "@/store/slices/commentSlice";
 import {useSelector} from "react-redux";
+import CommentList from '../comment/CommentList';
 
 export interface PostCardProps {
   post: Post;
@@ -18,11 +19,11 @@ export default function PostCard({post, isLiked = false}: PostCardProps) {
   const dispatch = useAppDispatch();
   const [liked, setLiked] = useState(isLiked);
   const [likeCount, setLikeCount] = useState(post.like_count);
-  const [showComments, setShowComments] = useState(false);
 
-  const postWithComments = useSelector(state =>
-    state.post.userFeed.find(p => p.id === post.id)
-  );
+  // Get comments state from Redux
+  const {commentsByPostId, loadedPosts, visibleCommentPosts, loading} = useAppSelector(state => state.comment);
+  const showComments = visibleCommentPosts.includes(post.id);
+  const comments = commentsByPostId[post.id] || [];
 
   const handleLikeToggle = () => {
     // TODO: toggle not working now
@@ -42,10 +43,10 @@ export default function PostCard({post, isLiked = false}: PostCardProps) {
   };
 
   const toggleComments = async () => {
-    if (!showComments && !post.comments) {
-      dispatch(fetchPostComments(post.id))
+    if (!loadedPosts.includes(post.id)) {
+      dispatch(getPostComments(post.id));
     }
-    setShowComments(!showComments);
+    dispatch(toggleCommentVisibility(post.id));
   };
 
   return (
@@ -82,16 +83,13 @@ export default function PostCard({post, isLiked = false}: PostCardProps) {
         {/* Post Images - Now below content */}
         {post.images && post.images.length > 0 && (
           <div className="mb-4">
-            <div className="relative h-48 rounded-lg overflow-hidden">
-              <Image
-                src={post.images[0]}
-                alt={post.title}
-                fill
-                style={{objectFit: 'cover'}}
-              />
-            </div>
+            <img
+              src={`${process.env.NEXT_PUBLIC_S3_BASE_URL}/${post.images[0]}`}
+              alt={post.title}
+              style={{objectFit: 'cover'}}
+            />
           </div>
-        )}
+          )}
 
         {/* Tags as Buttons */}
         {post.tags && post.tags.length > 0 && (
@@ -165,24 +163,12 @@ export default function PostCard({post, isLiked = false}: PostCardProps) {
         </div>
 
         {/* Comments Section - Expandable */}
-        {showComments && postWithComments.comments && (
+        {showComments && (
           <div className="mt-4 pt-4 border-t border-gray-200">
             <h3 className="text-lg font-medium mb-4">Comments ({post.comment_count})</h3>
-            {post.comment_count > 0 ? (
+            {comments.length > 0 ? (
               <div className="space-y-4">
-                <div className="bg-gray-50 p-3 rounded-lg">
-                  <div className="flex items-start">
-                    <div
-                      className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 mr-2">
-                      U
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium">User</p>
-                      <p className="text-sm text-gray-600">This is a sample comment.</p>
-                      <p className="text-xs text-gray-400 mt-1">Just now</p>
-                    </div>
-                  </div>
-                </div>
+                <CommentList comments={comments} loading={loading}/>
                 <Link
                   href={`/post/${post.id}`}
                   className="text-sm text-[#008247] hover:underline block text-center"
@@ -191,7 +177,9 @@ export default function PostCard({post, isLiked = false}: PostCardProps) {
                 </Link>
               </div>
             ) : (
-              <p className="text-gray-500 text-center">No comments yet. Be the first to comment!</p>
+              <p className="text-gray-500 text-center">
+                {loading ? 'Loading comments...' : 'No comments yet. Be the first to comment!'}
+              </p>
             )}
           </div>
         )}

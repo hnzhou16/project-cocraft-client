@@ -6,10 +6,9 @@ import {
   CreatePostPayload,
   UpdatePostPayload,
   PaginationQuery,
-  PostWithLikeStatus,
-  CommentWithParentAndUser
+  PostWithLikeStatus
 } from '@/types';
-import {commentService, postService} from "@/services";
+import {postService} from "../../services/index";
 
 // Define the post service interface
 interface PostService {
@@ -212,7 +211,11 @@ const initialState: PostState = {
 
 // createAsyncThunk<Return type(success), Input type(arg pass to thunk), Config(err type) >
 
-export const fetchPublicFeed = createAsyncThunk<Post[], PaginationQuery | undefined, { rejectValue: string }>(
+export const fetchPublicFeed = createAsyncThunk<
+  Post[], 
+  PaginationQuery | undefined, 
+  { rejectValue: string }
+>(
   'post/fetchPublicFeed',
   async (pagination: PaginationQuery | undefined = undefined, {rejectWithValue}) => {
     try {
@@ -231,11 +234,17 @@ export const fetchPublicFeed = createAsyncThunk<Post[], PaginationQuery | undefi
   }
 );
 
-export const fetchUserFeed = createAsyncThunk<Post[], PaginationQuery, { rejectValue: string }>(
+export const fetchUserFeed = createAsyncThunk<
+  Post[], 
+  PaginationQuery | undefined, 
+  { rejectValue: string }
+>(
   'post/fetchUserFeed',
   async (pagination: PaginationQuery, {rejectWithValue}) => {
     try {
       const response = await postService.getUserFeed(pagination)
+
+      console.log(response)
 
       // flatten posts data
       const flattenedPosts: Post[] = response.map((pws) => ({
@@ -251,7 +260,11 @@ export const fetchUserFeed = createAsyncThunk<Post[], PaginationQuery, { rejectV
   }
 );
 
-export const fetchPostById = createAsyncThunk<Post, string, { rejectValue: string }>(
+export const fetchPostById = createAsyncThunk<
+  Post, 
+  string, 
+  { rejectValue: string }
+>(
   'post/fetchPostById',
   async (postId: string, {rejectWithValue}) => {
     try {
@@ -263,9 +276,11 @@ export const fetchPostById = createAsyncThunk<Post, string, { rejectValue: strin
   }
 );
 
-export const fetchPostsByUserId = createAsyncThunk<Post[], { userId: string, pagination: PaginationQuery }, {
-  rejectValue: string
-}>(
+export const fetchPostsByUserId = createAsyncThunk<
+  Post[], 
+  { userId: string, pagination?: PaginationQuery }, 
+  { rejectValue: string }
+>(
   'post/fetchPostsByUserId',
   async ({userId, pagination}: { userId: string; pagination?: PaginationQuery }, {rejectWithValue}) => {
     try {
@@ -277,24 +292,13 @@ export const fetchPostsByUserId = createAsyncThunk<Post[], { userId: string, pag
   }
 );
 
-export const fetchPostComments = createAsyncThunk<{ postId: string; comments: CommentWithParentAndUser[] }, string, {
-  rejectValue: string
-}>(
-  'post/fetchPostComments',
-  async (postId: string, {rejectWithValue}) => {
-    try {
-      const comments = await commentService.getCommentsByPostId(postId)
+// Removed fetchPostComments as it's now handled in commentSlice
 
-      return {postId, comments}
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch post comments');
-    }
-  }
-);
-
-export const updatePost = createAsyncThunk<Post, { postId: string, postData: UpdatePostPayload }, {
-  rejectValue: string
-}>(
+export const updatePost = createAsyncThunk<
+  Post, 
+  { postId: string, postData: UpdatePostPayload }, 
+  { rejectValue: string }
+>(
   'post/updatePost',
   async ({postId, postData}: { postId: string; postData: UpdatePostPayload }, {rejectWithValue}) => {
     try {
@@ -306,7 +310,11 @@ export const updatePost = createAsyncThunk<Post, { postId: string, postData: Upd
   }
 );
 
-export const toggleLike = createAsyncThunk<string, string, { rejectValue: string }>(
+export const toggleLike = createAsyncThunk<
+  string, 
+  string, 
+  { rejectValue: string }
+>(
   'post/toggleLike',
   async (postId: string, {rejectWithValue}) => {
     try {
@@ -318,7 +326,11 @@ export const toggleLike = createAsyncThunk<string, string, { rejectValue: string
   }
 );
 
-export const deletePost = createAsyncThunk<string, string, { rejectValue: string }>(
+export const deletePost = createAsyncThunk<
+  string, 
+  string, 
+  { rejectValue: string }
+>(
   'post/deletePost',
   async (postId: string, {rejectWithValue}) => {
     try {
@@ -420,26 +432,7 @@ const postSlice = createSlice<PostState>({
         state.loading = false;
         state.error = action.payload as string;
       })
-      // Fetch Post Comments
-      .addCase(fetchPostComments.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchPostComments.fulfilled, (state, action: PayloadAction<{
-        postId: string;
-        comments: CommentWithParentAndUser[]
-      }>) => {
-        const {postId, comments} = action.payload;
-        const post = state.userFeed.find(p => p.id === postId);
-        if (post) {
-          post.comments = comments
-        }
-        state.loading = false;
-      })
-      .addCase(fetchPostComments.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
+      // Removed fetchPostComments cases as they're now handled in commentSlice
       // Update Post
       .addCase(updatePost.pending, (state) => {
         state.loading = true;

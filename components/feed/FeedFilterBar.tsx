@@ -37,9 +37,6 @@ export default function FeedFilterBar({className = ''}: FeedFilterBarProps) {
       ...(rolesFilter && rolesFilter.length > 0 ? {roles: rolesFilter} : {}), // avoid roles being 'undefined'
     };
 
-    console.log(feedFilter, rolesFilter)
-    console.log(payload)
-
     if (!isAuthenticated) {
       dispatch(fetchPublicFeed(payload));
     } else {

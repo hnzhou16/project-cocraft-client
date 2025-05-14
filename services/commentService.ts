@@ -1,5 +1,5 @@
-import { apiCall } from '../utils/apiUtils';
-import { CommentWithParentAndUser, CreateCommentPayload } from '../types';
+import { apiCall } from '@/utils/apiUtils';
+import { CommentWithParentAndUser, CreateCommentPayload } from '@/types';
 
 export const commentService = {
   // Create a new comment
@@ -10,6 +10,11 @@ export const commentService = {
   // Get comments for a post
   getCommentsByPostId: async (postId: string): Promise<CommentWithParentAndUser[]> => {
     return apiCall<CommentWithParentAndUser[]>('GET', `/post/${postId}/comment`);
+  },
+
+  // Delete a comment
+  deleteComment: async (commentId: string): Promise<void> => {
+    return apiCall<void>('DELETE', `/comment/${commentId}`);
   },
 };
 
