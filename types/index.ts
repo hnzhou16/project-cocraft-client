@@ -106,6 +106,7 @@ export interface Post {
   images?: string[];
   like_count: number;
   likedByUser: boolean;
+  comments: CommentWithParentAndUser[] | null;
   comment_count: number;
   version: number;
   created_at?: string;
@@ -125,6 +126,10 @@ export interface GenerateImagePayload {
 export interface GenerateImageResponse {
   upload_url: string;
   s3_key: string;
+}
+
+export interface UploadedImage {
+  key: string;
 }
 
 export interface CreatePostPayload {

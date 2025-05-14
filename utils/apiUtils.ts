@@ -47,3 +47,18 @@ export const uploadToS3 = async (url: string, file: File): Promise<void> => {
     throw new Error(`S3 upload failed with status ${response.status}`);
   }
 };
+
+// only for deleting image on s3
+export const deleteImageOnS3 = async (imageUrl: string) => {
+  const objectKey = imageUrl.split('.com/')[1];
+  try {
+    await fetch('/api/user/delete-image', {
+      method: 'DELETE',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({key: objectKey}),
+    });
+    // update UI here (e.g. remove from state)
+  } catch (error) {
+    console.error("Failed to delete image:", error);
+  }
+}

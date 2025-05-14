@@ -1,33 +1,33 @@
 "use client";
 
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Comment, CommentWithParentAndUser, CreateCommentPayload } from '../../types';
+import {Comment, CommentWithParentAndUser, CreateCommentPayload, Post} from '@/types';
 
 // Define the comment service interface
 interface CommentService {
-  getPostComments: (postId: string) => Promise<CommentWithParentAndUser[]>;
+  // getPostComments: (postId: string) => Promise<CommentWithParentAndUser[]>;
   createComment: (postId: string, commentData: CreateCommentPayload) => Promise<Comment>;
   deleteComment: (commentId: string) => Promise<void>;
 }
 
 // Temporary mock implementation
 const commentService: CommentService = {
-  getPostComments: async (postId: string) => {
-    // This would be replaced with actual API call
-    return Array(5).fill(0).map((_, index) => ({
-      id: (index + 1).toString(),
-      user_id: Math.floor(Math.random() * 5 + 1).toString(),
-      username: `user${Math.floor(Math.random() * 5 + 1)}`,
-      content: `This is comment ${index + 1} on post ${postId}`,
-      created_at: new Date(Date.now() - Math.random() * 10000000).toISOString(),
-      parent_comment: index % 3 === 0 ? {
-        id: '0',
-        user_id: '1',
-        content: 'This is a parent comment',
-        created_at: new Date(Date.now() - Math.random() * 20000000).toISOString(),
-      } : undefined
-    }));
-  },
+  // getPostComments: async (postId: string) => {
+  //
+  //   Array(5).fill(0).map((_, index) => ({
+  //     id: (index + 1).toString(),
+  //     user_id: Math.floor(Math.random() * 5 + 1).toString(),
+  //     username: `user${Math.floor(Math.random() * 5 + 1)}`,
+  //     content: `This is comment ${index + 1} on post ${postId}`,
+  //     created_at: new Date(Date.now() - Math.random() * 10000000).toISOString(),
+  //     parent_comment: index % 3 === 0 ? {
+  //       id: '0',
+  //       user_id: '1',
+  //       content: 'This is a parent comment',
+  //       created_at: new Date(Date.now() - Math.random() * 20000000).toISOString(),
+  //     } : undefined
+  //   }));
+  // },
   createComment: async (postId: string, commentData: CreateCommentPayload) => {
     // This would be replaced with actual API call
     return {

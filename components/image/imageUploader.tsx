@@ -2,10 +2,10 @@
 
 import React, {useState} from 'react';
 import imageService from "@/services/imageService";
-import {GenerateImagePayload} from "@/types";
+import {GenerateImagePayload, UploadedImage} from "@/types";
 
 interface Props {
-  onUploadComplete: (urls: string[]) => void;
+  onUploadComplete: (uploadedImages: UploadedImage[]) => void;
 }
 
 const ImageUploader: React.FC<Props> = ({onUploadComplete}) => {
@@ -15,39 +15,35 @@ const ImageUploader: React.FC<Props> = ({onUploadComplete}) => {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const selectedFiles = Array.from(e.target.files)
-      setFiles(selectedFiles);
-      console.log(selectedFiles)
+      setFiles(Array.from(e.target.files));
     }
   };
 
   const uploadImages = async () => {
     if (files.length === 0) return;
+
     setUploading(true);
-    const uploadedUrls: string[] = [];
+    const uploadedImages: UploadedImage[] = [];
 
     try {
       for (const file of files) {
         const extension = file.name.split('.').pop()?.toLowerCase();
-        if (!extension || !['jpg', 'jpeg', 'png', 'webp'].includes(extension)) {
+        if (!extension || !['jpg', 'jpeg', 'png', 'webp'].includes(extension)) { // TODO: set up ext type
           alert(`Unsupported file: ${file.name}`);
           continue;
         }
 
         const payload: GenerateImagePayload = {extension};
-        const response = await imageService.generateUploadURL(payload);
-        const uploadURL = response.upload_url
-        console.log(uploadURL)
+        const {upload_url, s3_key} = await imageService.generateUploadURL(payload);
+        console.log(upload_url)
 
-        await imageService.uploadImage(uploadURL, file);
+        await imageService.uploadImage(upload_url, file);
 
-        // You should know the public S3 base URL or save s3Key for backend
-        const imageUrl = uploadURL.split('?')[0];
-        uploadedUrls.push(imageUrl);
+        uploadedImages.push({key: s3_key});
       }
 
-      onUploadComplete(uploadedUrls);
-      setUploadStatus(`Uploaded ${uploadedUrls.length} file(s) successfully.`);
+      onUploadComplete(uploadedImages);
+      setUploadStatus(`Uploaded ${uploadedImages.length} file(s) successfully.`);
     } catch (err: any) {
       console.error(err);
       setUploadStatus('One or more uploads failed.');

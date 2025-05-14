@@ -5,7 +5,7 @@ import PostCard from './PostCard';
 import {useAppSelector} from "@/store/hooks";
 
 export default function PostList() {
-  const { publicFeed, userFeed, loading, error } = useAppSelector((state: any) => state.post);
+  const {publicFeed, userFeed, loading, error} = useAppSelector((state: any) => state.post);
   const posts = userFeed.length > 0 ? userFeed : publicFeed || []; // ensure posts is always an array
 
   const [sortBy, setSortBy] = useState<'recent' | 'likes' | 'comments'>('recent');
@@ -39,7 +39,8 @@ export default function PostList() {
 
   if (error) {
     return (
-      <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-700 dark:text-red-400">
+      <div
+        className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-700 dark:text-red-400">
         <p>Error: {error}</p>
         <button className="mt-2 text-sm text-red-600 dark:text-red-400 underline">Try Again</button>
       </div>
@@ -48,7 +49,8 @@ export default function PostList() {
 
   if (!posts || posts.length === 0) {
     return (
-      <div className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 text-center">
+      <div
+        className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 text-center">
         <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No posts found</h3>
         <p className="text-gray-600 dark:text-gray-400">Be the first to create a post!</p>
       </div>
@@ -69,8 +71,11 @@ export default function PostList() {
               onClick={() => document.getElementById('sort-dropdown')?.classList.toggle('hidden')}
             >
               Sort by: {sortBy === 'recent' ? 'Recent' : sortBy === 'likes' ? 'Most Liked' : 'Most Comments'}
-              <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+              <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                   fill="currentColor" aria-hidden="true">
+                <path fillRule="evenodd"
+                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                      clipRule="evenodd"/>
               </svg>
             </button>
           </div>

@@ -1,8 +1,15 @@
 "use client";
 
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
-import {Post, CreatePostPayload, UpdatePostPayload, PaginationQuery, PostWithLikeStatus} from '@/types';
-import {postService} from "@/services";
+import {
+  Post,
+  CreatePostPayload,
+  UpdatePostPayload,
+  PaginationQuery,
+  PostWithLikeStatus,
+  CommentWithParentAndUser
+} from '@/types';
+import {commentService, postService} from "@/services";
 
 // Define the post service interface
 interface PostService {
@@ -270,6 +277,21 @@ export const fetchPostsByUserId = createAsyncThunk<Post[], { userId: string, pag
   }
 );
 
+export const fetchPostComments = createAsyncThunk<{ postId: string; comments: CommentWithParentAndUser[] }, string, {
+  rejectValue: string
+}>(
+  'post/fetchPostComments',
+  async (postId: string, {rejectWithValue}) => {
+    try {
+      const comments = await commentService.getCommentsByPostId(postId)
+
+      return {postId, comments}
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch post comments');
+    }
+  }
+);
+
 export const updatePost = createAsyncThunk<Post, { postId: string, postData: UpdatePostPayload }, {
   rejectValue: string
 }>(
@@ -395,6 +417,26 @@ const postSlice = createSlice<PostState>({
         state.userPosts = action.payload;
       })
       .addCase(fetchPostsByUserId.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      // Fetch Post Comments
+      .addCase(fetchPostComments.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchPostComments.fulfilled, (state, action: PayloadAction<{
+        postId: string;
+        comments: CommentWithParentAndUser[]
+      }>) => {
+        const {postId, comments} = action.payload;
+        const post = state.userFeed.find(p => p.id === postId);
+        if (post) {
+          post.comments = comments
+        }
+        state.loading = false;
+      })
+      .addCase(fetchPostComments.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })

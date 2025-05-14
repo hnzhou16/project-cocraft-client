@@ -5,6 +5,8 @@ import {useRouter} from "next/navigation";
 import {useAppDispatch, useAppSelector} from '@/store/hooks';
 import {createPostAction} from "@/app/actions/createPostAction";
 import ImageUploader from "@/components/image/imageUploader";
+import {UploadedImage} from "@/types";
+import imageService from "@/services/imageService";
 
 const CreatePostForm: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -12,7 +14,7 @@ const CreatePostForm: React.FC = () => {
   const {loading} = useAppSelector((state: any) => state.post);
   const [state, formAction] = useActionState(createPostAction, {error: '', success: false})
 
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<UploadedImage[]>([]);
 
   useEffect(() => {
     if (state.success) {
@@ -20,12 +22,21 @@ const CreatePostForm: React.FC = () => {
     }
   }, [state.success]);
 
-  const handleUploadComplete = (urls: string[]) => {
-    setImages((prev) => [...prev, ...urls]);
+  const handleUploadComplete = (newImages: UploadedImage[]) => {
+    console.log("newImages", newImages)
+    setImages((prev) => [...prev, ...newImages]);
   };
 
-  const handleRemoveImage = (index: number) => {
-    setImages(images.filter((_, i) => i !== index));
+  const handleRemoveImage = async (index: number) => {
+    const imgToRemove = images[index];
+    console.log('imgToRemove: ', imgToRemove)
+
+    try {
+      await imageService.deleteImage(imgToRemove);
+      setImages(images.filter((_, i) => i !== index));
+    } catch (err) {
+      console.error('Error deleting image:', err);
+    }
   };
 
   return (
@@ -88,47 +99,26 @@ const CreatePostForm: React.FC = () => {
           <ImageUploader onUploadComplete={handleUploadComplete}/>
         </div>
 
-        {/*<div className="mb-4">*/}
-        {/*  <label htmlFor="imageUrl" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">*/}
-        {/*    Add Image URL*/}
-        {/*  </label>*/}
-        {/*  <div className="flex">*/}
-        {/*    <input*/}
-        {/*      type="text"*/}
-        {/*      name="imageUrl"*/}
-        {/*      id="imageUrl"*/}
-        {/*      className="shadow appearance-none border rounded-l w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"*/}
-        {/*      placeholder="https://example.com/image.jpg"*/}
-        {/*    />*/}
-        {/*    <button*/}
-        {/*      type="button"*/}
-        {/*      onClick={handleAddImage}*/}
-        {/*      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r focus:outline-none focus:shadow-outline"*/}
-        {/*    >*/}
-        {/*      Add*/}
-        {/*    </button>*/}
-        {/*  </div>*/}
-        {/*</div>*/}
-
         {images.length > 0 && (
           <div className="mb-4">
-            <p className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
-              Uploaded Images ({images.length})
-            </p>
-            <div className="space-y-2">
-              {images.map((img, index) => (
-                <div key={index} className="flex items-center justify-between bg-gray-100 dark:bg-gray-700 p-2 rounded">
-                  <span className="text-gray-700 dark:text-gray-300 text-sm truncate flex-1">{img}</span>
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveImage(index)}
-                    className="ml-2 text-red-500 hover:text-red-700"
-                  >
-                    Remove
-                  </button>
-                  <input type="hidden" name="images[]" value={img}/>
-                </div>
-              ))}
+            <p className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Uploaded Images ({images.length})</p>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {images.map((img, index) => {
+                const imageUrl = `${process.env.NEXT_PUBLIC_S3_BASE_URL}/${img.key}`;
+                return (
+                  <div key={index} className="relative">
+                    <img src={imageUrl} alt={`Uploaded ${index}`} className="rounded shadow" />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveImage(index)}
+                      className="absolute top-1 right-1 text-white bg-red-600 rounded-full w-6 h-6 text-sm"
+                    >
+                      ×
+                    </button>
+                    <input type="hidden" name="images[]" value={img.key} />
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}

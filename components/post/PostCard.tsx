@@ -5,7 +5,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {Post} from '@/types';
 import {useAppDispatch} from '@/store/hooks';
-import {toggleLike} from '@/store/slices/postSlice';
+import {fetchPostComments, toggleLike} from '@/store/slices/postSlice';
+import {getPostComments} from "@/store/slices/commentSlice";
+import {useSelector} from "react-redux";
 
 export interface PostCardProps {
   post: Post;
@@ -17,6 +19,10 @@ export default function PostCard({post, isLiked = false}: PostCardProps) {
   const [liked, setLiked] = useState(isLiked);
   const [likeCount, setLikeCount] = useState(post.like_count);
   const [showComments, setShowComments] = useState(false);
+
+  const postWithComments = useSelector(state =>
+    state.post.userFeed.find(p => p.id === post.id)
+  );
 
   const handleLikeToggle = () => {
     // TODO: toggle not working now
@@ -35,7 +41,10 @@ export default function PostCard({post, isLiked = false}: PostCardProps) {
     }).format(date);
   };
 
-  const toggleComments = () => {
+  const toggleComments = async () => {
+    if (!showComments && !post.comments) {
+      dispatch(fetchPostComments(post.id))
+    }
     setShowComments(!showComments);
   };
 
@@ -156,7 +165,7 @@ export default function PostCard({post, isLiked = false}: PostCardProps) {
         </div>
 
         {/* Comments Section - Expandable */}
-        {showComments && (
+        {showComments && postWithComments.comments && (
           <div className="mt-4 pt-4 border-t border-gray-200">
             <h3 className="text-lg font-medium mb-4">Comments ({post.comment_count})</h3>
             {post.comment_count > 0 ? (
