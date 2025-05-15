@@ -1,6 +1,6 @@
 "use client";
 
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {Post} from '@/types';
@@ -9,6 +9,7 @@ import {toggleLike} from '@/store/slices/postSlice';
 import {getPostComments, toggleCommentVisibility} from "@/store/slices/commentSlice";
 import {useSelector} from "react-redux";
 import CommentList from '../comment/CommentList';
+import ImageCarousel from '../image/ImageCarousel';
 
 export interface PostCardProps {
   post: Post;
@@ -24,6 +25,7 @@ export default function PostCard({post, isLiked = false}: PostCardProps) {
   const {commentsByPostId, loadedPosts, visibleCommentPosts, loading} = useAppSelector(state => state.comment);
   const showComments = visibleCommentPosts.includes(post.id);
   const comments = commentsByPostId[post.id] || [];
+
 
   const handleLikeToggle = () => {
     // TODO: toggle not working now
@@ -50,6 +52,7 @@ export default function PostCard({post, isLiked = false}: PostCardProps) {
   };
 
   return (
+    <>
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <div className="p-4">
         {/* User Info */}
@@ -80,16 +83,14 @@ export default function PostCard({post, isLiked = false}: PostCardProps) {
           {post.content.length > 200 ? `${post.content.substring(0, 200)}...` : post.content}
         </p>
 
-        {/* Post Images - Now below content */}
+        {/* Post Images Carousel */}
         {post.images && post.images.length > 0 && (
-          <div className="mb-4">
-            <img
-              src={`${process.env.NEXT_PUBLIC_S3_BASE_URL}/${post.images[0]}`}
-              alt={post.title}
-              style={{objectFit: 'cover'}}
-            />
-          </div>
-          )}
+          <ImageCarousel 
+            images={post.images} 
+            altText={post.title} 
+            baseUrl={process.env.NEXT_PUBLIC_S3_BASE_URL || ''}
+          />
+        )}
 
         {/* Tags as Buttons */}
         {post.tags && post.tags.length > 0 && (
@@ -185,5 +186,7 @@ export default function PostCard({post, isLiked = false}: PostCardProps) {
         )}
       </div>
     </div>
+
+    </>
   );
 }
