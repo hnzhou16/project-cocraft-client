@@ -1,59 +1,176 @@
-@import "tailwindcss";
+/* ========== TAILWIND IMPORTS ========== */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+/* ========== CSS VARIABLES AND BASE STYLES ========== */
+
+/* Light Mode */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --full-width: 72rem;
   --header-height: 4rem;
   --sidebar-width: 16rem;
-  --accent-color: rgb(0, 130, 75);
-  --accent-color-hover: rgb(0, 109, 61);
+  --background: #ffffff;
+  --foreground: #171717;
+  --primary: #171717;
+  --primary-foreground: #ffffff;
+  --secondary-background: #f9f9f9;
+  --secondary-foreground: #4b5563;
+  --accent: rgb(0, 130, 75);
+  --accent-hover: rgb(0, 109, 61);
+  --border-color: #e5e7eb;
+  --card-background: #ffffff;
+  --input-background: #ffffff;
+  --input-border: #d1d5db;
+  --input-text: #171717;
+  --button-text: #ffffff;
+  --shadow-color: rgba(0, 0, 0, 0.1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-outfit);
+/* Dark Mode */
+.dark {
+  --background: #121212;
+  --foreground: #f3f4f6;
+  --primary: #f3f4f6;
+  --primary-foreground: #121212;
+  --secondary-background: #1e1e1e;
+  --secondary-foreground: #9ca3af;
+  --accent: rgb(20, 160, 95);
+  --accent-hover: rgb(30, 180, 110);
+  --border-color: #2d2d2d;
+  --card-background: #1e1e1e;
+  --input-background: #2d2d2d;
+  --input-border: #4b5563;
+  --input-text: #f3f4f6;
+  --button-text: #ffffff;
+  --shadow-color: rgba(0, 0, 0, 0.3);
 }
 
+
+
+
+
+/* ========== BASE STYLES ========== */
+/* use raw CSS for dynamic value, only use tailwind apply for */
 @layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  .dark {
+    color-scheme: dark;
+  }
+
   html {
-    font-family: var(--font-outfit), Arial, sans-serif;
+    background-color: var(--background);
+    color: var(--foreground);
   }
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-outfit), Arial, Helvetica, sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  @apply transition-colors duration-300;
 }
 
+
+/* ========== RAW CSS UTILITIES FOR CUSTOM COLORS ========== */
+.text-accent {
+  color: var(--accent);
+}
+
+.bg-accent {
+  background-color: var(--accent);
+}
+
+.hover\:bg-accent-hover:hover {
+  background-color: var(--accent-hover);
+}
+
+.hover\:text-accent:hover {
+  color: var(--accent);
+}
+
+.hover\:text-accent-hover:hover {
+  color: var(--accent-hover);
+}
+
+.border-accent {
+  border-color: var(--accent);
+}
+
+/* ========== COMPONENT STYLES ========== */
+.card {
+  background-color: var(--card-background);
+  border-color: var(--border-color);
+  @apply border rounded-lg shadow-sm;
+}
+
+.input {
+  background-color: var(--input-background);
+  border-color: var(--input-border);
+  color: var(--input-text);
+  @apply border py-2 px-3 rounded-md outline-none;
+}
+
+.input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(0, 130, 75, 0.2);
+}
+
+.dark .input:focus {
+  box-shadow: 0 0 0 2px rgba(20, 160, 95, 0.2);
+}
+
+.btn {
+  @apply inline-flex items-center justify-center rounded-md font-medium py-2 px-4 transition-colors duration-300;
+}
+
+.btn-primary {
+  background-color: var(--accent);
+  color: var(--button-text);
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-hover);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+
+.btn-secondary:hover {
+  background-color: var(--secondary-background);
+}
+
+/* ========== GLOBAL TRANSITIONS ========== */
 /* Smooth transitions */
 .transition-colors {
-  transition-property: background-color, border-color, color, fill, stroke;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 300ms;
+  @apply transition-all duration-300;
 }
 
-/* Scrollbar styling */
+
+/* ========== CUSTOM SCROLLBAR ========== */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  @apply w-2 h-2;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background-color: var(--secondary-background);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 4px;
+  background-color: var(--secondary-foreground);
+  border-radius: 0.125rem;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background-color: var(--accent);
 }
 
+/* ========== MAIN LAYOUT ADJUSTMENTS ========== */
 /* Adjust main content padding for fixed header and sidebar */
 @media (min-width: 768px) {
   main {
@@ -64,25 +181,4 @@ body {
 main {
   padding-top: var(--header-height);
   min-height: calc(100vh - var(--header-height));
-}
-
-/* Custom accent color utility classes */
-.text-accent {
-  color: var(--accent-color);
-}
-
-.bg-accent {
-  background-color: var(--accent-color);
-}
-
-.hover\:bg-accent-hover:hover {
-  background-color: var(--accent-color-hover);
-}
-
-.hover\:text-accent:hover {
-  color: var(--accent-color);
-}
-
-.border-accent {
-  border-color: var(--accent-color);
 }

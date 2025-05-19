@@ -107,6 +107,7 @@ export default function ImageCarousel({ images, altText, baseUrl }: ImageCarouse
     // Pause auto-advance when fullscreen is open
     setIsPaused(true);
     // Add body class to prevent scrolling
+    // adds the class overflow-hidden to the <body> tag, prevents scrolling
     document.body.classList.add('overflow-hidden');
   };
 
@@ -136,6 +137,8 @@ export default function ImageCarousel({ images, altText, baseUrl }: ImageCarouse
     };
 
     window.addEventListener('keydown', handleKeyDown);
+
+    // remove when unmounts (modal closes)
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
@@ -155,8 +158,13 @@ export default function ImageCarousel({ images, altText, baseUrl }: ImageCarouse
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
+        {/* the viewport - hides overflowing content so you only see one image at a time.
+        overflow-hidden ensures that when the inner content moves, you don’t see the off-screen parts. */}
+        {/* image sit side-by-side because of the parent .flex class */}
+        {/* each image takes up 100% of the container width (min-w-full),
+          transform: translateX(-N%) shifts the entire row leftward to show the N-th image */}
         <div className="overflow-hidden rounded-lg">
-          <div 
+          <divwor
             className="flex transition-transform duration-300 ease-in-out"
             style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
           >
@@ -170,7 +178,7 @@ export default function ImageCarousel({ images, altText, baseUrl }: ImageCarouse
                 />
               </div>
             ))}
-          </div>
+          </divwor>
         </div>
         
         {/* Image navigation indicators */}

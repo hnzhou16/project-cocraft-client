@@ -5,6 +5,10 @@
 - npm install date-fns
 
 
+## Resources
+- Heroicons -> svg icons
+
+
 ## Server Components vs Client Components
 - Server Components -> rendered only on the server side.
 - Client Components -> prerender on the server side to create a static shell, then hydrated on the client side;

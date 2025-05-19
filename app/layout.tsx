@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type {Metadata} from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import ReduxProvider from "../providers/ReduxProvider";
@@ -7,7 +7,14 @@ import MainLayout from "../components/layout/MainLayout";
 const outfit = localFont({
   src: '../public/fonts/Outfit-VariableFont_wght.ttf',
   variable: "--font-outfit",
-  display: "swap",
+  // create CSS variable under root in globals.css, and automatically create font-profit class
+  // :root {
+  //   --font-outfit: 'Outfit__VariableFont_wght';
+  // }
+  // .font-outfit {
+  //   font-family: var(--font-outfit);
+  // }
+  display: "swap", // prevent layout shifts
 });
 
 export const metadata: Metadata = {
@@ -16,19 +23,21 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  children,
-}: Readonly<{
+                                     children,
+                                   }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${outfit.variable} font-outfit antialiased`}
-      >
-        <ReduxProvider>
-          <MainLayout>{children}</MainLayout>
-        </ReduxProvider>
-      </body>
+    <html lang="en" suppressHydrationWarning>
+    {/* set font outfit variable instead of just classname on body element, so nextjs preload font, better performance,
+    and the font becomes available to all child components */}
+    <body
+      className={`${outfit.variable} font-outfit antialiased`}
+    >
+    <ReduxProvider>
+      <MainLayout>{children}</MainLayout>
+    </ReduxProvider>
+    </body>
     </html>
   );
 }

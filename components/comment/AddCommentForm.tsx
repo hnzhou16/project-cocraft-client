@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { createComment, selectCommentForReply } from '@/store/slices/commentSlice';
 import { CreateCommentPayload } from '@/types';
+import { button, form, layout, flex, cn } from '@/utils/classnames';
 
 interface AddCommentFormProps {
   postId: string;
@@ -48,26 +49,26 @@ const AddCommentForm: React.FC<AddCommentFormProps> = ({ postId, onSuccess }) =>
   };
   
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 mb-4">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+    <div className="card p-4 mb-4">
+      <h3 className="text-lg font-semibold text-primary mb-3">
         {selectedComment ? 'Reply to Comment' : 'Add a Comment'}
       </h3>
       
       {selectedComment && (
-        <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg mb-4">
-          <div className="flex justify-between items-start">
+        <div className="bg-secondary-background p-3 rounded-lg mb-4">
+          <div className={cn(flex.row, flex.between, "items-start")}>
             <div>
-              <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <p className="text-sm font-medium text-primary">
                 Replying to {selectedComment.username}
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <p className="text-xs text-secondary-foreground mt-1">
                 {selectedComment.content.substring(0, 100)}
                 {selectedComment.content.length > 100 ? '...' : ''}
               </p>
             </div>
             <button 
               onClick={cancelReply}
-              className="text-gray-500 hover:text-gray-700"
+              className="text-secondary-foreground hover:text-primary"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -84,24 +85,24 @@ const AddCommentForm: React.FC<AddCommentFormProps> = ({ postId, onSuccess }) =>
         </div>
       )}
       
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
+      <form onSubmit={handleSubmit} className={form.container}>
+        <div className={form.group}>
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className={form.textarea}
             placeholder="Write your comment here..."
             rows={4}
             required
           />
         </div>
         
-        <div className="flex items-center justify-end space-x-2">
+        <div className={cn(flex.row, flex.end, "space-x-2")}>
           {selectedComment && (
             <button
               type="button"
               onClick={cancelReply}
-              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className={button.secondary}
             >
               Cancel
             </button>
@@ -109,9 +110,10 @@ const AddCommentForm: React.FC<AddCommentFormProps> = ({ postId, onSuccess }) =>
           <button
             type="submit"
             disabled={loading || !content.trim()}
-            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${
+            className={cn(
+              button.primary,
               (loading || !content.trim()) ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
+            )}
           >
             {loading ? 'Posting...' : selectedComment ? 'Post Reply' : 'Post Comment'}
           </button>

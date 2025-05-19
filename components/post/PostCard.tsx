@@ -10,6 +10,7 @@ import {getPostComments, toggleCommentVisibility} from "@/store/slices/commentSl
 import {useSelector} from "react-redux";
 import CommentList from '../comment/CommentList';
 import ImageCarousel from '../image/ImageCarousel';
+import { layout, flex, typography, button, ui, cn } from '@/utils/classnames';
 
 export interface PostCardProps {
   post: Post;
@@ -53,33 +54,33 @@ export default function PostCard({post, isLiked = false}: PostCardProps) {
 
   return (
     <>
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="card overflow-hidden">
       <div className="p-4">
         {/* User Info */}
-        <div className="flex items-center mb-4">
-          <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+        <div className={cn(flex.row, "mb-4")}>
+          <div className={ui.avatar.md}>
             {post.username.charAt(0).toUpperCase()}
           </div>
           <div className="ml-3">
             <Link
               href={`/profile/${post.user_id}`}
-              className="text-sm font-medium text-gray-900 hover:underline"
+              className="text-sm font-medium text-primary hover:underline"
             >
               {post.username}
             </Link>
-            <p className="text-xs text-gray-500">{formatDate(post.created_at)}</p>
+            <p className="text-xs text-secondary-foreground">{formatDate(post.created_at)}</p>
           </div>
         </div>
 
         {/* Post Title */}
         <Link href={`/post/${post.id}`}>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2 hover:text-[#008247]">
+          <h2 className={cn(typography.h2, "hover:text-accent")}>
             {post.title}
           </h2>
         </Link>
 
         {/* Post Content */}
-        <p className="text-gray-700 mb-4">
+        <p className="text-primary mb-4">
           {post.content.length > 200 ? `${post.content.substring(0, 200)}...` : post.content}
         </p>
 
@@ -94,12 +95,12 @@ export default function PostCard({post, isLiked = false}: PostCardProps) {
 
         {/* Tags as Buttons */}
         {post.tags && post.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className={cn(flex.row, flex.wrap, "gap-2 mb-4")}>
             {post.tags.map(tag => (
               <Link
                 key={tag}
                 href={`/categories?tag=${tag}`}
-                className="bg-gray-100 hover:bg-gray-200 text-[#008247] px-3 py-1 rounded-full text-xs font-medium"
+                className={ui.tag}
               >
                 #{tag}
               </Link>
@@ -108,14 +109,14 @@ export default function PostCard({post, isLiked = false}: PostCardProps) {
         )}
 
         {/* Likes and Comments - Below images */}
-        <div className="flex items-center space-x-4 mb-4">
+        <div className={cn(flex.row, "space-x-4 mb-4")}>
           <button
             onClick={handleLikeToggle}
-            className="flex items-center text-gray-500 hover:text-[#008247]"
+            className={cn(flex.row, flex.center, "text-secondary-foreground hover:text-accent")}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className={`h-5 w-5 mr-1 ${liked ? 'text-[#008247] fill-[#008247]' : ''}`}
+              className={cn("h-5 w-5 mr-1", liked ? 'text-accent fill-accent' : '')}
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -128,7 +129,7 @@ export default function PostCard({post, isLiked = false}: PostCardProps) {
 
           <button
             onClick={toggleComments}
-            className="flex items-center text-gray-500 hover:text-[#008247]"
+            className={cn(flex.row, flex.center, "text-secondary-foreground hover:text-accent")}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -145,10 +146,10 @@ export default function PostCard({post, isLiked = false}: PostCardProps) {
         </div>
 
         {/* Add Comment Button */}
-        <div className="pt-4 border-t border-gray-200">
+        <div className="pt-4 border-t border-border-color">
           <Link
             href={`/post/${post.id}#comment`}
-            className="w-full flex items-center justify-center py-2 px-4 border border-[#008247] text-[#008247] rounded-md hover:bg-gray-50"
+            className={cn(button.secondary, "w-full", flex.row, flex.center)}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -165,20 +166,20 @@ export default function PostCard({post, isLiked = false}: PostCardProps) {
 
         {/* Comments Section - Expandable */}
         {showComments && (
-          <div className="mt-4 pt-4 border-t border-gray-200">
-            <h3 className="text-lg font-medium mb-4">Comments ({post.comment_count})</h3>
+          <div className="mt-4 pt-4 border-t border-border-color">
+            <h3 className={typography.h3}>Comments ({post.comment_count})</h3>
             {comments.length > 0 ? (
               <div className="space-y-4">
                 <CommentList comments={comments} loading={loading}/>
                 <Link
                   href={`/post/${post.id}`}
-                  className="text-sm text-[#008247] hover:underline block text-center"
+                  className={typography.link + " block text-center"}
                 >
                   View all comments
                 </Link>
               </div>
             ) : (
-              <p className="text-gray-500 text-center">
+              <p className="text-secondary-foreground text-center">
                 {loading ? 'Loading comments...' : 'No comments yet. Be the first to comment!'}
               </p>
             )}
