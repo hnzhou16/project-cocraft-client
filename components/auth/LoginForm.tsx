@@ -5,6 +5,7 @@ import {useRouter} from 'next/navigation';
 import Link from 'next/link';
 import {useAppDispatch, useAppSelector} from '@/store/hooks';
 import {loginAction} from "@/app/actions/loginAction";
+import {button, cn, typography} from "@/utils/classnames";
 
 const LoginForm: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -20,9 +21,7 @@ const LoginForm: React.FC = () => {
   }, [state.success, dispatch, router])
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-md mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center">Login to Your Account</h2>
-
+    <div className="bg-primary-background rounded-lg shadow-md p-6 w-full max-w-md mx-auto">
       {state.error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
           <strong className="font-bold">Error: </strong>
@@ -63,18 +62,18 @@ const LoginForm: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full ${
+            className={cn(button.primary,`focus:outline-none focus:shadow-outline w-full ${
               loading ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
+            }`)}
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </div>
 
         <div className="text-center">
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className={typography.p2}>
             Don't have an account?{' '}
-            <Link href="/register" className="text-blue-500 hover:text-blue-700">
+            <Link href="/register" className={typography.link}>
               Register here
             </Link>
           </p>

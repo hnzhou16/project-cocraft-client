@@ -4,37 +4,50 @@ module.exports = {
     './app/**/*.{js,ts,jsx,tsx,mdx}',  // Template files
     './app/**/*.css',                  // CSS files in app directory
     './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './utils/**/*.{js,ts,jsx,tsx,mdx}', // MUST include the classname.ts file
   ],
   darkMode: 'class', // Uses class-based dark mode (triggered by adding dark class to HTML)
   theme: {
     extend: {
+      spacing: {
+        'sidebar': 'var(--sidebar-width)',
+        'header': 'var(--header-height)',
+      },
+      maxWidth: {
+        'full-layout': 'var(--full-width)',
+      },
       colors: {
         accent: {
-          DEFAULT: 'rgb(0, 130, 75)',
-          hover: 'rgb(0, 109, 61)',
-          dark: 'rgb(20, 160, 95)',
-          'dark-hover': 'rgb(30, 180, 110)',
+          DEFAULT: 'var(--accent)',
+          hover: 'var(--accent-hover)',
         },
-        'background': 'var(--background)', // TODO: this is a static file, tailwind can not read raw colors
-        'foreground': 'var(--foreground)',
-        'primary': 'var(--primary)',
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
+        'primary-background': 'var(--primary-background)',
         'primary-foreground': 'var(--primary-foreground)',
         'secondary-background': 'var(--secondary-background)',
         'secondary-foreground': 'var(--secondary-foreground)',
+        'transparent-background': 'var(--transparent-background)',
         'card-background': 'var(--card-background)',
-        'border-color': 'var(--border-color)',
+        'input-background': 'var(--input-background)',
         'input-border': 'var(--input-border)',
+        'input-text': 'var(--input-text)',
       },
       borderColor: {
         DEFAULT: 'var(--border-color)',
+        'test': 'var(--test)',
       },
-      backgroundColor: {
-        primary: 'var(--primary)',
-        secondary: 'var(--secondary-background)',
-      },
-      textColor: {
-        primary: 'var(--foreground)',
-        secondary: 'var(--secondary-foreground)',
+      // backgroundColor: {
+      //   primary: 'var(--primary-background)',
+      //   secondary: 'var(--secondary-background)',
+      // },
+      // textColor: {
+      //   primary: 'var(--primary-foreground)',
+      //   secondary: 'var(--secondary-foreground)',
+      // },
+      boxShadow: {
+        soft: '0 1px 3px 0 var(--shadow-color)',
+        md: '0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color)',
       },
     },
   },

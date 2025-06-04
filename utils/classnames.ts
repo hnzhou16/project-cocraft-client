@@ -18,21 +18,23 @@ export const layout = {
   container: 'container mx-auto px-4',
   section: 'py-6 md:py-8',
   card: 'card',
-  cardHeader: 'p-4 border-b border-border-color',
+  cardHeader: 'p-4 border-b',
   cardBody: 'p-4',
-  cardFooter: 'p-4 border-t border-border-color',
+  cardFooter: 'p-4 border-t',
 };
 
 /**
  * Typography related class names
  */
 export const typography = {
+  logo: "text-xl font-bold text-accent",
   h1: 'text-3xl font-bold text-primary mb-4',
   h2: 'text-2xl font-bold text-primary mb-3',
   h3: 'text-xl font-bold text-primary mb-2',
-  h4: 'text-lg font-semibold text-primary mb-2',
-  p: 'text-primary mb-4',
-  small: 'text-sm text-secondary-foreground',
+  h4: 'text-lg font-semibold text-primary mb-1',
+  p1: 'text-primary text-primary-foreground mb-4',
+  p2: 'text-sm text-secondary-foreground',
+  p3: 'text-xs text-secondary-foreground',
   link: 'text-accent hover:text-accent-hover underline',
 };
 
@@ -59,6 +61,14 @@ export const button = {
   base: 'btn',
   primary: 'btn btn-primary',
   secondary: 'btn btn-secondary',
+  filter: 'px-4 py-2 text-sm font-medium bg-background text-secondary-foreground border ' +
+    'hover:bg-primary-background hover:text-primary-foreground hover:scale-110 transition-all duration-300',
+  filterActive: 'px-4 py-2 text-sm font-medium bg-accent hover:bg-accent-hover text-white transition-all duration-300',
+  sort: 'px-4 py-2 text-sm font-medium bg-primary-background text-secondary-foreground border  rounded-md shadow-sm ' +
+    'hover:bg-secondary-background hover:text-primary-foreground' +
+    'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent',
+  sortDropDown: 'text-primary-foreground block px-4 py-2 text-sm w-full text-left hover:bg-secondary-background',
+  sortDropDownActive: 'bg-primary-background text-accent font-bold block block px-4 py-2 text-sm w-full text-left hover:bg-secondary-background',
   danger: 'btn bg-red-600 hover:bg-red-700 text-white',
   ghost: 'btn bg-transparent hover:bg-secondary-background text-primary',
   link: 'btn bg-transparent p-0 h-auto text-accent hover:text-accent-hover underline',
@@ -78,8 +88,9 @@ export const flex = {
   row: 'flex flex-row',
   col: 'flex flex-col',
   center: 'items-center justify-center',
-  between: 'items-center justify-between',
-  start: 'items-start',
+  betweenAtStart: 'items-start justify-between',
+  betweenAtCenter: 'items-center justify-between',
+  start: 'items-start', // TODO: consider remove flex settings
   end: 'items-end',
   wrap: 'flex-wrap',
   gap1: 'gap-1',
@@ -119,11 +130,11 @@ export const nav = {
  */
 export const ui = {
   avatar: {
-    base: 'rounded-full flex items-center justify-center overflow-hidden bg-secondary-background text-accent',
+    // "rounded-full" need to pair with "aspect-square"
+    base: 'rounded-full aspect-square flex items-center justify-center border-2 bg-secondary-background text-accent font-medium overflow-hidden',
     sm: 'h-8 w-8 text-xs',
-    md: 'h-10 w-10 text-sm',
-    lg: 'h-12 w-12 text-base',
-    xl: 'h-16 w-16 text-lg',
+    md: 'h-10 w-10 text-base',
+    lg: 'h-12 w-12 text-lg',
   },
   badge: {
     base: 'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
@@ -134,3 +145,5 @@ export const ui = {
   divider: 'border-t border-border-color my-4',
   tag: 'bg-secondary-background hover:bg-secondary-background/80 text-accent px-3 py-1 rounded-full text-xs font-medium',
 };
+
+

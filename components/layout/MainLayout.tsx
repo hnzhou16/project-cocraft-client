@@ -22,6 +22,8 @@ export default function MainLayout({children}: MainLayoutProps) {
   const {user, postCount, followerCount, followingCount, isAuthenticated, loading, error} = useAppSelector((state: any) => state.auth);
 
   // Handle scroll event
+  // useCallback memorizes the function — it returns the same function instance unless its dependencies change.
+  // If deps is [], the function is only created once (on initial render).
   const handleScroll = useCallback(() => {
     if (window.scrollY > 10) {
       setScrolled(true);
@@ -79,14 +81,14 @@ export default function MainLayout({children}: MainLayoutProps) {
       {/* Header - Fixed top navigation bar */}
       <header
         className={cn(
-          "bg-white border-b border-border-color fixed top-0 left-0 right-0 z-50",
+          "bg-background border-b fixed top-0 left-0 right-0 z-50",
           scrolled ? 'shadow-md' : ''
         )}>
-        <div className={cn(layout.container, "max-w-6xl")}>
-          <div className={cn(flex.row, flex.between, "h-16")}>
+        <div className={cn(layout.container, "max-w-full-layout")}>
+          <div className={cn(flex.row, flex.betweenAtCenter, "h-header")}>
             {/* Logo */}
             <Link href="/" className={flex.row}>
-              <span className="text-xl font-bold text-accent">CoCraft</span>
+              <span className={typography.logo}>CoCraft</span>
             </Link>
 
             {/* Search Bar */}
@@ -105,6 +107,7 @@ export default function MainLayout({children}: MainLayoutProps) {
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className={nav.icon} fill="none" viewBox="0 0 24 24"
                        stroke="currentColor">
+                    {/* currentColor is a CSS keyword, inherits color from parent element's text color*/}
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                           d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                   </svg>
@@ -122,7 +125,7 @@ export default function MainLayout({children}: MainLayoutProps) {
                     href={`/profile/${user?.id}`}
                     className={flex.row}
                   >
-                    <div className={ui.avatar.md}>
+                    <div className={cn(ui.avatar.base, ui.avatar.sm)}>
                       {user?.username?.charAt(0).toUpperCase() || 'U'}
                     </div>
                   </Link>
@@ -164,9 +167,9 @@ export default function MainLayout({children}: MainLayoutProps) {
             </div>
           </div>
 
-          {/* Mobile Menu */}
+          {/* TODO: Mobile Menu */}
           {isMenuOpen && (
-            <div className="md:hidden py-4 border-t border-border-color">
+            <div className="md:hidden py-4">
               <nav className={cn(flex.col, "space-y-4")}>
                 <form onSubmit={handleSearch} className="mb-4">
                   <div className="relative w-full">
@@ -228,7 +231,7 @@ export default function MainLayout({children}: MainLayoutProps) {
                     </Link>
                     <Link
                       href="/create"
-                      className={cn(button.primary, "w-full text-center")}
+                      className={cn(button.primary, "w-full")}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Create Post
@@ -238,7 +241,7 @@ export default function MainLayout({children}: MainLayoutProps) {
                 {!isAuthenticated && (
                   <Link
                     href="/register"
-                    className={cn(button.primary, "w-full text-center")}
+                    className={cn(button.primary, "w-full")}
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Join Now
@@ -249,192 +252,196 @@ export default function MainLayout({children}: MainLayoutProps) {
           )}
         </div>
       </header>
-    <div className="max-w-6xl mx-auto">
-      {/* Sidebar for desktop - Fixed left sidebar */}
-      <div
-        className="hidden md:block fixed top-16 h-screen w-64 bg-card-background border-r border-border-color z-40 overflow-y-auto">
-        <div className="p-4">
-          {/* User Profile Card */}
-          {isAuthenticated ? (
-            <div className={layout.card + " mb-4"}>
-              <div className={cn(flex.row, "mb-3")}>
-                <div className={cn(ui.avatar.lg, "mr-3")}>
+      <div className="max-w-full-layout mx-auto">
+        {/* Sidebar for desktop - Fixed left sidebar */}
+        <div
+          className="hidden md:block fixed top-header h-screen w-sidebar bg-card-background border-r z-40 overflow-y-auto">
+          <div className="p-4">
+            {/* User Profile Card */}
+            {isAuthenticated ? (
+              <div className={cn(layout.card, flex.row, flex.gap2, "p-2 mb-4")}>
+                <div className={cn(ui.avatar.base, ui.avatar.md, "h-10 w-10 mr-3")}>
                   {user?.username?.charAt(0).toUpperCase() || 'U'}
                 </div>
                 <div>
-                  <h3 className="font-medium">{user?.username.split('_').join(' ') || 'User'}</h3>
-                  <p className="text-sm text-secondary-foreground">{user?.role || 'User'}</p>
-                  <p className="text-xs text-secondary-foreground/70">{user?.profile?.location || 'No location'}</p>
+                  <p className={cn(typography.h4, "mt-1 mb-1")}>{user?.username.split('_').join(' ') || 'User'}</p>
+                  <p className={typography.p2}>{user?.role || 'User'}</p>
+                  <p className={typography.p3}>{user?.profile?.location || 'No location'}</p>
                 </div>
               </div>
-            </div>
-          ) : (
-            <div className={layout.card + " mb-4"}>
-              <p className="text-center mb-3">Sign in to see your profile</p>
-              <div className={cn(flex.row, "space-x-2")}>
-                <Link
-                  href="/login"
-                  className={cn(button.secondary, "flex-1 text-center")}
-                >
-                  Sign In
-                </Link>
-                <Link
-                  href="/register"
-                  className={cn(button.primary, "flex-1 text-center")}
-                >
-                  Join
-                </Link>
-              </div>
-            </div>
-          )}
-
-          {/* Stats Card */}
-          {isAuthenticated && (
-            <div className={layout.card + " mb-4"}>
-              <div className={cn(flex.row, flex.between)}>
-                <div className="text-center">
-                  <p className="text-xs text-secondary-foreground">Followers</p>
-                  <p className="text-lg font-semibold">{followerCount}</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-xs text-secondary-foreground">Following</p>
-                  <p className="text-lg font-semibold">{followingCount}</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-xs text-secondary-foreground">Posts</p>
-                  <p className="text-lg font-semibold">{postCount}</p>
+            ) : (
+              <div className={cn(layout.card, "p-4 mb-4")}>
+                <p className={cn(typography.p2, "text-center mb-4")}>Sign in to see your profile</p>
+                <div className={cn(flex.row, "space-x-2")}>
+                  <Link
+                    href="/login"
+                    className={cn(button.secondary, "flex-1")}
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/register"
+                    className={cn(button.primary, "flex-1")}
+                  >
+                    Join
+                  </Link>
                 </div>
               </div>
-            </div>
-          )}
-
-          {/* Action Buttons */}
-          <div className="space-y-3 mb-6">
-            <Link
-              href="/generate-image"
-              className={cn(button.primary, "w-full", flex.row, flex.center)}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className={cn(nav.icon, "mr-2")} fill="none" viewBox="0 0 24 24"
-                   stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-              </svg>
-              Image Ideas
-            </Link>
-            <Link
-              href="/create"
-              className={cn(button.primary, "w-full", flex.row, flex.center)}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className={cn(nav.icon, "mr-2")} fill="none" viewBox="0 0 24 24"
-                   stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/>
-              </svg>
-              New Post
-            </Link>
-          </div>
-
-          {/* Navigation Links */}
-          <nav className={flex.col + " space-y-1"}>
-            <Link
-              href="/"
-              className={cn(isActive('/') ? nav.linkActive : nav.link)}
-            >
-              <span>Home</span>
-            </Link>
-            <Link
-              href="/explore"
-              className={cn(isActive('/explore') ? nav.linkActive : nav.link)}
-            >
-              <span>Explore</span>
-            </Link>
-            <Link
-              href="/trending"
-              className={cn(isActive('/trending') ? nav.linkActive : nav.link)}
-            >
-              <span>Trending</span>
-            </Link>
-            <Link
-              href="/categories"
-              className={cn(isActive('/categories') ? nav.linkActive : nav.link)}
-            >
-              <span>Categories</span>
-            </Link>
-            {isAuthenticated && (
-              <>
-                <Link
-                  href="/feed"
-                  className={cn(isActive('/feed') ? nav.linkActive : nav.link)}
-                >
-                  <span>My Feed</span>
-                </Link>
-                <Link
-                  href={`/profile/${user?.id}`}
-                  className={cn(isActive(`/profile/${user?.id}`) ? nav.linkActive : nav.link)}
-                >
-                  <span>My Profile</span>
-                </Link>
-              </>
             )}
-          </nav>
-        </div>
-      </div>
 
-      {/* Main Content */}
-      <main className="flex-grow pt-16 md:pl-64">
-        <div className={layout.container + " py-6"}>
-          {children}
-        </div>
-      </main>
-    </div>
-      {/* Footer */}
-      <footer className="bg-card-background border-t border-border-color py-8">
-        <div className={layout.container}>
-          <div className={grid.cols4 + " gap-8"}>
-            <div>
-              <h3 className={typography.h3}>CoCraft</h3>
-              <p className="text-secondary-foreground">Connect with creators, share your work, and get inspired.</p>
+            {/* Stats Card */}
+            {isAuthenticated && (
+              <div className={cn(layout.card, "text-center px-4 pt-2 mb-4")}>
+                <div className={cn(flex.row, flex.betweenAtStart)}>
+                  <div>
+                    <p className={typography.p3}>Followers</p>
+                    <p className={typography.h4}>{followerCount}</p>
+                  </div>
+                  <div>
+                    <p className={typography.p3}>Following</p>
+                    <p className={typography.h4}>{followingCount}</p>
+                  </div>
+                  <div>
+                    <p className={typography.p3}>Posts</p>
+                    <p className={typography.h4}>{postCount}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className="space-y-3 mb-6">
+              <Link
+                href="/generate-image"
+                className={cn(button.primary, "w-full", flex.row, flex.center)}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className={cn(nav.icon, "mr-2")} fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                Image Ideas
+              </Link>
+              <Link
+                href="/create"
+                className={cn(button.primary, "w-full", flex.row, flex.center)}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className={cn(nav.icon, "mr-2")} fill="none" viewBox="0 0 24 24"
+                     stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/>
+                </svg>
+                New Post
+              </Link>
             </div>
-            <div>
-              <h3 className={typography.h3}>Navigation</h3>
-              <ul className="space-y-2">
-                <li><Link href="/" className={typography.link}>Home</Link></li>
-                <li><Link href="/explore" className={typography.link}>Explore</Link></li>
-                <li><Link href="/trending" className={typography.link}>Trending</Link></li>
-                <li><Link href="/categories" className={typography.link}>Categories</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className={typography.h3}>Account</h3>
-              <ul className="space-y-2">
-                {isAuthenticated ? (
-                  <>
-                    <li><Link href="/feed" className={typography.link}>My Feed</Link></li>
-                    <li><Link href={`/profile/${user?.id}`} className={typography.link}>Profile</Link></li>
-                    <li><Link href="/create" className={typography.link}>Create Post</Link></li>
-                    <li><Link href="/logout" className={typography.link}>Logout</Link></li>
-                  </>
-                ) : (
-                  <>
-                    <li><Link href="/login" className={typography.link}>Sign In</Link></li>
-                    <li><Link href="/register" className={typography.link}>Join Now</Link></li>
-                  </>
-                )}
-              </ul>
-            </div>
-            <div>
-              <h3 className={typography.h3}>Legal</h3>
-              <ul className="space-y-2">
-                <li><Link href="/terms" className={typography.link}>Terms of Service</Link></li>
-                <li><Link href="/privacy" className={typography.link}>Privacy Policy</Link></li>
-                <li><Link href="/cookies" className={typography.link}>Cookie Policy</Link></li>
-              </ul>
-            </div>
+
+            {/* Navigation Links */}
+            <nav className={cn(flex.col, "space-y-1")}>
+              <Link
+                href="/"
+                className={cn(isActive('/') ? nav.linkActive : nav.link)}
+              >
+                <span>Home</span>
+              </Link>
+              <Link
+                href="/explore"
+                className={cn(isActive('/explore') ? nav.linkActive : nav.link)}
+              >
+                <span>Explore</span>
+              </Link>
+              <Link
+                href="/trending"
+                className={cn(isActive('/trending') ? nav.linkActive : nav.link)}
+              >
+                <span>Trending</span>
+              </Link>
+              <Link
+                href="/categories"
+                className={cn(isActive('/categories') ? nav.linkActive : nav.link)}
+              >
+                <span>Categories</span>
+              </Link>
+              {isAuthenticated && (
+                <>
+                  <Link
+                    href="/feed"
+                    className={cn(isActive('/feed') ? nav.linkActive : nav.link)}
+                  >
+                    <span>My Feed</span>
+                  </Link>
+                  <Link
+                    href={`/profile/${user?.id}`}
+                    className={cn(isActive(`/profile/${user?.id}`) ? nav.linkActive : nav.link)}
+                  >
+                    <span>My Profile</span>
+                  </Link>
+                </>
+              )}
+            </nav>
           </div>
-          <div className="border-t border-border-color mt-8 pt-8 text-center text-secondary-foreground">
-            <p>&copy; {new Date().getFullYear()} CoCraft. All rights reserved.</p>
-          </div>
         </div>
-      </footer>
+
+        {/* Main Content */}
+        <main className="flex-grow pt-16 md:pl-64">
+          <div className={cn(layout.container, "py-6")}>
+            {children}
+          </div>
+        </main>
+
+        {/* Footer */}
+        <div className="ml-sidebar">
+          <footer className="w-full bg-card-background border-t py-8 mx-4">
+            <div className={layout.container}>
+              <div>
+                <p className={typography.h3}>CoCraft</p>
+                <p className={cn(typography.p1, "text-secondary-foreground")}>Connect with creators, share your work,
+                  and get inspired.</p>
+              </div>
+
+              <div className={cn(flex.row, flex.betweenAtStart)}>
+                <div>
+                  <h3 className={typography.h3}>Navigation</h3>
+                  <ul className="space-y-2">
+                    <li><Link href="/" className={typography.link}>Home</Link></li>
+                    <li><Link href="/explore" className={typography.link}>Explore</Link></li>
+                    <li><Link href="/trending" className={typography.link}>Trending</Link></li>
+                    <li><Link href="/categories" className={typography.link}>Categories</Link></li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 className={typography.h3}>Account</h3>
+                  <ul className="space-y-2">
+                    {isAuthenticated ? (
+                      <>
+                        <li><Link href="/feed" className={typography.link}>My Feed</Link></li>
+                        <li><Link href={`/profile/${user?.id}`} className={typography.link}>Profile</Link></li>
+                        <li><Link href="/create" className={typography.link}>Create Post</Link></li>
+                        <li><Link href="/logout" className={typography.link}>Logout</Link></li>
+                      </>
+                    ) : (
+                      <>
+                        <li><Link href="/login" className={typography.link}>Sign In</Link></li>
+                        <li><Link href="/register" className={typography.link}>Join Now</Link></li>
+                      </>
+                    )}
+                  </ul>
+                </div>
+                <div>
+                  <h3 className={typography.h3}>Legal</h3>
+                  <ul className="space-y-2">
+                    <li><Link href="/terms" className={typography.link}>Terms of Service</Link></li>
+                    <li><Link href="/privacy" className={typography.link}>Privacy Policy</Link></li>
+                    <li><Link href="/cookies" className={typography.link}>Cookie Policy</Link></li>
+                  </ul>
+                </div>
+              </div>
+              <div className="border-t mt-8 pt-8 text-center text-secondary-foreground">
+                <p>&copy; {new Date().getFullYear()} CoCraft. All rights reserved.</p>
+              </div>
+            </div>
+          </footer>
+        </div>
+
+      </div>
     </div>
   );
 }

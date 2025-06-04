@@ -3,6 +3,7 @@
 import {useMemo, useState} from 'react';
 import PostCard from './PostCard';
 import {useAppSelector} from "@/store/hooks";
+import {button, cn, layout} from "@/utils/classnames";
 
 export default function PostList() {
   const {publicFeed, userFeed, loading, error} = useAppSelector((state: any) => state.post);
@@ -64,7 +65,7 @@ export default function PostList() {
           <div>
             <button
               type="button"
-              className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#008247]"
+              className={cn(button.sort, "inline-flex justify-center w-full")}
               id="sort-menu-button"
               aria-expanded="true"
               aria-haspopup="true"
@@ -82,7 +83,7 @@ export default function PostList() {
 
           <div
             id="sort-dropdown"
-            className="hidden origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
+            className="hidden origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-background ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
             role="menu"
             aria-orientation="vertical"
             aria-labelledby="sort-menu-button"
@@ -94,7 +95,7 @@ export default function PostList() {
                   setSortBy('recent');
                   document.getElementById('sort-dropdown')?.classList.add('hidden');
                 }}
-                className={`${sortBy === 'recent' ? 'bg-gray-100 text-[#008247]' : 'text-gray-700'} block px-4 py-2 text-sm w-full text-left hover:bg-gray-100`}
+                className={sortBy === 'recent' ? button.sortDropDownActive : button.sortDropDown}
                 role="menuitem"
                 tabIndex={-1}
               >
@@ -105,7 +106,7 @@ export default function PostList() {
                   setSortBy('likes');
                   document.getElementById('sort-dropdown')?.classList.add('hidden');
                 }}
-                className={`${sortBy === 'likes' ? 'bg-gray-100 text-[#008247]' : 'text-gray-700'} block px-4 py-2 text-sm w-full text-left hover:bg-gray-100`}
+                className={sortBy === 'likes' ? button.sortDropDownActive : button.sortDropDown}
                 role="menuitem"
                 tabIndex={-1}
               >
@@ -116,7 +117,7 @@ export default function PostList() {
                   setSortBy('comments');
                   document.getElementById('sort-dropdown')?.classList.add('hidden');
                 }}
-                className={`${sortBy === 'comments' ? 'bg-gray-100 text-[#008247]' : 'text-gray-700'} block px-4 py-2 text-sm w-full text-left hover:bg-gray-100`}
+                className={sortBy === 'comments' ? button.sortDropDownActive : button.sortDropDown}
                 role="menuitem"
                 tabIndex={-1}
               >

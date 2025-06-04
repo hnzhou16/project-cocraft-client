@@ -209,11 +209,23 @@ const initialState: PostState = {
   error: null,
 };
 
+function updateLikeCount(posts: Post[], postId: string, likeStatus: boolean): Post[] {
+  return posts.map(post =>
+    post.id === postId
+      ? {
+        ...post,
+        like_count: Math.max(0, post.like_count + (likeStatus ? 1 : -1)),
+        likedByUser: !post.likedByUser,
+      }
+      : post
+  );
+}
+
 // createAsyncThunk<Return type(success), Input type(arg pass to thunk), Config(err type) >
 
 export const fetchPublicFeed = createAsyncThunk<
-  Post[], 
-  PaginationQuery | undefined, 
+  Post[],
+  PaginationQuery | undefined,
   { rejectValue: string }
 >(
   'post/fetchPublicFeed',
@@ -235,8 +247,8 @@ export const fetchPublicFeed = createAsyncThunk<
 );
 
 export const fetchUserFeed = createAsyncThunk<
-  Post[], 
-  PaginationQuery | undefined, 
+  Post[],
+  PaginationQuery | undefined,
   { rejectValue: string }
 >(
   'post/fetchUserFeed',
@@ -261,8 +273,8 @@ export const fetchUserFeed = createAsyncThunk<
 );
 
 export const fetchPostById = createAsyncThunk<
-  Post, 
-  string, 
+  Post,
+  string,
   { rejectValue: string }
 >(
   'post/fetchPostById',
@@ -277,8 +289,8 @@ export const fetchPostById = createAsyncThunk<
 );
 
 export const fetchPostsByUserId = createAsyncThunk<
-  Post[], 
-  { userId: string, pagination?: PaginationQuery }, 
+  Post[],
+  { userId: string, pagination?: PaginationQuery },
   { rejectValue: string }
 >(
   'post/fetchPostsByUserId',
@@ -295,8 +307,8 @@ export const fetchPostsByUserId = createAsyncThunk<
 // Removed fetchPostComments as it's now handled in commentSlice
 
 export const updatePost = createAsyncThunk<
-  Post, 
-  { postId: string, postData: UpdatePostPayload }, 
+  Post,
+  { postId: string, postData: UpdatePostPayload },
   { rejectValue: string }
 >(
   'post/updatePost',
@@ -311,15 +323,15 @@ export const updatePost = createAsyncThunk<
 );
 
 export const toggleLike = createAsyncThunk<
-  string, 
-  string, 
+  { postId: string, likeStatus: boolean },
+  string,
   { rejectValue: string }
 >(
   'post/toggleLike',
   async (postId: string, {rejectWithValue}) => {
     try {
       const likeStatus = await postService.toggleLike(postId);
-      return likeStatus;
+      return {postId, likeStatus};
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to like post');
     }
@@ -327,8 +339,8 @@ export const toggleLike = createAsyncThunk<
 );
 
 export const deletePost = createAsyncThunk<
-  string, 
-  string, 
+  string,
+  string,
   { rejectValue: string }
 >(
   'post/deletePost',
@@ -464,23 +476,21 @@ const postSlice = createSlice<PostState>({
         state.error = null;
       })
       // Unlike Post
-      .addCase(toggleLike.fulfilled, (state, action: PayloadAction<string>) => {
-        const postId = action.payload;
+      .addCase(toggleLike.fulfilled, (state, action: PayloadAction<{ postId: string; likeStatus: boolean }>) => {
+        const {postId, likeStatus} = action.payload;
+
         if (state.currentPost?.id === postId) {
-          state.currentPost.like_count = Math.max(0, state.currentPost.like_count - 1);
+          state.currentPost.like_count = Math.max(
+            0,
+            state.currentPost.like_count + (likeStatus ? 1 : -1)
+          );
+
+          state.currentPost.likedByUser = !state.currentPost.likedByUser
         }
-        state.userPosts = state.userPosts.map(post =>
-          post.id === postId ? {...post, like_count: Math.max(0, post.like_count - 1)} : post
-        );
-        state.publicFeed = state.publicFeed.map(post =>
-          post.id === postId ? {...post, like_count: Math.max(0, post.like_count - 1)} : post
-        );
-        state.userFeed = state.userFeed.map(post =>
-          post.id === postId ? {...post, like_count: Math.max(0, post.like_count - 1)} : post
-        );
-        state.trendingPosts = state.trendingPosts.map(post =>
-          post.id === postId ? {...post, like_count: Math.max(0, post.like_count - 1)} : post
-        );
+        state.userPosts = updateLikeCount(state.userPosts, postId, likeStatus);
+        state.publicFeed = updateLikeCount(state.publicFeed, postId, likeStatus);
+        state.userFeed = updateLikeCount(state.userFeed, postId, likeStatus);
+        state.trendingPosts = updateLikeCount(state.trendingPosts, postId, likeStatus);
       })
       .addCase(deletePost.fulfilled, (state, action: PayloadAction<string>) => {
         state.loading = false;

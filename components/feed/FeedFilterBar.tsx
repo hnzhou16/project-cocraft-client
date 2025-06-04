@@ -5,6 +5,7 @@ import {useRouter, useSearchParams} from "next/navigation";
 import {FeedFilterKey, INITIAL_FEED_FILTER_STATE, PaginationQuery, PUBLIC_ROLES, Role} from "@/types";
 import {fetchPublicFeed, fetchUserFeed} from "@/store/slices/postSlice";
 import {useAppDispatch, useAppSelector} from "@/store/hooks";
+import {button, cn, flex} from "@/utils/classnames";
 
 interface FeedFilterBarProps {
   className?: string;
@@ -87,18 +88,17 @@ export default function FeedFilterBar({className = ''}: FeedFilterBarProps) {
   };
 
   return (
-    <div className={`bg-white border-b border-gray-200 p-4 sticky top-16 z-30 ${className}`}>
+    <div className={`bg-background border-b p-4 sticky top-16 z-30 ${className}`}>
       <div className="container mx-auto">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className={cn(flex.row, flex.betweenAtCenter, flex.gap4, flex.wrap)}>
           {/* Feed Type Filter */}
           <div className="inline-flex rounded-md shadow-sm" role="group">
             <button
               type="button"
               onClick={resetAllFilters}
-              className={`px-4 py-2 text-sm font-medium rounded-l-lg ${
+              className={`rounded-l-lg ${
                 !feedFilter[FeedFilterKey.Following] && !feedFilter[FeedFilterKey.Mentioned] && rolesFilter.length === 0
-                  ? 'bg-[#008247] text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-50'
+                  ? button.filterActive : button.filter
               }`}
             >
               All
@@ -106,21 +106,19 @@ export default function FeedFilterBar({className = ''}: FeedFilterBarProps) {
             <button
               type="button"
               onClick={() => handleFeedFilterToggle(FeedFilterKey.Following)}
-              className={`px-4 py-2 text-sm font-medium ${
+              className={
                 feedFilter[FeedFilterKey.Following]
-                  ? 'bg-[#008247] text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-50'
-              }`}
+                  ? button.filterActive : button.filter
+              }
             >
               Following
             </button>
             <button
               type="button"
               onClick={() => handleFeedFilterToggle(FeedFilterKey.Mentioned)}
-              className={`px-4 py-2 text-sm font-medium rounded-r-lg ${
+              className={`rounded-r-lg ${
                 feedFilter[FeedFilterKey.Mentioned]
-                  ? 'bg-[#008247] text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-50'
+                  ? button.filterActive : button.filter
               }`}
             >
               Mentioned
@@ -135,11 +133,11 @@ export default function FeedFilterBar({className = ''}: FeedFilterBarProps) {
                 setRolesFilter([]);
                 updateParams({role: null});
               }}
-              className={`px-4 py-2 text-sm font-medium rounded-l-lg ${
+              className={`rounded-l-lg ${
                 rolesFilter.length === 0
-                  ? 'bg-[#008247] text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-50'
-              }`}
+                  ? button.filterActive : button.filter 
+              }`
+              }
             >
               All Roles
             </button>
@@ -152,10 +150,9 @@ export default function FeedFilterBar({className = ''}: FeedFilterBarProps) {
                   key={role}
                   type="button"
                   onClick={() => handleRoleFilterToggle(role)}
-                  className={`px-4 py-2 text-sm font-medium ${isLast ? 'rounded-r-lg' : ''} ${
+                  className={`${isLast ? 'rounded-r-lg' : ''} ${
                     isSelected
-                      ? 'bg-[#008247] text-white'
-                      : 'bg-white text-gray-700 hover:bg-gray-50'
+                      ? button.filterActive : button.filter
                   }`}
                 >
                   {role.charAt(0).toUpperCase() + role.slice(1)}

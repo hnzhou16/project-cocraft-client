@@ -1,10 +1,8 @@
-/* ========== TAILWIND IMPORTS ========== */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ========== CSS VARIABLES AND BASE STYLES ========== */
-
 /* Light Mode */
 :root {
   --full-width: 72rem;
@@ -12,10 +10,12 @@
   --sidebar-width: 16rem;
   --background: #ffffff;
   --foreground: #171717;
-  --primary: #171717;
-  --primary-foreground: #ffffff;
-  --secondary-background: #f9f9f9;
-  --secondary-foreground: #4b5563;
+  --primary-background: #f2f2f2;
+  --primary-foreground: #5b6677;
+  --secondary-background: #f3f3f3;
+  --secondary-foreground: #585e67;
+  --light-background: #757575;
+  --transparent-background: rgb(255, 255, 255, 0.9);
   --accent: rgb(0, 130, 75);
   --accent-hover: rgb(0, 109, 61);
   --border-color: #e5e7eb;
@@ -25,30 +25,29 @@
   --input-text: #171717;
   --button-text: #ffffff;
   --shadow-color: rgba(0, 0, 0, 0.1);
+
+  --test: #ff0000;
 }
 
 /* Dark Mode */
 .dark {
   --background: #121212;
   --foreground: #f3f4f6;
-  --primary: #f3f4f6;
-  --primary-foreground: #121212;
-  --secondary-background: #1e1e1e;
-  --secondary-foreground: #9ca3af;
+  --primary-background: #2c2c2c;
+  --primary-foreground: #cbcdd0;
+  --secondary-background: #4b4b4b;
+  --secondary-foreground: #b1b8c4;
+  --transparent-background: rgb(0, 0, 0, 0.7);
   --accent: rgb(20, 160, 95);
   --accent-hover: rgb(30, 180, 110);
-  --border-color: #2d2d2d;
-  --card-background: #1e1e1e;
+  --border-color: #575757;
+  --card-background: #1a1a1a;
   --input-background: #2d2d2d;
   --input-border: #4b5563;
   --input-text: #f3f4f6;
   --button-text: #ffffff;
   --shadow-color: rgba(0, 0, 0, 0.3);
 }
-
-
-
-
 
 /* ========== BASE STYLES ========== */
 /* use raw CSS for dynamic value, only use tailwind apply for */
@@ -123,7 +122,7 @@ body {
 }
 
 .btn {
-  @apply inline-flex items-center justify-center rounded-md font-medium py-2 px-4 transition-colors duration-300;
+  @apply inline-flex items-center justify-center rounded-md font-medium text-center py-2 px-4 transition-colors duration-100;
 }
 
 .btn-primary {
@@ -144,6 +143,7 @@ body {
 .btn-secondary:hover {
   background-color: var(--secondary-background);
 }
+
 
 /* ========== GLOBAL TRANSITIONS ========== */
 /* Smooth transitions */

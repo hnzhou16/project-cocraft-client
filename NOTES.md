@@ -59,18 +59,16 @@ export const INITIAL_FEED_FILTER_STATE: Record<FeedFilterKey, boolean> = {
 ### Thunk
 - Wraps async function, dispatch action, and works with Redux store via dispatch/getState...
 
+
 ## Nest.js
 ### RootLayout({children})
 'children' is the entire content wrapped inside <RootLayout> (app/page.tsx);
 
 
-## TODO
-- route group, 35:50
-- error file, 36;50 (only show the closest error file)
-- loading file, 39:30
-- revalidate data, 50:45
-- route file 54:30
-- metadata, 58:00
+## Tailwind
+- 1 rem = 4 spaces = 16px
+- 1 space = 4px (w-2, p-4)
+
 
 ## start
 npm run dev

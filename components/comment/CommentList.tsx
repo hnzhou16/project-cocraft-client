@@ -1,7 +1,7 @@
-
 import React from 'react';
 import {CommentWithParentAndUser} from '@/types';
 import Comment from './Comment';
+import {cn, flex, typography} from "@/utils/classnames";
 
 interface CommentListProps {
   comments: CommentWithParentAndUser[];
@@ -12,8 +12,8 @@ interface CommentListProps {
 const CommentList: React.FC<CommentListProps> = ({comments, loading = false, error = null}) => {
   if (loading) {
     return (
-      <div className="flex justify-center items-center py-4">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+      <div className={cn(flex.center, "py-4")}>
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border"></div>
       </div>
     );
   }
@@ -29,8 +29,8 @@ const CommentList: React.FC<CommentListProps> = ({comments, loading = false, err
 
   if (comments.length === 0) {
     return (
-      <div className="text-center py-4">
-        <p className="text-gray-500 dark:text-gray-400">No comments yet. Be the first to comment!</p>
+      <div className="text-center">
+        <p className={typography.p3}>No comments yet. Be the first to comment!</p>
       </div>
     );
   }
