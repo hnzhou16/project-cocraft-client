@@ -35,7 +35,7 @@ export const typography = {
   p1: 'text-primary text-primary-foreground mb-4',
   p2: 'text-sm text-secondary-foreground',
   p3: 'text-xs text-secondary-foreground',
-  link: 'text-accent hover:text-accent-hover underline',
+  link: 'text-accent hover:text-accent-hover underline hover:cursor-pointer',
 };
 
 /**
@@ -46,7 +46,7 @@ export const form = {
   group: 'space-y-2',
   label: 'block text-sm font-medium text-primary',
   input: 'input w-full',
-  textarea: 'input w-full min-h-[100px]',
+  textarea: 'input w-full min-h-[50px]',
   select: 'input w-full appearance-none pr-8',
   checkbox: 'h-4 w-4 rounded border-input-border text-accent focus:ring-accent',
   radio: 'h-4 w-4 border-input-border text-accent focus:ring-accent',
@@ -70,7 +70,7 @@ export const button = {
   sortDropDown: 'text-primary-foreground block px-4 py-2 text-sm w-full text-left hover:bg-secondary-background',
   sortDropDownActive: 'bg-primary-background text-accent font-bold block block px-4 py-2 text-sm w-full text-left hover:bg-secondary-background',
   danger: 'btn bg-red-600 hover:bg-red-700 text-white',
-  ghost: 'btn bg-transparent hover:bg-secondary-background text-primary',
+  ghost: 'btn bg-transparent hover:bg-secondary-background text-accent',
   link: 'btn bg-transparent p-0 h-auto text-accent hover:text-accent-hover underline',
   icon: 'p-2 rounded-full hover:bg-secondary-background',
   sizes: {
@@ -80,6 +80,8 @@ export const button = {
     xl: 'text-lg px-6 py-3',
   },
 };
+
+
 
 /**
  * Flex layout class names
@@ -121,7 +123,7 @@ export const grid = {
  */
 export const nav = {
   link: 'p-2 rounded-md hover:bg-secondary-background hover:text-accent transition-colors',
-  linkActive: 'bg-secondary-background text-accent',
+  linkActive: 'p-2 rounded-md bg-secondary-background text-accent font-bold',
   icon: 'h-5 w-5',
 };
 
@@ -131,7 +133,7 @@ export const nav = {
 export const ui = {
   avatar: {
     // "rounded-full" need to pair with "aspect-square"
-    base: 'rounded-full aspect-square flex items-center justify-center border-2 bg-secondary-background text-accent font-medium overflow-hidden',
+    base: 'rounded-full aspect-square flex items-center justify-center border-2 bg-secondary-background text-accent font-medium overflow-hidden hover:cursor-pointer',
     sm: 'h-8 w-8 text-xs',
     md: 'h-10 w-10 text-base',
     lg: 'h-12 w-12 text-lg',

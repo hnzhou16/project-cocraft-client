@@ -2,15 +2,14 @@
 
 import {useState, useEffect} from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import {Post} from '@/types';
 import {useAppDispatch, useAppSelector} from '@/store/hooks';
 import {toggleLike} from '@/store/slices/postSlice';
-import {getPostComments, toggleCommentVisibility} from "@/store/slices/commentSlice";
-import {useSelector} from "react-redux";
+import {getPostComments, showCreateComment, toggleCommentVisibility} from "@/store/slices/commentSlice";
 import CommentList from '../comment/CommentList';
 import ImageCarousel from '../image/ImageCarousel';
-import {layout, flex, typography, button, ui, cn} from '@/utils/classnames';
+import {layout, flex, typography, button, ui, cn, form} from '@/utils/classnames';
+import AddCommentForm from "@/components/comment/AddCommentForm";
 
 export interface PostCardProps {
   post: Post;
@@ -25,11 +24,17 @@ export default function PostCard({post}: PostCardProps) {
   const liked = post.likedByUser;
   const likeCount = post.like_count;
 
+  const showAddComment = useAppSelector(state => !!state.comment.visibleAddComment.includes(post.id))
+  const temp = useAppSelector(state => state.comment.visibleAddComment)
+
   // Get comments state from Redux
   const {commentsByPostId, loadedPosts, visibleCommentPosts, loading} = useAppSelector(state => state.comment);
+  // Use refreshed comment count if available, fall back to post.comment_count
+  // !!! use '??' (null, undefined) not '||' (0, '', null, undefined)
+  const commentCount = useAppSelector(state => state.comment.commentCountByPostId[post.id] ?? post.comment_count);
+  const {isAuthenticated} = useAppSelector((state: any) => state.auth);
   const showComments = visibleCommentPosts.includes(post.id);
   const comments = commentsByPostId[post.id] || [];
-
 
   const handleLikeToggle = () => {
     dispatch(toggleLike(post.id));
@@ -89,13 +94,13 @@ export default function PostCard({post}: PostCardProps) {
 
           {/* Post Images Carousel */}
           {post.images && post.images.length > 0 && (
-              <div className="w-1/2 mb-4">
-                <ImageCarousel
-                  images={post.images}
-                  altText={post.title}
-                  baseUrl={process.env.NEXT_PUBLIC_S3_BASE_URL || ''}
-                />
-              </div>
+            <div className="w-1/2 mb-4">
+              <ImageCarousel
+                images={post.images}
+                altText={post.title}
+                baseUrl={process.env.NEXT_PUBLIC_S3_BASE_URL || ''}
+              />
+            </div>
           )}
 
           {/* Tags as Buttons */}
@@ -114,75 +119,71 @@ export default function PostCard({post}: PostCardProps) {
           )}
 
           {/* Likes and Comments - Below images */}
-          <div className={cn(flex.row, "space-x-4 mb-4")}>
-            <button
-              onClick={handleLikeToggle}
-              className={cn(flex.row, flex.center, "text-secondary-foreground hover:text-accent")}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className={cn("h-5 w-5 mr-1", liked ? 'text-accent fill-accent' : '')}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+          <div className={cn(flex.row, flex.betweenAtCenter)}>
+            <div className={cn(flex.row, flex.betweenAtCenter, "space-x-4")}>
+              <button
+                onClick={handleLikeToggle}
+                className={cn(flex.row, flex.center, "text-secondary-foreground hover:text-accent")}
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-              </svg>
-              <span>{likeCount}</span>
-            </button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={cn("h-5 w-5 mr-1", liked ? 'text-accent fill-accent' : '')}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+                <span>{likeCount}</span>
+              </button>
 
-            <button
-              onClick={toggleComments}
-              className={cn(flex.row, flex.center, "text-secondary-foreground hover:text-accent")}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+              <button
+                onClick={toggleComments}
+                className={cn(flex.row, flex.center, "text-secondary-foreground hover:text-accent")}
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-              </svg>
-              <span>{post.comment_count}</span>
-            </button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 mr-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                </svg>
+                <span>{commentCount}</span>
+              </button>
+            </div>
+
+            {!showAddComment &&
+              <button
+                className={cn(button.ghost)}
+                onClick={() => dispatch(showCreateComment(post.id))}>
+                Comment
+              </button>}
           </div>
 
-          {/* Add Comment Button */}
-          <div className="pt-4 border-t border-border-color">
-            <Link
-              href={`/post/${post.id}#comment`}
-              className={cn(button.secondary, "w-full", flex.row, flex.center)}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4"/>
-              </svg>
-              Add Comment
-            </Link>
-          </div>
+          {isAuthenticated && showAddComment && (
+            <div className="mb-6">
+              {/* !!! add callback/dispatch to Form to trigger a refresh of comments onSuccess */}
+              <AddCommentForm postId={post.id as string} onSuccess={() => dispatch(getPostComments(post.id))}/>
+            </div>
+          )}
 
           {/* Comments Section - Expandable */}
-          {/* TODO: view all comments link to single post page */}
           {showComments && (
             <div className="mt-4 pt-4 border-t border-border-color">
-              <h3 className={typography.h3}>Comments ({post.comment_count})</h3>
+              <h3 className={typography.h3}>Comments {commentCount}</h3>
               {comments.length > 0 ? (
                 <div className="space-y-4">
                   <CommentList comments={comments} loading={loading}/>
-                  <Link
-                    href={`/post/${post.id}`}
+                  <div
                     className={typography.link + " block text-center"}
+                    onClick={() => toggleComments()}
                   >
-                    View all comments
-                  </Link>
+                    Hide comments
+                  </div>
                 </div>
               ) : (
                 <p className="text-secondary-foreground text-center">

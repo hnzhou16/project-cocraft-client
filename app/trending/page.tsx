@@ -2,19 +2,34 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { fetchPublicFeed } from '../../store/slices/postSlice';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { fetchPublicFeed } from '@/store/slices/postSlice';
 import PostList from '../../components/post/PostList';
-import { PostWithLikeStatus } from '../../types';
+import {FeedFilterKey, PaginationQuery, PostWithLikeStatus} from '@/types';
+import {useSearchParams} from "next/navigation";
 
 export default function TrendingPage() {
   const dispatch = useAppDispatch();
+  const searchParams = useSearchParams();
+
   const { publicFeed, loading, error } = useAppSelector((state: any) => state.post);
   
   const [sortBy, setSortBy] = useState<string>('likes');
-  
+
   useEffect(() => {
-    dispatch(fetchPublicFeed());
+    // TODO: sort is in PostList component which do not work here
+    const sortParam = searchParams.get('sort') ?? 'desc';
+    const sort: "asc" | "desc" = sortParam === 'asc' ? 'asc' : 'desc'
+
+    const payload: PaginationQuery = {
+      limit: 10,
+      offset: 0,
+      sort,
+      following: true,
+      mentioned: true,
+    };
+
+    dispatch(fetchPublicFeed(payload));
   }, [dispatch]);
   
   // Sort posts based on selected criteria

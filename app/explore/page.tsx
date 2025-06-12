@@ -3,9 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { fetchAllUsers } from '../../store/slices/userSlice';
-import { User, Role } from '../../types';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { User, Role } from '@/types';
 
 export default function ExplorePage() {
   const dispatch = useAppDispatch();
@@ -15,7 +14,6 @@ export default function ExplorePage() {
   const [searchTerm, setSearchTerm] = useState<string>('');
   
   useEffect(() => {
-    dispatch(fetchAllUsers());
   }, [dispatch]);
   
   // Filter and search users

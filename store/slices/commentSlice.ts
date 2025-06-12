@@ -5,12 +5,16 @@ import {CommentWithParentAndUser, CreateCommentPayload} from '@/types';
 import {commentService} from '../../services/index';
 
 interface CommentState {
-  // Store comments by postId for easy access
+  // Store comments by postId
   commentsByPostId: Record<string, CommentWithParentAndUser[]>;
+  // Store comments count by postId
+  commentCountByPostId: Record<string, number>;
   // Track which posts have had their comments loaded
   loadedPosts: string[];
   // Track which posts have their comments visible
   visibleCommentPosts: string[];
+  // Track which posts show create comment section
+  visibleAddComment: string[];
   // Selected comment for replying
   selectedComment: CommentWithParentAndUser | null;
   loading: boolean;
@@ -19,23 +23,25 @@ interface CommentState {
 
 const initialState: CommentState = {
   commentsByPostId: {},
+  commentCountByPostId: {},
   loadedPosts: [],
   visibleCommentPosts: [],
+  visibleAddComment: [],
   selectedComment: null,
   loading: false,
   error: null,
 };
 
 export const getPostComments = createAsyncThunk<
-  { postId: string; comments: CommentWithParentAndUser[] },
+  { postId: string; comments: CommentWithParentAndUser[]; commentCount: number },
   string,
   { rejectValue: string }
 >(
   'comment/getPostComments',
   async (postId: string, {rejectWithValue}) => {
     try {
-      const comments = await commentService.getCommentsByPostId(postId);
-      return {postId, comments};
+      const {comments, comment_count} = await commentService.getCommentsByPostId(postId);
+      return {postId, comments, commentCount: comment_count};
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to get post comments');
     }
@@ -96,6 +102,12 @@ const commentSlice = createSlice<CommentState>({
     },
     selectCommentForReply: (state: CommentState, action: PayloadAction<CommentWithParentAndUser | null>) => {
       state.selectedComment = action.payload;
+    },
+    showCreateComment: (state: CommentState, action: PayloadAction<string>) => {
+      const postId = action.payload;
+      if (!state.visibleAddComment.includes(postId)) {
+        state.visibleAddComment.push(postId)
+      }
     }
   },
   extraReducers: (builder) => {
@@ -106,8 +118,8 @@ const commentSlice = createSlice<CommentState>({
         state.error = null;
       })
       .addCase(getPostComments.fulfilled, (state, action) => {
-        const {postId, comments} = action.payload;
-        state.loading = false;
+        const {postId, comments, commentCount} = action.payload;
+        state.commentCountByPostId[postId] = commentCount
         // Sort comments by creation date (newest first)
         const sortedComments = [...comments].sort(
           (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -116,6 +128,7 @@ const commentSlice = createSlice<CommentState>({
         if (!state.loadedPosts.includes(postId)) {
           state.loadedPosts.push(postId);
         }
+        state.loading = false;
       })
       .addCase(getPostComments.rejected, (state, action) => {
         state.loading = false;
@@ -170,6 +183,7 @@ export const {
   clearCommentError,
   clearComments,
   toggleCommentVisibility,
-  selectCommentForReply
+  selectCommentForReply,
+  showCreateComment,
 } = commentSlice.actions;
 export default commentSlice.reducer;

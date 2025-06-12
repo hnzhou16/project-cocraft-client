@@ -7,6 +7,7 @@ import {createPostAction} from "@/app/actions/createPostAction";
 import ImageUploader from "@/components/image/imageUploader";
 import {UploadedImage} from "@/types";
 import imageService from "@/services/imageService";
+import {button, cn, form, typography} from "@/utils/classnames";
 
 const CreatePostForm: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -38,9 +39,7 @@ const CreatePostForm: React.FC = () => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Create a New Post</h2>
-
+    <div className="bg-primary-background rounded-lg shadow-md p-6 w-full mx-auto">
       {state.error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
           <strong className="font-bold">Error: </strong>
@@ -50,27 +49,27 @@ const CreatePostForm: React.FC = () => {
 
       <form action={formAction}>
         <div className="mb-4">
-          <label htmlFor="title" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+          <label htmlFor="title" className="block text-sm font-bold mb-2">
             Title
           </label>
           <input
             type="text"
             name="title"
             id="title"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className={form.input}
             placeholder="Enter post title"
             required
           />
         </div>
 
         <div className="mb-4">
-          <label htmlFor="content" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+          <label htmlFor="content" className="block text-sm font-bold mb-2">
             Content
           </label>
           <textarea
             name="content"
             id="content"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className={form.input}
             placeholder="Enter post content"
             rows={6}
             required
@@ -78,20 +77,20 @@ const CreatePostForm: React.FC = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="tags" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+          <label htmlFor="tags" className="block text-sm font-bold mb-2">
             Tags (comma separated)
           </label>
           <input
             type="text"
             name="tags"
             id="tags"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className={form.input}
             placeholder="art, design, technology"
           />
         </div>
 
         <div className="mb-4">
-          <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+          <label className="block text-sm font-bold mb-2">
             Upload Images
           </label>
           <ImageUploader onUploadComplete={handleUploadComplete}/>
@@ -99,7 +98,7 @@ const CreatePostForm: React.FC = () => {
 
         {images.length > 0 && (
           <div className="mb-4">
-            <p className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Uploaded Images ({images.length})</p>
+            <p className={cn(typography.p2, "font-bold mb-2")}>Uploaded Images ({images.length})</p>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {images.map((img, index) => {
                 const imageUrl = `${process.env.NEXT_PUBLIC_S3_BASE_URL}/${img.key}`;
@@ -109,7 +108,8 @@ const CreatePostForm: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => handleRemoveImage(index)}
-                      className="absolute top-1 right-1 text-white bg-red-600 rounded-full w-6 h-6 text-sm"
+                      className="absolute top-1 right-1 text-white bg-accent rounded-full w-6 h-6 text-sm"
+
                     >
                       ×
                     </button>
@@ -125,9 +125,9 @@ const CreatePostForm: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${
+            className={cn(button.primary, `w-full ${
               loading ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
+            }`)}
           >
             {loading ? 'Creating...' : 'Create Post'}
           </button>

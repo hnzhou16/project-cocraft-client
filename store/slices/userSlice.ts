@@ -1,7 +1,7 @@
 "use client";
 
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { User, FollowStatus } from '../../types';
+import { User, FollowStatus } from '@/types';
 
 // Define the user service interface
 interface UserService {

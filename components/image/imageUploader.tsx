@@ -3,6 +3,7 @@
 import React, {useState} from 'react';
 import imageService from "@/services/imageService";
 import {GenerateImagePayload, UploadedImage} from "@/types";
+import {button, cn, flex} from "@/utils/classnames";
 
 interface Props {
   onUploadComplete: (uploadedImages: UploadedImage[]) => void;
@@ -35,7 +36,6 @@ const ImageUploader: React.FC<Props> = ({onUploadComplete}) => {
 
         const payload: GenerateImagePayload = {extension};
         const {upload_url, s3_key} = await imageService.generateUploadURL(payload);
-        console.log(upload_url)
 
         await imageService.uploadImage(upload_url, file);
 
@@ -53,16 +53,16 @@ const ImageUploader: React.FC<Props> = ({onUploadComplete}) => {
   };
 
   return (
-    <div className="mb-4">
-      <input  className="ml-2 text-white px-3 py-1 rounded" type="file" multiple accept="image/*" onChange={handleFileChange}/>
+    <div className={cn(flex.row, flex.betweenAtCenter, "w-full mb-4")}>
+      <input className="file:w-1/2 file:mr-4 text-primary-foreground rounded" type="file" multiple accept="image/*" onChange={handleFileChange}/>
       <button
         onClick={uploadImages}
         disabled={files.length === 0 || uploading}
-        className="ml-2 bg-blue-500 text-white px-3 py-1 rounded"
+        className={button.primary}
       >
         {uploading ? 'Uploading...' : 'Upload Selected Images'}
       </button>
-      {uploadStatus && <p className="text-sm mt-2">{uploadStatus}</p>}
+      {/*{uploadStatus && <p className="text-sm mt-2">{uploadStatus}</p>}*/}
     </div>
   );
 };

@@ -5,7 +5,7 @@ import {useRouter} from 'next/navigation';
 import Link from 'next/link';
 import {useAppDispatch, useAppSelector} from '@/store/hooks';
 import {loginAction} from "@/app/actions/loginAction";
-import {button, cn, typography} from "@/utils/classnames";
+import {button, cn, form, typography} from "@/utils/classnames";
 
 const LoginForm: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -38,7 +38,7 @@ const LoginForm: React.FC = () => {
             name="email"
             type="email"
             id="email"
-            className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
+            className={form.input}
             placeholder="Enter your email"
             required
           />
@@ -52,7 +52,7 @@ const LoginForm: React.FC = () => {
             name="password"
             type="password"
             id="password"
-            className="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
+            className={form.input}
             placeholder="Enter your password"
             required
           />

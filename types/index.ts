@@ -147,19 +147,11 @@ export interface UpdatePostPayload {
 }
 
 // Comment types
-export interface Comment {
-  id: string;
-  user_id: string;
-  post_id: string;
-  parent_id?: string;
-  content: string;
-  created_at: string;
-}
-
 export interface CommentWithParentAndUser {
   id: string;
   user_id: string;
   username: string;
+  post_id: string;
   content: string;
   created_at: string;
   parent_comment?: ParentComment;
@@ -175,6 +167,11 @@ export interface ParentComment {
 export interface CreateCommentPayload {
   parent_id?: string;
   content: string;
+}
+
+export interface GetCommentsResponse {
+  comments: CommentWithParentAndUser[];
+  comment_count: number;
 }
 
 // Follow types

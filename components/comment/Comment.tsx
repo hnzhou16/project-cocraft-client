@@ -1,7 +1,7 @@
 "use client";
 import {CommentWithParentAndUser} from '@/types';
 import {useAppDispatch, useAppSelector} from '@/store/hooks';
-import {selectCommentForReply} from '@/store/slices/commentSlice';
+import {selectCommentForReply, showCreateComment} from '@/store/slices/commentSlice';
 import {formatDistanceToNow} from 'date-fns';
 import {layout, flex, typography, ui, cn} from '@/utils/classnames';
 
@@ -16,6 +16,7 @@ export default function Comment({comment}: CommentProps) {
 
   const handleReply = () => {
     dispatch(selectCommentForReply(comment));
+    dispatch(showCreateComment(comment.post_id));
   };
 
   return (
@@ -26,10 +27,10 @@ export default function Comment({comment}: CommentProps) {
       {/* Comment Header */}
       <div className={cn(flex.row, "mb-2")}>
         <div className={cn(ui.avatar.base, ui.avatar.sm)}>
-          {comment.username.substring(0, 1).toUpperCase()}
+          {comment.username?.substring(0, 1).toUpperCase()}
         </div>
         <div className="ml-2">
-          <span className="font-medium text-primary">{comment.username}</span>
+          <span className="font-medium text-primary">{comment.username?.split('_').join(' ')}</span>
           <span className="text-xs text-secondary-foreground ml-2">
             {formatDistanceToNow(new Date(comment.created_at), {addSuffix: true})}
           </span>

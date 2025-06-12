@@ -173,7 +173,7 @@ export default function ImageCarousel({images, altText, baseUrl}: ImageCarouselP
                 <img
                   src={`${baseUrl}/${image}`}
                   alt={`${altText} - image ${index + 1}`}
-                  className="w-full h-70 object-cover cursor-pointer"
+                  className="w-full aspect-square object-cover cursor-pointer"
                   onClick={() => openFullscreen(image)}
                 />
               </div>
