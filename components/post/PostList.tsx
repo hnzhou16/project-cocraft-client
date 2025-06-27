@@ -1,37 +1,137 @@
 "use client";
 
-import {useMemo, useState} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import PostCard from './PostCard';
-import {useAppSelector} from "@/store/hooks";
-import {button, cn, layout} from "@/utils/classnames";
+import {useAppDispatch, useAppSelector} from "@/store/hooks";
+import {button, cn, typography} from "@/utils/classnames";
+import {
+  fetchPostsByUserId,
+  fetchPublicFeed,
+  fetchSearchFeed,
+  fetchUserFeed
+} from "@/store/slices/postSlice";
+import {CursorPaginationQuery} from "@/types";
 
-export default function PostList() {
-  const {publicFeed, userFeed, loading, error} = useAppSelector((state: any) => state.post);
-  const posts = userFeed.length > 0 ? userFeed : publicFeed || []; // ensure posts is always an array
+interface PostListProps {
+  feedType: 'public' | 'user' | 'trending' | 'search' | 'userPosts';
+  query?: string; // for search feed
+}
+
+export default function PostList({feedType, query}: PostListProps) {
+  const dispatch = useAppDispatch();
+
+  const {isAuthenticated, user} = useAppSelector((state) => state.auth);
+  const {limit, filterParams} = useAppSelector(state => state.post)
+  // !!! reuse postList for all pages, dynamically load the right feed
+  const feed = useAppSelector((state: any) => state.post[`${feedType}Feed`]);
+  // !!! each feed tracks its own cursor, hasMore, etc.
+  const {posts, cursor, hasMore, loading, error} = feed;
 
   const [sortBy, setSortBy] = useState<'recent' | 'likes' | 'comments'>('recent');
+
+  const observer = useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = useRef(null);
 
   const sortedPosts = useMemo(() => {
     if (!Array.isArray(posts)) return [];
     return [...posts].sort((a, b) => {
-      if (sortBy === 'recent') {
-        return new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime();
-      } else if (sortBy === 'likes') {
-        return b.like_count - a.like_count;
-      } else {
-        return b.comment_count - a.comment_count;
-      }
+      if (sortBy === 'likes') return b.like_count - a.like_count;
+      if (sortBy === 'comments') return b.comment_count - a.comment_count;
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     })
   }, [posts, sortBy])
+
+  // Initial fetch for all routes
+  useEffect(() => {
+    if (feedType === 'search' && !query) return; // don't fire if query not ready
+    if (posts.length > 0) return;
+
+    const payload: CursorPaginationQuery = {
+      ...filterParams, // !!! carry on the filter when fetching more
+      limit,
+      sort: 'desc',
+      ...(query? {search: query} : {}),
+    };
+
+    // !!! only dispatches on infinite scrolling (separate from the ones in FeedFilterBar)
+    // public feed doesn't has infinite scrolling
+    switch (feedType) {
+      case 'public':
+        dispatch(fetchPublicFeed(payload));
+        break;
+      case 'user':
+        dispatch(fetchUserFeed(payload));
+        break;
+      case 'search':
+        dispatch(fetchSearchFeed(payload));
+        break;
+      case 'userPosts':
+        dispatch(fetchPostsByUserId({userId: user.id, pagination: payload}));
+        break;
+    }
+  }, [query]);
+
+  // Infinite scroll observer
+  useEffect(() => {
+    // !!! here may be double fetching (both useEffect in act) if too few posts
+    if (!cursor) return;
+
+    // observe the DOM at the bottom
+    if (!loadMoreRef.current || posts.length == 0) return;
+
+    // update observer
+    if (observer.current) observer.current.disconnect();
+
+    // track when the target element (loadMoreRef.current) enters the viewport
+    observer.current = new IntersectionObserver((entries) => {
+        // console.log('cursor', cursor, 'loading', loading);
+        const entry = entries[0];
+        const isValidCursor = cursor && cursor !== 'undefined';
+
+        // !!! 'hasMore' flags when no more posts to avoid loading errors
+        if (entry.isIntersecting && !loading && hasMore && isValidCursor) {
+          const payload: CursorPaginationQuery = {
+            limit,
+            cursor,
+            sort: 'desc',
+            ...(query ? {search: query} : {}),
+          };
+
+          switch (feedType) {
+            case 'user':
+              dispatch(fetchUserFeed(payload));
+              break;
+            case 'search':
+              dispatch((fetchSearchFeed(payload)));
+              break;
+            case 'userPosts':
+              dispatch(fetchPostsByUserId({userId: user.id, pagination: payload}));
+              break;
+          }
+        }
+      },
+      {
+        rootMargin: '100px', // preload before it's fully visible
+      });
+
+    // observe the moved target
+    if (loadMoreRef.current) {
+      observer.current.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (observer.current) observer.current.disconnect(); // clean up
+    };
+  }, [cursor, loading, hasMore, feedType, posts.length]);
 
   if (loading) {
     return (
       <div className="space-y-4">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="bg-gray-100 dark:bg-gray-800 rounded-lg p-6 animate-pulse">
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-4"></div>
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-2"></div>
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
+          <div key={i} className="bg-secondary-foreground rounded-lg p-6 animate-pulse">
+            <div className="h-4 bg-secondary-foreground rounded w-3/4 mb-4"></div>
+            <div className="h-4 bg-secondary-foreground rounded w-1/2 mb-2"></div>
+            <div className="h-4 bg-secondary-foreground rounded w-1/4"></div>
           </div>
         ))}
       </div>
@@ -41,9 +141,8 @@ export default function PostList() {
   if (error) {
     return (
       <div
-        className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-700 dark:text-red-400">
-        <p>Error: {error}</p>
-        <button className="mt-2 text-sm text-red-600 dark:text-red-400 underline">Try Again</button>
+        className="bg-secondary-background rounded-lg p-6 text-center">
+        <p className={typography.h4}>{error}</p>
       </div>
     );
   }
@@ -51,9 +150,9 @@ export default function PostList() {
   if (!posts || posts.length === 0) {
     return (
       <div
-        className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 text-center">
-        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No posts found</h3>
-        <p className="text-gray-600 dark:text-gray-400">Be the first to create a post!</p>
+        className="bg-secondary-background rounded-lg p-6 text-center">
+        <p className={typography.h4}>No posts found</p>
+        <p className={typography.p1}>Be the first to create a post!</p>
       </div>
     );
   }
@@ -131,11 +230,15 @@ export default function PostList() {
       <div className="space-y-6">
         {sortedPosts && sortedPosts?.map((post) => (
           <PostCard
-            key={post.id}
+            key={`${feedType}-${post.id}`}
+            feedType={feedType}
             post={post}
-            isLiked={post.liked_by_user}
           />
         ))}
+        {!hasMore && <p
+          className={cn(typography.p1, "text-center")}>{isAuthenticated
+          ? "No more posts to load." : "Please log in to see more posts."}</p>}
+        <div ref={loadMoreRef} className="h-10 bg-red-200 mt-10"></div>
       </div>
     </div>
   );

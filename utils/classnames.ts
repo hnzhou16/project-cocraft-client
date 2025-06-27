@@ -15,6 +15,7 @@ export function cn(...classes: (string | boolean | undefined | null)[]): string 
  * Layout related class names
  */
 export const layout = {
+  main: 'bg-card-background rounded-lg shadow-md p-6 mb-6',
   container: 'container mx-auto px-4',
   section: 'py-6 md:py-8',
   card: 'card',

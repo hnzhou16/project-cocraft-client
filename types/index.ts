@@ -74,6 +74,17 @@ export interface PaginationQuery {
   roles?: Role[];
 }
 
+export interface CursorPaginationQuery {
+  limit?: number;
+  cursor?: string;
+  sort?: "asc" | "desc";
+  following?: boolean;
+  mentioned?: boolean;
+  roles?: Role[];
+  search?: string;
+  reset?: boolean;
+}
+
 // Authentication types
 export interface RegisterPayload {
   username: string;
@@ -116,6 +127,13 @@ export interface PostWithLikeStatus {
   post: Post;
   username: string;
   liked_by_user: boolean;
+}
+
+export interface FeedResponse {
+  posts: Post[];
+  next_cursor: string;
+  reset: boolean;
+  filter: CursorPaginationQuery;
 }
 
 export interface GenerateImagePayload {

@@ -1,10 +1,10 @@
 import { apiCall } from '@/utils/apiUtils';
-import { 
-  CreatePostPayload, 
-  Post, 
-  PostWithLikeStatus, 
+import {
+  CreatePostPayload,
+  Post,
+  PostWithLikeStatus,
   UpdatePostPayload,
-  PaginationQuery
+  CursorPaginationQuery
 } from '@/types';
 
 export const postService = {
@@ -14,23 +14,23 @@ export const postService = {
   },
 
   // Get public feed
-  getPublicFeed: async (pagination?: PaginationQuery): Promise<PostWithLikeStatus[]> => {
+  getPublicFeed: async (pagination?: CursorPaginationQuery): Promise<PostWithLikeStatus[]> => {
     return apiCall<PostWithLikeStatus[]>('GET', '/feed/public', undefined, pagination as Record<string, string>);
   },
 
   // Get user feed (following, mentions, etc.)
-  getUserFeed: async (pagination?: PaginationQuery): Promise<PostWithLikeStatus[]> => {
-    return apiCall<PostWithLikeStatus[]>('GET', '/feed', undefined, pagination as Record<string, string>);
-  },
-
-  // Get a post by ID
-  getPostById: async (postId: string): Promise<Post> => {
-    return apiCall<Post>('GET', `/post/${postId}`);
+  getUserFeed: async (pagination?: CursorPaginationQuery): Promise<PostWithLikeStatus[]> => {
+    return apiCall<PostWithLikeStatus[]>('GET', '/feed/user', undefined, pagination as Record<string, string>);
   },
 
   // Get all posts by a user
-  getPostsByUserId: async (userId: string, pagination?: PaginationQuery): Promise<PostWithLikeStatus[]> => {
+  getPostsByUserId: async (userId: string, pagination?: CursorPaginationQuery): Promise<PostWithLikeStatus[]> => {
     return apiCall<PostWithLikeStatus[]>('GET', `/post/user/${userId}`, undefined, pagination as Record<string, string>);
+  },
+
+  // Search Posts
+  searchPosts: async (pagination?: CursorPaginationQuery): Promise<PostWithLikeStatus[]> => {
+    return apiCall<PostWithLikeStatus[]>('GET', '/feed/search', undefined, pagination as Record<string, string>);
   },
 
   // Update a post

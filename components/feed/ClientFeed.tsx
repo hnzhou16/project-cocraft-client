@@ -2,15 +2,21 @@
 
 import PostList from '../post/PostList';
 import FeedFilterBar from './FeedFilterBar';
+import {useEffect} from "react";
 
-export default function ClientFeed() {
+// !!! dynamically Set feedType in ClientFeed, so it can pass the correct feedType to FeedFilterBar and PostList
+interface ClientFeedProps {
+  feedType: 'public' | 'user' | 'search' | 'userPosts';
+  query?: string; // for search feed
+  showFilter?: boolean; // show FeedFilterBar
+}
+export default function ClientFeed({feedType, query, showFilter=true, userId}: ClientFeedProps) {
 
-  // TODO: optimize FeedFilter and PostList layout
   return (
     <div>
-      <FeedFilterBar />
+      {showFilter && <FeedFilterBar feedType={feedType} query={query} usrId={userId} />}
       <div className="mt-4">
-        <PostList/>
+        <PostList feedType={feedType} query={query} usrId={userId} />
       </div>
     </div>
   );

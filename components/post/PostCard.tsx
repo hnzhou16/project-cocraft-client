@@ -13,7 +13,6 @@ import AddCommentForm from "@/components/comment/AddCommentForm";
 
 export interface PostCardProps {
   post: Post;
-  isLiked?: boolean;
 }
 
 export default function PostCard({post}: PostCardProps) {
@@ -81,11 +80,9 @@ export default function PostCard({post}: PostCardProps) {
           </div>
 
           {/* Post Title */}
-          <Link href={`/post/${post.id}`}>
-            <h2 className={cn(typography.h2, "hover:text-accent")}>
-              {post.title}
-            </h2>
-          </Link>
+          <h2 className={cn(typography.h2, "hover:text-accent")}>
+            {post.title}
+          </h2>
 
           {/* Post Content */}
           <p className={cn(typography.p1, "mb-4")}>
@@ -103,6 +100,7 @@ export default function PostCard({post}: PostCardProps) {
             </div>
           )}
 
+          {/* TODO: tags to search*/}
           {/* Tags as Buttons */}
           {post.tags && post.tags.length > 0 && (
             <div className={cn(flex.row, flex.wrap, "gap-2 mb-4")}>

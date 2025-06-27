@@ -2,48 +2,72 @@
 
 import {useEffect, useState} from 'react';
 import {useRouter, useSearchParams} from "next/navigation";
-import {FeedFilterKey, INITIAL_FEED_FILTER_STATE, PaginationQuery, PUBLIC_ROLES, Role} from "@/types";
-import {fetchPublicFeed, fetchUserFeed} from "@/store/slices/postSlice";
+import {
+  CursorPaginationQuery,
+  FeedFilterKey,
+  INITIAL_FEED_FILTER_STATE,
+  PUBLIC_ROLES,
+  Role
+} from "@/types";
+import {fetchPublicFeed, fetchSearchFeed, fetchUserFeed} from "@/store/slices/postSlice";
 import {useAppDispatch, useAppSelector} from "@/store/hooks";
 import {button, cn, flex} from "@/utils/classnames";
 
 interface FeedFilterBarProps {
+  feedType: "public" | "user" | "trending" | "search" | "userPosts";
+  query?: string;
   className?: string;
 }
 
-export default function FeedFilterBar({className = ''}: FeedFilterBarProps) {
+export default function FeedFilterBar({feedType, query, className = ''}: FeedFilterBarProps) {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const searchParams = useSearchParams();
   // useSearchParams is a static function, can not use it in useEffect, roles in useEffect won't change even if url changes
+  const searchParams = useSearchParams();
 
-  const {isAuthenticated} = useAppSelector((state: any) => state.auth);
+  const {isAuthenticated} = useAppSelector(state => state.auth);
+  const {limit, cursor} = useAppSelector(state => state.post);
 
-  const [limit] = useState(10); // fixed for now
-  const [offset, setOffset] = useState(0);
   const [feedFilter, setFeedFilter] = useState(INITIAL_FEED_FILTER_STATE);
   const [rolesFilter, setRolesFilter] = useState<Role[]>([]);
 
   useEffect(() => {
-    // TODO: sort is in PostList component which do not work here
-    const sortParam = searchParams.get('sort') ?? 'desc';
-    const sort: "asc" | "desc" = sortParam === 'asc' ? 'asc' : 'desc'
+    const currentPath = window.location.pathname;
+    const hasParams = Array.from(searchParams.entries()).length > 0;
 
-    const payload: PaginationQuery = {
+    // !!! clear query parameters if any ONLY for homepage
+    // !!! otherwise it'll clear all searching results on the searching page
+    if (hasParams && currentPath === '/') {
+      // replace the current URL with no query string (no reload)
+      router.replace(window.location.pathname);
+    }
+  }, []);
+
+  useEffect(() => {
+    const payload: CursorPaginationQuery = {
       limit,
-      offset,
-      sort,
+      cursor,
+      sort: 'desc',
       following: feedFilter[FeedFilterKey.Following],
       mentioned: feedFilter[FeedFilterKey.Mentioned],
       ...(rolesFilter && rolesFilter.length > 0 ? {roles: rolesFilter} : {}), // avoid roles being 'undefined'
+      ...(query ? {search: query} : {}),
+    reset: true, // !!! reset the posts if filter changes
     };
 
-    if (!isAuthenticated) {
-      dispatch(fetchPublicFeed(payload));
-    } else {
-      dispatch(fetchUserFeed(payload));
+    // !!! fetch feed here is NOT dependent on cursor, this is only for filter criteria changes
+    switch (feedType) {
+      case "public":
+        dispatch(fetchPublicFeed(payload));
+        break;
+      case "user":
+        dispatch(fetchUserFeed(payload));
+        break;
+      case "search":
+        dispatch(fetchSearchFeed(payload));
+        break;
     }
-  }, [isAuthenticated, searchParams, limit, offset, feedFilter, rolesFilter]);
+  }, [isAuthenticated, searchParams, feedFilter, rolesFilter, feedType, query]);
 
   const updateParams = (params: Record<string, string | null | undefined>) => {
     const current = new URLSearchParams(searchParams.toString());

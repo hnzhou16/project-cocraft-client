@@ -1,9 +1,15 @@
-import {Suspense} from 'react';
-import Link from 'next/link';
+"use client"
+
+import React, {Suspense} from 'react';
 import ClientFeed from '../components/feed/ClientFeed';
-import {button, cn, flex, typography} from "@/utils/classnames";
+import {button, cn, flex, layout, typography} from "@/utils/classnames";
+import {useAppSelector} from "@/store/hooks";
 
 export default function Home() {
+  const {isAuthenticated} = useAppSelector((state) => state.auth);
+
+  const feedType = isAuthenticated ? "user" : "public";
+
   return (
     <div className="container mx-auto px-4 pb-8">
       {/* Welcome Card */}
@@ -16,11 +22,13 @@ export default function Home() {
       </div>
 
       {/* Main Content */}
-      <div className="bg-card-background rounded-lg shadow-md p-6 mb-6">
-        <p className={cn(typography.h2, "mb_6")}>Public Feed</p>
+      <div className={layout.main}>
+        <p className={cn(typography.h2, "mb_6")}>{isAuthenticated ? "User Feed" : "Public Feed"}</p>
 
-        <Suspense fallback={<div className="animate-pulse h-96 bg-gray-200 rounded-lg"></div>}>
-          <ClientFeed/>
+        {/* React.Suspense is a built-in component that allows you to pause rendering while waiting for something
+        typically a lazy-loaded component or async data, a fallback element displays while waiting.*/}
+        <Suspense fallback={<div className="animate-pulse h-96 bg-gray-200 rounded-lg"></div> as React.ReactNode}>
+          <ClientFeed feedType={feedType}/>
         </Suspense>
       </div>
     </div>

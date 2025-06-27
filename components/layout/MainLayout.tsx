@@ -67,8 +67,11 @@ export default function MainLayout({children}: MainLayoutProps) {
   // Handle search submission
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+    const trimmed = searchQuery?.trim();
+    if (trimmed) {
+      router.push(`/search?q=${encodeURIComponent(trimmed)}`);
+    } else {
+      router.push('/');
     }
   };
 
@@ -200,26 +203,13 @@ export default function MainLayout({children}: MainLayoutProps) {
                   Home
                 </Link>
                 <Link
-                  href="/explore"
-                  className={cn(isActive('/explore') ? nav.linkActive : nav.link)}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Explore
-                </Link>
-                <Link
                   href="/trending"
                   className={cn(isActive('/trending') ? nav.linkActive : nav.link)}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Trending
                 </Link>
-                <Link
-                  href="/categories"
-                  className={cn(isActive('/categories') ? nav.linkActive : nav.link)}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Categories
-                </Link>
+
                 {isAuthenticated && (
                   <>
                     <Link
@@ -342,24 +332,7 @@ export default function MainLayout({children}: MainLayoutProps) {
               >
                 <span>Home</span>
               </Link>
-              <Link
-                href="/explore"
-                className={cn(isActive('/explore') ? nav.linkActive : nav.link)}
-              >
-                <span>Explore</span>
-              </Link>
-              <Link
-                href="/trending"
-                className={cn(isActive('/trending') ? nav.linkActive : nav.link)}
-              >
-                <span>Trending</span>
-              </Link>
-              <Link
-                href="/categories"
-                className={cn(isActive('/categories') ? nav.linkActive : nav.link)}
-              >
-                <span>Categories</span>
-              </Link>
+
               {isAuthenticated && (
                 <>
                   <Link
@@ -402,9 +375,7 @@ export default function MainLayout({children}: MainLayoutProps) {
                   <h3 className={typography.h3}>Navigation</h3>
                   <ul className="space-y-2">
                     <li><Link href="/" className={typography.link}>Home</Link></li>
-                    <li><Link href="/explore" className={typography.link}>Explore</Link></li>
                     <li><Link href="/trending" className={typography.link}>Trending</Link></li>
-                    <li><Link href="/categories" className={typography.link}>Categories</Link></li>
                   </ul>
                 </div>
                 <div>
