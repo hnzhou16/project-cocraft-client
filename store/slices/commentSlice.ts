@@ -2,7 +2,7 @@
 
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
 import {CommentWithParentAndUser, CreateCommentPayload} from '@/types';
-import {commentService} from '../../services/index';
+import {commentService} from "@/services";
 
 interface CommentState {
   // Store comments by postId

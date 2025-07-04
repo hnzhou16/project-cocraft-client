@@ -6,7 +6,7 @@ import {
   UpdatePostPayload,
   CursorPaginationQuery, FeedResponse
 } from '@/types';
-import {postService} from "../../services/index";
+import {postService} from "@/services";
 
 interface FeedSlice {
   posts: Post[];
@@ -26,6 +26,7 @@ interface PostState {
   // Global
   limit: number;
   currentPost: Post | null;
+  selectedUserId: string | null;
   globalLoading: boolean;
   globalError: string | null;
   filterParams: CursorPaginationQuery;
@@ -47,6 +48,7 @@ const initialState: PostState = {
 
   limit: 5, // TODO: change pagination limit
   currentPost: null,
+  selectedUserId: null,
   globalLoading: false,
   globalError: null,
   filterParams: {},
@@ -297,17 +299,22 @@ const postSlice = createSlice<PostState>({
         state.userPostsFeed.error = null;
       })
       .addCase(fetchPostsByUserId.fulfilled, (state, action: PayloadAction<FeedResponse>) => {
-        const {posts, nextCursor} = action.payload;
+        const {posts, nextCursor, userId} = action.payload;
+        // rewrite userPostsFeed if hop on a new user profile page
+        if (userId !== state.selectedUserId) {
+          state.userPostsFeed.posts = posts;
+        }
 
-        if (posts && posts.length > 0) {
+        if (userId === state.selectedUserId && posts && posts.length > 0) {
           // !!! avoid duplicate fetching
           const existingIds = new Set(state.userPostsFeed.posts.map(p => p.id));
           const uniquePosts = posts.filter(p => !existingIds.has(p.id));
 
           state.userPostsFeed.posts = [...state.userPostsFeed.posts, ...uniquePosts];
         }
-        state.userFeed.cursor = nextCursor;
-        state.userFeed.hasMore = !!nextCursor;
+
+        state.userPostsFeed.cursor = nextCursor;
+        state.userPostsFeed.hasMore = !!nextCursor;
         state.userPostsFeed.loading = false;
       })
       .addCase(fetchPostsByUserId.rejected, (state, action) => {

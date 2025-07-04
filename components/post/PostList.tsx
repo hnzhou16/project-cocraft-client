@@ -15,9 +15,10 @@ import {CursorPaginationQuery} from "@/types";
 interface PostListProps {
   feedType: 'public' | 'user' | 'trending' | 'search' | 'userPosts';
   query?: string; // for search feed
+  userId?: string; // for user profile
 }
 
-export default function PostList({feedType, query}: PostListProps) {
+export default function PostList({feedType, query, userId}: PostListProps) {
   const dispatch = useAppDispatch();
 
   const {isAuthenticated, user} = useAppSelector((state) => state.auth);
@@ -44,7 +45,6 @@ export default function PostList({feedType, query}: PostListProps) {
   // Initial fetch for all routes
   useEffect(() => {
     if (feedType === 'search' && !query) return; // don't fire if query not ready
-    if (posts.length > 0) return;
 
     const payload: CursorPaginationQuery = {
       ...filterParams, // !!! carry on the filter when fetching more
@@ -66,10 +66,10 @@ export default function PostList({feedType, query}: PostListProps) {
         dispatch(fetchSearchFeed(payload));
         break;
       case 'userPosts':
-        dispatch(fetchPostsByUserId({userId: user.id, pagination: payload}));
+        dispatch(fetchPostsByUserId({userId: userId, pagination: payload}));
         break;
     }
-  }, [query]);
+  }, [query, userId]);
 
   // Infinite scroll observer
   useEffect(() => {
@@ -105,7 +105,7 @@ export default function PostList({feedType, query}: PostListProps) {
               dispatch((fetchSearchFeed(payload)));
               break;
             case 'userPosts':
-              dispatch(fetchPostsByUserId({userId: user.id, pagination: payload}));
+              dispatch(fetchPostsByUserId({userId: userId, pagination: payload}));
               break;
           }
         }

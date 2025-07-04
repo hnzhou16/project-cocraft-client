@@ -2,7 +2,7 @@
 
 import React, {useActionState, useEffect, useState} from 'react';
 import {useRouter} from "next/navigation";
-import {useAppDispatch, useAppSelector} from '@/store/hooks';
+import {useAppSelector} from '@/store/hooks';
 import {createPostAction} from "@/app/actions/createPostAction";
 import ImageUploader from "@/components/image/imageUploader";
 import {UploadedImage} from "@/types";
@@ -10,7 +10,6 @@ import imageService from "@/services/imageService";
 import {button, cn, form, typography} from "@/utils/classnames";
 
 const CreatePostForm: React.FC = () => {
-  const dispatch = useAppDispatch();
   const router = useRouter()
   const {loading} = useAppSelector((state: any) => state.post);
   const [state, formAction] = useActionState(createPostAction, {error: '', success: false})

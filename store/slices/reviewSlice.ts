@@ -1,46 +1,8 @@
 "use client";
 
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Review, CreateReviewPayload } from '../../types';
-
-// Define the review service interface
-interface ReviewService {
-  getUserReviews: (userId: string) => Promise<Review[]>;
-  createReview: (reviewData: CreateReviewPayload) => Promise<Review>;
-  deleteReview: (reviewId: string) => Promise<void>;
-}
-
-// Temporary mock implementation
-const reviewService: ReviewService = {
-  getUserReviews: async (userId: string) => {
-    // This would be replaced with actual API call
-    return Array(3).fill(0).map((_, index) => ({
-      id: (index + 1).toString(),
-      rated_user_id: userId,
-      rater_id: Math.floor(Math.random() * 5 + 1).toString(),
-      rater_username: `user${Math.floor(Math.random() * 5 + 1)}`,
-      score: Math.floor(Math.random() * 5 + 1),
-      comment: `This is review ${index + 1} for user ${userId}`,
-      created_at: new Date(Date.now() - Math.random() * 10000000).toISOString(),
-    }));
-  },
-  createReview: async (reviewData: CreateReviewPayload) => {
-    // This would be replaced with actual API call
-    return {
-      id: Math.random().toString(36).substring(7),
-      rated_user_id: reviewData.rated_user_id,
-      rater_id: '1',
-      rater_username: 'Current User',
-      score: reviewData.score,
-      comment: reviewData.comment,
-      created_at: new Date().toISOString(),
-    };
-  },
-  deleteReview: async (reviewId: string) => {
-    // This would be replaced with actual API call
-    return;
-  }
-};
+import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
+import {Review, CreateReviewPayload} from '@/types';
+import {reviewService} from "@/services";
 
 interface ReviewState {
   reviews: Review[];
@@ -54,9 +16,9 @@ const initialState: ReviewState = {
   error: null,
 };
 
-export const getUserReviews = createAsyncThunk<Review[], string, {rejectValue: string}>(
-  'review/getUserReviews',
-  async (userId: string, { rejectWithValue }) => {
+export const fetchUserReviews = createAsyncThunk<Review[], string, { rejectValue: string }>(
+  'review/fetchUserReviews',
+  async (userId: string, {rejectWithValue}) => {
     try {
       const response = await reviewService.getUserReviews(userId);
       return response;
@@ -66,9 +28,9 @@ export const getUserReviews = createAsyncThunk<Review[], string, {rejectValue: s
   }
 );
 
-export const createReview = createAsyncThunk<Review, CreateReviewPayload, {rejectValue: string}>(
+export const createReview = createAsyncThunk<Review, CreateReviewPayload, { rejectValue: string }>(
   'review/createReview',
-  async (reviewData: CreateReviewPayload, { rejectWithValue }) => {
+  async (reviewData: CreateReviewPayload, {rejectWithValue}) => {
     try {
       const response = await reviewService.createReview(reviewData);
       return response;
@@ -78,11 +40,11 @@ export const createReview = createAsyncThunk<Review, CreateReviewPayload, {rejec
   }
 );
 
-export const deleteReview = createAsyncThunk<string, string, {rejectValue: string}>(
+export const deleteReview = createAsyncThunk<string, {reviewId: string, ratedUserId: string}, { rejectValue: string }>(
   'review/deleteReview',
-  async (reviewId: string, { rejectWithValue }) => {
+  async ({reviewId, ratedUserId}, {rejectWithValue}) => {
     try {
-      await reviewService.deleteReview(reviewId);
+      await reviewService.deleteReview(reviewId, ratedUserId);
       return reviewId;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to delete review');
@@ -104,15 +66,16 @@ const reviewSlice = createSlice<ReviewState>({
   extraReducers: (builder) => {
     builder
       // Get User Reviews
-      .addCase(getUserReviews.pending, (state) => {
+      .addCase(fetchUserReviews.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getUserReviews.fulfilled, (state, action: PayloadAction<Review[]>) => {
+      .addCase(fetchUserReviews.fulfilled, (state, action: PayloadAction<Review[]>) => {
+        console.log(action.payload)
         state.loading = false;
         state.reviews = action.payload;
       })
-      .addCase(getUserReviews.rejected, (state, action) => {
+      .addCase(fetchUserReviews.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
@@ -145,5 +108,5 @@ const reviewSlice = createSlice<ReviewState>({
   },
 });
 
-export const { clearReviewError, clearReviews } = reviewSlice.actions;
+export const {clearReviewError, clearReviews} = reviewSlice.actions;
 export default reviewSlice.reducer;

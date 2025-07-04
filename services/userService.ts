@@ -1,10 +1,11 @@
-import { apiCall } from '../utils/apiUtils';
-import { FollowStatus, User } from '../types';
+import { apiCall } from '@/utils/apiUtils';
+import {FollowStatus, User, UserWithStats} from '@/types';
+import authService from "@/services/authService";
 
-export const userService = {
+const userService = {
   // Get user by ID
-  getUserById: async (userId: string): Promise<User> => {
-    return apiCall<User>('GET', `/user/${userId}`);
+  getUserById: async (userId: string): Promise<UserWithStats> => {
+    return apiCall<UserWithStats>('GET', `/user/${userId}/profile`);
   },
 
   // Get all users (admin only)

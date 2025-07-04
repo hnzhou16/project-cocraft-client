@@ -137,7 +137,7 @@ export const ui = {
     base: 'rounded-full aspect-square flex items-center justify-center border-2 bg-secondary-background text-accent font-medium overflow-hidden hover:cursor-pointer',
     sm: 'h-8 w-8 text-xs',
     md: 'h-10 w-10 text-base',
-    lg: 'h-12 w-12 text-lg',
+    lg: 'h-20 w-20 text-3xl',
   },
   badge: {
     base: 'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',

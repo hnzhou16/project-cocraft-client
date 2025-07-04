@@ -132,8 +132,9 @@ export interface PostWithLikeStatus {
 export interface FeedResponse {
   posts: Post[];
   next_cursor: string;
-  reset: boolean;
-  filter: CursorPaginationQuery;
+  selectedUserId?: string;
+  reset?: boolean;
+  filter?: CursorPaginationQuery;
 }
 
 export interface GenerateImagePayload {

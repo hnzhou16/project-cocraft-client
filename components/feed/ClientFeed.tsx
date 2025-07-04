@@ -9,14 +9,14 @@ interface ClientFeedProps {
   feedType: 'public' | 'user' | 'search' | 'userPosts';
   query?: string; // for search feed
   showFilter?: boolean; // show FeedFilterBar
+  userId?: string; // for user profile
 }
 export default function ClientFeed({feedType, query, showFilter=true, userId}: ClientFeedProps) {
-
   return (
     <div>
       {showFilter && <FeedFilterBar feedType={feedType} query={query} usrId={userId} />}
       <div className="mt-4">
-        <PostList feedType={feedType} query={query} usrId={userId} />
+        <PostList feedType={feedType} query={query} userId={userId} />
       </div>
     </div>
   );
