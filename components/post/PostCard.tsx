@@ -1,6 +1,5 @@
 "use client";
 
-import {useState, useEffect} from 'react';
 import Link from 'next/link';
 import {Post} from '@/types';
 import {useAppDispatch, useAppSelector} from '@/store/hooks';
@@ -8,7 +7,7 @@ import {toggleLike} from '@/store/slices/postSlice';
 import {getPostComments, showCreateComment, toggleCommentVisibility} from "@/store/slices/commentSlice";
 import CommentList from '../comment/CommentList';
 import ImageCarousel from '../image/ImageCarousel';
-import {layout, flex, typography, button, ui, cn, form} from '@/utils/classnames';
+import {typography, button, ui, cn, form} from '@/utils/classnames';
 import AddCommentForm from "@/components/comment/AddCommentForm";
 
 export interface PostCardProps {
@@ -64,7 +63,7 @@ export default function PostCard({post}: PostCardProps) {
       <div className="card overflow-hidden">
         <div className="p-4">
           {/* User Info */}
-          <div className={cn(flex.row, "mb-4")}>
+          <div className="flex flex-row mb-4">
             <div className={cn(ui.avatar.base, ui.avatar.md)}>
               {post.username.charAt(0).toUpperCase()}
             </div>
@@ -86,7 +85,7 @@ export default function PostCard({post}: PostCardProps) {
 
           {/* Post Content */}
           <p className={cn(typography.p1, "mb-4")}>
-            {post.content.length > 200 ? `${post.content.substring(0, 200)}...` : post.content}
+            {post.content}
           </p>
 
           {/* Post Images Carousel */}
@@ -100,14 +99,13 @@ export default function PostCard({post}: PostCardProps) {
             </div>
           )}
 
-          {/* TODO: tags to search*/}
           {/* Tags as Buttons */}
           {post.tags && post.tags.length > 0 && (
-            <div className={cn(flex.row, flex.wrap, "gap-2 mb-4")}>
+            <div className="flex flex-row flex-wrap gap-2 mb-4">
               {post.tags.map(tag => (
                 <Link
                   key={tag}
-                  href={`/categories?tag=${tag}`}
+                  href={`/search?q=${tag}`}
                   className={ui.tag}
                 >
                   #{tag}
@@ -117,11 +115,11 @@ export default function PostCard({post}: PostCardProps) {
           )}
 
           {/* Likes and Comments - Below images */}
-          <div className={cn(flex.row, flex.betweenAtCenter)}>
-            <div className={cn(flex.row, flex.betweenAtCenter, "space-x-4")}>
+          <div className="flex flex-row items-center justify-between">
+            <div className="flex flex-row items-center justify-between space-x-4">
               <button
                 onClick={handleLikeToggle}
-                className={cn(flex.row, flex.center, "text-secondary-foreground hover:text-accent")}
+                className="flex flex-row items-center justify-center text-secondary-foreground hover:text-accent"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -138,7 +136,7 @@ export default function PostCard({post}: PostCardProps) {
 
               <button
                 onClick={toggleComments}
-                className={cn(flex.row, flex.center, "text-secondary-foreground hover:text-accent")}
+                className="flex flex-row items-center justify-betweentext-secondary-foreground hover:text-accent"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

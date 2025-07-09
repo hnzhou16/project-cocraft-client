@@ -4,6 +4,7 @@ import {ApiResponse, LoginPayload, RegisterPayload, User, UserWithStats} from '@
 const authService = {
   // TODO: Register a new user
   register: async (userData: RegisterPayload): Promise<ApiResponse> => {
+    console.log(userData)
     return apiCall<ApiResponse>('POST', '/authentication/user', userData);
   },
 

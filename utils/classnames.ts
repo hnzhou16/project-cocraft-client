@@ -29,14 +29,15 @@ export const layout = {
  */
 export const typography = {
   logo: "text-xl font-bold text-accent",
-  h1: 'text-3xl font-bold text-primary mb-4',
-  h2: 'text-2xl font-bold text-primary mb-3',
-  h3: 'text-xl font-bold text-primary mb-2',
-  h4: 'text-lg font-semibold text-primary mb-1',
+  h1: 'text-3xl font-bold text-primary-foreground mb-4',
+  h2: 'text-2xl font-bold text-primary-foreground mb-3',
+  h3: 'text-xl font-bold text-primary-foreground mb-2',
+  h4: 'text-lg font-semibold text-primary-foreground mb-1',
   p1: 'text-primary text-primary-foreground mb-4',
   p2: 'text-sm text-secondary-foreground',
   p3: 'text-xs text-secondary-foreground',
   link: 'text-accent hover:text-accent-hover underline hover:cursor-pointer',
+  error: 'text-sm text-red-500 italic',
 };
 
 /**
@@ -45,13 +46,14 @@ export const typography = {
 export const form = {
   container: 'space-y-4',
   group: 'space-y-2',
-  label: 'block text-sm font-medium text-primary',
+  label: 'block text-sm font-medium text-primary mb-2',
   input: 'input w-full',
+  error: 'input w-full border border-red-500',
   textarea: 'input w-full min-h-[50px]',
   select: 'input w-full appearance-none pr-8',
+  option: 'input w-full hover:hover:bg-secondary-background',
   checkbox: 'h-4 w-4 rounded border-input-border text-accent focus:ring-accent',
   radio: 'h-4 w-4 border-input-border text-accent focus:ring-accent',
-  error: 'text-sm text-red-500 mt-1',
   hint: 'text-xs text-secondary-foreground mt-1',
 };
 
@@ -80,43 +82,6 @@ export const button = {
     lg: 'text-base px-5 py-2.5',
     xl: 'text-lg px-6 py-3',
   },
-};
-
-
-
-/**
- * Flex layout class names
- */
-export const flex = {
-  row: 'flex flex-row',
-  col: 'flex flex-col',
-  center: 'items-center justify-center',
-  betweenAtStart: 'items-start justify-between',
-  betweenAtCenter: 'items-center justify-between',
-  start: 'items-start', // TODO: consider remove flex settings
-  end: 'items-end',
-  wrap: 'flex-wrap',
-  gap1: 'gap-1',
-  gap2: 'gap-2',
-  gap3: 'gap-3',
-  gap4: 'gap-4',
-  gap6: 'gap-6',
-  gap8: 'gap-8',
-};
-
-/**
- * Grid layout class names
- */
-export const grid = {
-  base: 'grid',
-  cols1: 'grid-cols-1',
-  cols2: 'grid-cols-1 md:grid-cols-2',
-  cols3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
-  cols4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
-  gap2: 'gap-2',
-  gap4: 'gap-4',
-  gap6: 'gap-6',
-  gap8: 'gap-8',
 };
 
 /**

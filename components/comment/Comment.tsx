@@ -3,7 +3,7 @@ import {CommentWithParentAndUser} from '@/types';
 import {useAppDispatch, useAppSelector} from '@/store/hooks';
 import {selectCommentForReply, showCreateComment} from '@/store/slices/commentSlice';
 import {formatDistanceToNow} from 'date-fns';
-import {layout, flex, typography, ui, cn} from '@/utils/classnames';
+import {typography, ui, cn} from '@/utils/classnames';
 
 interface CommentProps {
   comment: CommentWithParentAndUser;
@@ -25,7 +25,7 @@ export default function Comment({comment}: CommentProps) {
       isSelected ? 'border-2 border-accent' : ''
     )}>
       {/* Comment Header */}
-      <div className={cn(flex.row, "mb-2")}>
+      <div className="flex flex-row mb-2">
         <div className={cn(ui.avatar.base, ui.avatar.sm)}>
           {comment.username?.substring(0, 1).toUpperCase()}
         </div>
@@ -51,10 +51,10 @@ export default function Comment({comment}: CommentProps) {
       <p className={typography.p1}>{comment.content}</p>
 
       {/* Comment Actions */}
-      <div className={cn(flex.row, flex.end, "mt-2")}>
+      <div className="flex flex-row items-end mt-2">
         <button
           onClick={handleReply}
-          className={cn(flex.row, flex.center, "text-sm text-accent hover:text-accent-hover")}
+          className="flex flex-row items-center justify-center text-sm text-accent hover:text-accent-hover"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
                stroke="currentColor">

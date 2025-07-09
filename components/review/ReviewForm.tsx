@@ -14,6 +14,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ratedUserId, onSuccess}) => {
   const {loading, error} = useAppSelector((state: any) => state.review);
 
   const [score, setScore] = useState<number>(5);
+  const [hovered, setHovered] = useState<number | null>(null); // temporary hover state
   const [comment, setComment] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -38,7 +39,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ratedUserId, onSuccess}) => {
   };
 
   return (
-    <div className="bg-background rounded-lg shadow-md p-6 mb-6">
+    <div className="bg-background rounded-lg shadow-md p-6">
       <p className={typography.h3}>Leave a Review</p>
 
       {error && (
@@ -58,17 +59,19 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ratedUserId, onSuccess}) => {
               <button
                 key={value}
                 type="button"
-                onClick={() => setScore(value)}
+                onMouseEnter={() => setHovered(value)}
+                onMouseLeave={() => setHovered(null)}
+                onClick={() => setScore(value)} // keep click to confirm selection
                 className="text-2xl focus:outline-none"
               >
-                <span className={value <= score ? 'text-accent' : 'text-secondary-background'}>★</span>
+                <span className={value <= (hovered ?? score) ? 'text-accent' : 'text-secondary-background'}>★</span>
               </button>
             ))}
-            <span className="ml-2 text-primary-foreground">{score} out of 5</span>
+            <span className="ml-2 text-primary-foreground">{hovered ?? score} out of 5</span>
           </div>
         </div>
 
-        <div className="mb-4">
+        <div className="">
           <label htmlFor="comment" className="block text-primary-foreground text-sm font-bold mb-2">
             Comment
           </label>

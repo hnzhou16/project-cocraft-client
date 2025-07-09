@@ -3,7 +3,7 @@
 import React, {useState} from 'react';
 import imageService from "@/services/imageService";
 import {GenerateImagePayload, UploadedImage} from "@/types";
-import {button, cn, flex} from "@/utils/classnames";
+import {button} from "@/utils/classnames";
 
 interface Props {
   onUploadComplete: (uploadedImages: UploadedImage[]) => void;
@@ -53,7 +53,7 @@ const ImageUploader: React.FC<Props> = ({onUploadComplete}) => {
   };
 
   return (
-    <div className={cn(flex.row, flex.betweenAtCenter, "w-full mb-4")}>
+    <div className="flex flex-row items-start justify-between w-full mb-4">
       <input className="file:w-1/2 file:mr-4 text-primary-foreground rounded" type="file" multiple accept="image/*" onChange={handleFileChange}/>
       <button
         onClick={uploadImages}

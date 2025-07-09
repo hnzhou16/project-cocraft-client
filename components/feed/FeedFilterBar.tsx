@@ -11,7 +11,7 @@ import {
 } from "@/types";
 import {fetchPublicFeed, fetchSearchFeed, fetchUserFeed} from "@/store/slices/postSlice";
 import {useAppDispatch, useAppSelector} from "@/store/hooks";
-import {button, cn, flex} from "@/utils/classnames";
+import {button} from "@/utils/classnames";
 
 interface FeedFilterBarProps {
   feedType: "public" | "user" | "trending" | "search" | "userPosts";
@@ -114,7 +114,7 @@ export default function FeedFilterBar({feedType, query, className = ''}: FeedFil
   return (
     <div className={`bg-background border-b p-4 sticky top-16 z-30 ${className}`}>
       <div className="container mx-auto">
-        <div className={cn(flex.row, flex.betweenAtCenter, flex.gap4, flex.wrap)}>
+        <div className= "flex flex-row items-center justify-between flex-wrap gap-4">
           {/* Feed Type Filter */}
           <div className="inline-flex rounded-md shadow-sm" role="group">
             <button

@@ -1,7 +1,7 @@
 import React from 'react';
 import {CommentWithParentAndUser} from '@/types';
 import Comment from './Comment';
-import {cn, flex, typography} from "@/utils/classnames";
+import {typography} from "@/utils/classnames";
 
 interface CommentListProps {
   comments: CommentWithParentAndUser[];
@@ -12,7 +12,7 @@ interface CommentListProps {
 const CommentList: React.FC<CommentListProps> = ({comments, loading = false, error = null}) => {
   if (loading) {
     return (
-      <div className={cn(flex.center, "py-4")}>
+      <div className="items-center justify-center py-4">
         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border"></div>
       </div>
     );

@@ -6,7 +6,7 @@ import {usePathname, useRouter} from 'next/navigation';
 import {useAppDispatch, useAppSelector} from '@/store/hooks';
 import {getCurrentUser} from "@/store/slices/authSlice";
 import ThemeToggle from '../ui/ThemeToggle';
-import { layout, flex, grid, nav, ui, button, typography, cn } from '@/utils/classnames';
+import { layout, nav, ui, button, typography, cn } from '@/utils/classnames';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -50,7 +50,7 @@ export default function MainLayout({children}: MainLayoutProps) {
   // TODO: rethink how to checkAuth
   useEffect(() => {
     // public pages where unauthenticated user have access
-    const publicRoutes = ['/', '/login', '/signup']; // add others if needed
+    const publicRoutes = ['/', '/login', '/register']; // add others if needed
     const isPublic = publicRoutes.includes(pathname);
 
     if (!loading && !isAuthenticated && error && !isPublic) {
@@ -88,9 +88,9 @@ export default function MainLayout({children}: MainLayoutProps) {
           scrolled ? 'shadow-md' : ''
         )}>
         <div className={cn(layout.container, "max-w-full-layout")}>
-          <div className={cn(flex.row, flex.betweenAtCenter, "h-header")}>
+          <div className="flex flex-row items-center justify-center h-header">
             {/* Logo */}
-            <Link href="/" className={flex.row}>
+            <Link href="/" className="flex flex-row">
               <span className={typography.logo}>CoCraft</span>
             </Link>
 
@@ -119,14 +119,14 @@ export default function MainLayout({children}: MainLayoutProps) {
             </form>
 
             {/* Auth Buttons and Dark Mode Toggle */}
-            <div className={cn(flex.row, flex.center, "space-x-4")}>
+            <div className="flex flex-row items-center justify-between space-x-4">
               <ThemeToggle />
               
               {isAuthenticated ? (
-                <div className={cn(flex.row, flex.center, "space-x-4")}>
+                <div className="flex flex-row items-center justify-between space-x-4">
                   <Link
                     href={`/profile/${user?.id}`}
-                    className={flex.row}
+                    className="flex flex-row"
                   >
                     <div className={cn(ui.avatar.base, ui.avatar.sm)}>
                       {user?.username?.charAt(0).toUpperCase() || 'U'}
@@ -140,7 +140,7 @@ export default function MainLayout({children}: MainLayoutProps) {
                   </Link>
                 </div>
               ) : (
-                <div className={cn(flex.row, flex.center, "space-x-4")}>
+                <div className="flex flex-row items-center justify-between space-x-4">
                   <Link
                     href="/login"
                     className={typography.link}
@@ -173,7 +173,7 @@ export default function MainLayout({children}: MainLayoutProps) {
           {/* TODO: Mobile Menu */}
           {isMenuOpen && (
             <div className="md:hidden py-4">
-              <nav className={cn(flex.col, "space-y-4")}>
+              <nav className="flex flex-col space-y-4">
                 <form onSubmit={handleSearch} className="mb-4">
                   <div className="relative w-full">
                     <input
@@ -249,7 +249,7 @@ export default function MainLayout({children}: MainLayoutProps) {
           <div className="p-4">
             {/* User Profile Card */}
             {isAuthenticated ? (
-              <div className={cn(layout.card, flex.row, flex.gap2, "p-2 mb-4")}>
+              <div className={cn(layout.card, "flex flex-row gap-2 p-2 mb-4")}>
                 <div className={cn(ui.avatar.base, ui.avatar.md, "h-10 w-10 mr-3")}>
                   {user?.username?.charAt(0).toUpperCase() || 'U'}
                 </div>
@@ -262,7 +262,7 @@ export default function MainLayout({children}: MainLayoutProps) {
             ) : (
               <div className={cn(layout.card, "p-4 mb-4")}>
                 <p className={cn(typography.p2, "text-center mb-4")}>Sign in to see your profile</p>
-                <div className={cn(flex.row, "space-x-2")}>
+                <div className="flex flex-row space-x-2">
                   <Link
                     href="/login"
                     className={cn(button.secondary, "flex-1")}
@@ -282,7 +282,7 @@ export default function MainLayout({children}: MainLayoutProps) {
             {/* Stats Card */}
             {isAuthenticated && (
               <div className={cn(layout.card, "text-center px-4 pt-2 mb-4")}>
-                <div className={cn(flex.row, flex.betweenAtStart)}>
+                <div className="flex flex-row items-start justify-between">
                   <div>
                     <p className={typography.p3}>Followers</p>
                     <p className={typography.h4}>{followerCount}</p>
@@ -303,7 +303,7 @@ export default function MainLayout({children}: MainLayoutProps) {
             <div className="space-y-3 mb-6">
               <Link
                 href="/generate-image"
-                className={cn(button.primary, "w-full", flex.row, flex.center)}
+                className={cn(button.primary, "w-full flex flex-row items-center justify-between")}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className={cn(nav.icon, "mr-2")} fill="none" viewBox="0 0 24 24"
                      stroke="currentColor">
@@ -314,7 +314,7 @@ export default function MainLayout({children}: MainLayoutProps) {
               </Link>
               <Link
                 href="/create"
-                className={cn(button.primary, "w-full", flex.row, flex.center)}
+                className={cn(button.primary, "w-full flex flex-row items-center justify-between")}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className={cn(nav.icon, "mr-2")} fill="none" viewBox="0 0 24 24"
                      stroke="currentColor">
@@ -325,7 +325,7 @@ export default function MainLayout({children}: MainLayoutProps) {
             </div>
 
             {/* Navigation Links */}
-            <nav className={cn(flex.col, "space-y-1")}>
+            <nav className="flex flex-col space-y-1">
               <Link
                 href="/"
                 className={cn(isActive('/') ? nav.linkActive : nav.link)}
@@ -370,7 +370,7 @@ export default function MainLayout({children}: MainLayoutProps) {
                   and get inspired.</p>
               </div>
 
-              <div className={cn(flex.row, flex.betweenAtStart)}>
+              <div className="flex flex-row items-start justify-between">
                 <div>
                   <h3 className={typography.h3}>Navigation</h3>
                   <ul className="space-y-2">

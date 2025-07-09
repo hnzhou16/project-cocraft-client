@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { flex, cn, button } from '../../utils/classnames';
+import { cn, button } from '@/utils/classnames';
 
 interface ThemeToggleProps {
   className?: string;
@@ -48,7 +48,7 @@ export default function ThemeToggle({ className = '', showLabel = false }: Theme
   }
 
   return (
-    <div className={cn(flex.row, flex.center, className)}>
+    <div className={cn("flex flex-row justify-center items-center", className)}>
       {showLabel && (
         <span className="mr-2 text-primary">
           {isDarkMode ? 'Dark Mode' : 'Light Mode'}

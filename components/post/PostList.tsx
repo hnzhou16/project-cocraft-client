@@ -142,7 +142,7 @@ export default function PostList({feedType, query, userId}: PostListProps) {
     return (
       <div
         className="bg-secondary-background rounded-lg p-6 text-center">
-        <p className={typography.h4}>{error}</p>
+        <p className={cn(typography.p1, "mb-0")}>{error}</p>
       </div>
     );
   }
@@ -182,7 +182,7 @@ export default function PostList({feedType, query, userId}: PostListProps) {
 
           <div
             id="sort-dropdown"
-            className="hidden origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-background ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
+            className="hidden origin-top-right absolute right-0 mt-2 w-52 rounded-md shadow-lg bg-background ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
             role="menu"
             aria-orientation="vertical"
             aria-labelledby="sort-menu-button"

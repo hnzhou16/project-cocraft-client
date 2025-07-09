@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {useAppDispatch, useAppSelector} from '@/store/hooks';
 import {createComment, selectCommentForReply} from '@/store/slices/commentSlice';
 import {CreateCommentPayload} from '@/types';
-import {button, form, layout, flex, cn} from '@/utils/classnames';
+import {button, form, cn} from '@/utils/classnames';
 
 interface AddCommentFormProps {
   postId: string;
@@ -56,7 +56,7 @@ const AddCommentForm: React.FC<AddCommentFormProps> = ({postId, onSuccess}) => {
 
       {selectedComment && (
         <div className="bg-secondary-background p-3 rounded-lg mb-4">
-          <div className={cn(flex.row, flex.betweenAtStart, "items-start")}>
+          <div className="flex flex-row items-start justify-between">
             <div>
               <p className="text-sm font-medium text-primary">
                 Replying to {selectedComment.username}
@@ -98,7 +98,7 @@ const AddCommentForm: React.FC<AddCommentFormProps> = ({postId, onSuccess}) => {
           />
         </div>
 
-        <div className={cn(flex.row, flex.end, "space-x-2")}>
+        <div className="flex flex-row items-end space-x-2">
           {selectedComment && (
             <button
               type="button"

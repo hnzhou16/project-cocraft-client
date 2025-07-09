@@ -2,7 +2,6 @@
 
 import PostList from '../post/PostList';
 import FeedFilterBar from './FeedFilterBar';
-import {useEffect} from "react";
 
 // !!! dynamically Set feedType in ClientFeed, so it can pass the correct feedType to FeedFilterBar and PostList
 interface ClientFeedProps {

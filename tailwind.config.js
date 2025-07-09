@@ -35,16 +35,7 @@ module.exports = {
       },
       borderColor: {
         DEFAULT: 'var(--border-color)',
-        'test': 'var(--test)',
       },
-      // backgroundColor: {
-      //   primary: 'var(--primary-background)',
-      //   secondary: 'var(--secondary-background)',
-      // },
-      // textColor: {
-      //   primary: 'var(--primary-foreground)',
-      //   secondary: 'var(--secondary-foreground)',
-      // },
       boxShadow: {
         soft: '0 1px 3px 0 var(--shadow-color)',
         md: '0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color)',
