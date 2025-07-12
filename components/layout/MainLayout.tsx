@@ -47,7 +47,6 @@ export default function MainLayout({children}: MainLayoutProps) {
     dispatch(getCurrentUser())
   }, [isAuthenticated, pathname])
 
-  // TODO: rethink how to checkAuth
   useEffect(() => {
     // public pages where unauthenticated user have access
     const publicRoutes = ['/', '/login', '/register']; // add others if needed
@@ -87,7 +86,7 @@ export default function MainLayout({children}: MainLayoutProps) {
           "bg-background border-b fixed top-0 left-0 right-0 z-50",
           scrolled ? 'shadow-md' : ''
         )}>
-        <div className={cn(layout.container, "max-w-full-layout")}>
+        <div className="container mx-auto px-4 max-w-full-layout">
           <div className="flex flex-row items-center justify-center h-header">
             {/* Logo */}
             <Link href="/" className="flex flex-row">
@@ -202,22 +201,15 @@ export default function MainLayout({children}: MainLayoutProps) {
                 >
                   Home
                 </Link>
-                <Link
-                  href="/trending"
-                  className={cn(isActive('/trending') ? nav.linkActive : nav.link)}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Trending
-                </Link>
+
 
                 {isAuthenticated && (
                   <>
                     <Link
-                      href="/feed"
-                      className={cn(isActive('/feed') ? nav.linkActive : nav.link)}
-                      onClick={() => setIsMenuOpen(false)}
+                      href={`/profile/${user?.id}`}
+                      className={cn(isActive(`/profile/${user?.id}`) ? nav.linkActive : nav.link)}
                     >
-                      My Feed
+                      <span>My Profile</span>
                     </Link>
                     <Link
                       href="/create"
@@ -242,6 +234,7 @@ export default function MainLayout({children}: MainLayoutProps) {
           )}
         </div>
       </header>
+
       <div className="max-w-full-layout mx-auto">
         {/* Sidebar for desktop - Fixed left sidebar */}
         <div
@@ -249,18 +242,18 @@ export default function MainLayout({children}: MainLayoutProps) {
           <div className="p-4">
             {/* User Profile Card */}
             {isAuthenticated ? (
-              <div className={cn(layout.card, "flex flex-row gap-2 p-2 mb-4")}>
+              <div className="card flex flex-row gap-2 p-2 mb-4">
                 <div className={cn(ui.avatar.base, ui.avatar.md, "h-10 w-10 mr-3")}>
                   {user?.username?.charAt(0).toUpperCase() || 'U'}
                 </div>
                 <div>
                   <p className={cn(typography.h4, "mt-1 mb-1")}>{user?.username.split('_').join(' ') || 'User'}</p>
-                  <p className={typography.p2}>{user?.role || 'User'}</p>
-                  <p className={typography.p3}>{user?.profile?.location || 'No location'}</p>
+                  <p className={cn(ui.badge, "-ml-1 mb-1")}>{user?.role.charAt(0).toUpperCase()+ user?.role.slice(1) || 'User'}</p>
+                  <p className={typography.p3}>{user?.profile?.location || ''}</p>
                 </div>
               </div>
             ) : (
-              <div className={cn(layout.card, "p-4 mb-4")}>
+              <div className="card p-4 mb-4">
                 <p className={cn(typography.p2, "text-center mb-4")}>Sign in to see your profile</p>
                 <div className="flex flex-row space-x-2">
                   <Link
@@ -281,7 +274,7 @@ export default function MainLayout({children}: MainLayoutProps) {
 
             {/* Stats Card */}
             {isAuthenticated && (
-              <div className={cn(layout.card, "text-center px-4 pt-2 mb-4")}>
+              <div className="card text-center px-4 pt-2 mb-4">
                 <div className="flex flex-row items-start justify-between">
                   <div>
                     <p className={typography.p3}>Followers</p>
@@ -334,20 +327,12 @@ export default function MainLayout({children}: MainLayoutProps) {
               </Link>
 
               {isAuthenticated && (
-                <>
-                  <Link
-                    href="/feed"
-                    className={cn(isActive('/feed') ? nav.linkActive : nav.link)}
-                  >
-                    <span>My Feed</span>
-                  </Link>
                   <Link
                     href={`/profile/${user?.id}`}
                     className={cn(isActive(`/profile/${user?.id}`) ? nav.linkActive : nav.link)}
                   >
                     <span>My Profile</span>
                   </Link>
-                </>
               )}
             </nav>
           </div>
@@ -355,17 +340,17 @@ export default function MainLayout({children}: MainLayoutProps) {
 
         {/* Main Content */}
         <main className="flex-grow pt-16 md:pl-64">
-          <div className={cn(layout.container, "py-6")}>
+          <div className={layout.container}>
             {children}
           </div>
         </main>
 
         {/* Footer */}
         <div className="ml-sidebar">
-          <footer className="w-full bg-card-background border-t py-8 mx-4">
+          <footer className="w-full bg-background border-t py-8 mx-4">
             <div className={layout.container}>
               <div>
-                <p className={typography.h3}>CoCraft</p>
+                <p className={typography.logo}>CoCraft</p>
                 <p className={cn(typography.p1, "text-secondary-foreground")}>Connect with creators, share your work,
                   and get inspired.</p>
               </div>
@@ -375,7 +360,6 @@ export default function MainLayout({children}: MainLayoutProps) {
                   <h3 className={typography.h3}>Navigation</h3>
                   <ul className="space-y-2">
                     <li><Link href="/" className={typography.link}>Home</Link></li>
-                    <li><Link href="/trending" className={typography.link}>Trending</Link></li>
                   </ul>
                 </div>
                 <div>
@@ -383,7 +367,6 @@ export default function MainLayout({children}: MainLayoutProps) {
                   <ul className="space-y-2">
                     {isAuthenticated ? (
                       <>
-                        <li><Link href="/feed" className={typography.link}>My Feed</Link></li>
                         <li><Link href={`/profile/${user?.id}`} className={typography.link}>Profile</Link></li>
                         <li><Link href="/create" className={typography.link}>Create Post</Link></li>
                         <li><Link href="/logout" className={typography.link}>Logout</Link></li>
@@ -399,9 +382,9 @@ export default function MainLayout({children}: MainLayoutProps) {
                 <div>
                   <h3 className={typography.h3}>Legal</h3>
                   <ul className="space-y-2">
-                    <li><Link href="/terms" className={typography.link}>Terms of Service</Link></li>
-                    <li><Link href="/privacy" className={typography.link}>Privacy Policy</Link></li>
-                    <li><Link href="/cookies" className={typography.link}>Cookie Policy</Link></li>
+                    <li><p className={typography.link}>Terms of Service</p></li>
+                    <li><p className={typography.link}>Privacy Policy</p></li>
+                    <li><p className={typography.link}>Cookie Policy</p></li>
                   </ul>
                 </div>
               </div>

@@ -1,5 +1,4 @@
 import {PUBLIC_ROLES, RegisterPayload, Role} from "@/types";
-import {redirect} from "next/navigation";
 import {authService} from "@/services";
 
 export async function registerAction(
@@ -9,13 +8,13 @@ export async function registerAction(
   const confirmPassword = formData.get('confirmPassword')?.toString();
 
   if (password !== confirmPassword) {
-    return {error: 'Passwords do not match', success: false};
+    return {error: 'Passwords do not match.', success: false};
   }
 
   const role = formData.get('role')?.toString() as Role;
 
   if (!PUBLIC_ROLES.includes(role)) {
-    return { error: 'Invalid role selected', success: false };
+    return {error: 'Invalid role selected.', success: false};
   }
 
   const username = formData.get('username')?.toString();
@@ -36,8 +35,15 @@ export async function registerAction(
 
   try {
     await authService.register(userData);
-    redirect('/')
-  } catch (err) {
-    return { error: err.message || 'Registration failed', success: false };
+    return {error: '', success: true}
+  } catch (err: any) {
+    switch (err.code) {
+      case 'DUPLICATE_USERNAME':
+        return {error: 'Username already exists.', success: false};
+      case 'DUPLICATE_EMAIL':
+        return {error: 'Email already exists.', success: false};
+      default:
+        return {error: err.message || 'Registration failed.', success: false};
+    }
   }
 }

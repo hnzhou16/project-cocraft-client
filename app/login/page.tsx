@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import LoginForm from '../../components/auth/LoginForm';
 import { useAppSelector } from '@/store/hooks';
-import {cn, typography} from "@/utils/classnames";
+import {cn, layout, typography} from "@/utils/classnames";
 
 export default function LoginPage() {
   const { isAuthenticated } = useAppSelector((state: any) => state.auth);
@@ -18,7 +18,7 @@ export default function LoginPage() {
   }, [isAuthenticated, router]);
   
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className={layout.container}>
       <div className="max-w-md mx-auto">
         <h1 className={cn(typography.h1, "text-center")}>Sign in to CoCraft</h1>
         <LoginForm />

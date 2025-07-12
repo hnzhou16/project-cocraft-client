@@ -64,16 +64,6 @@ export const INITIAL_FEED_FILTER_STATE: Record<FeedFilterKey, boolean> = {
   [FeedFilterKey.Following]: false,
 }
 
-// Pagination types
-export interface PaginationQuery {
-  limit?: number;
-  offset?: number;
-  sort?: "asc" | "desc";
-  following?: boolean;
-  mentioned?: boolean;
-  roles?: Role[];
-}
-
 export interface CursorPaginationQuery {
   limit?: number;
   cursor?: string;
@@ -97,11 +87,6 @@ export interface RegisterPayload {
 export interface LoginPayload {
   email: string;
   password: string;
-}
-
-export interface AuthResponse {
-  token: string;
-  user: User;
 }
 
 // Post types

@@ -29,9 +29,9 @@ const LoginForm: React.FC = () => {
         </div>
       )}
 
-      <form action={formAction}>
-        <div className="mb-4">
-          <label htmlFor="email" className="block bg-whilte text-sm font-bold mb-2">
+      <form action={formAction} className={form.container}>
+        <div>
+          <label htmlFor="email" className={form.label}>
             Email
           </label>
           <input
@@ -44,8 +44,8 @@ const LoginForm: React.FC = () => {
           />
         </div>
 
-        <div className="mb-6">
-          <label htmlFor="password" className="block text-sm font-bold mb-2">
+        <div>
+          <label htmlFor="password" className={form.label}>
             Password
           </label>
           <input

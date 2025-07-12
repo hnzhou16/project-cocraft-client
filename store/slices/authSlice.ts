@@ -1,7 +1,7 @@
 "use client";
 
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {RegisterPayload, User, UserWithStats} from '@/types';
+import {User, UserWithStats} from '@/types';
 import {logoutAction} from "@/app/actions/logoutAction";
 import {authService} from "@/services";
 
@@ -25,21 +25,9 @@ const initialState: AuthState = {
   error: null,
 };
 
-export const register = createAsyncThunk<User, RegisterPayload, {rejectValue: string}>(
-  'auth/register',
-  async (userData: RegisterPayload, { rejectWithValue }) => {
-    try {
-      await authService.register(userData);
-      return await authService.getCurrentUser();
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Registration failed');
-    }
-  }
-);
-
-export const getCurrentUser = createAsyncThunk<UserWithStats, void, { rejectValue: string}>(
-  'auth/getCurrentUser', 
-  async (_, { rejectWithValue }) => {
+export const getCurrentUser = createAsyncThunk<UserWithStats, void, { rejectValue: string }>(
+  'auth/getCurrentUser',
+  async (_, {rejectWithValue}) => {
     try {
       return await authService.getCurrentUser();
     } catch (error: any) {
@@ -50,7 +38,7 @@ export const getCurrentUser = createAsyncThunk<UserWithStats, void, { rejectValu
 
 export const logout = createAsyncThunk<void, void, { rejectValue: string }>(
   'auth/logout',
-  async (_, { rejectWithValue }) => {
+  async (_, {rejectWithValue}) => {
     try {
       // using server-side action
       await logoutAction();
@@ -71,20 +59,6 @@ const authSlice = createSlice<AuthState>({
   },
   extraReducers: (builder) => {
     builder
-      // Register
-      .addCase(register.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(register.fulfilled, (state, action: PayloadAction<User>) => {
-        state.loading = false;
-        state.user = action.payload;
-        state.isAuthenticated = true;
-      })
-      .addCase(register.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
       // Get Current User
       .addCase(getCurrentUser.pending, (state) => {
         state.loading = true;
@@ -114,5 +88,5 @@ const authSlice = createSlice<AuthState>({
   },
 });
 
-export const { clearError } = authSlice.actions;
+export const {clearError} = authSlice.actions;
 export default authSlice.reducer;

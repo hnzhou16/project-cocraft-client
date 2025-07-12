@@ -87,7 +87,7 @@ const AddCommentForm: React.FC<AddCommentFormProps> = ({postId, onSuccess}) => {
       )}
 
       <form onSubmit={handleSubmit} className={form.container}>
-        <div className={form.group}>
+        <div>
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}

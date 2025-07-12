@@ -1,7 +1,7 @@
 "use client";
 
 import React, {Suspense, useEffect, useState} from 'react';
-import {useParams} from 'next/navigation';
+import {useParams, useRouter} from 'next/navigation';
 import {useAppSelector} from '@/store/hooks';
 import UserProfile from "@/components/user/UserProfile";
 import ReviewList from "@/components/review/ReviewList";
@@ -10,10 +10,18 @@ import {cn, layout, typography} from "@/utils/classnames";
 import ClientFeed from "@/components/feed/ClientFeed";
 
 export default function ProfilePage() {
+  const router = useRouter();
   const {userId} = useParams();
 
   const [isAuthUser, setIsAuthUser] = useState(false);
-  const {user: authUser} = useAppSelector((state: any) => state.auth);
+  const {user: authUser, isAuthenticated} = useAppSelector((state: any) => state.auth);
+
+  useEffect(() => {
+    // Redirect to login if not authenticated
+    if (!isAuthenticated) {
+      router.push('/login');
+    }
+  }, [isAuthenticated, router]);
 
   useEffect(() => {
     if (authUser && userId) {
@@ -22,7 +30,7 @@ export default function ProfilePage() {
   }, [authUser, userId]);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className={layout.container}>
 
       {/* Main Content - User Profile */}
       <div className="lg:col-span-2">

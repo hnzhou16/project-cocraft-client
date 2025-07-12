@@ -2,7 +2,7 @@
 
 import React, {Suspense} from 'react';
 import ClientFeed from '../components/feed/ClientFeed';
-import {button, cn, flex, layout, typography} from "@/utils/classnames";
+import {cn, layout, typography} from "@/utils/classnames";
 import {useAppSelector} from "@/store/hooks";
 
 export default function Home() {
@@ -14,7 +14,8 @@ export default function Home() {
     <div className="container mx-auto px-4 pb-8">
       {/* Welcome Card */}
       <div className={cn(
-        "w-full bg-cover bg-center bg-no-repeat h-[30rem]",
+        "w-full bg-center bg-no-repeat h-[30rem]",
+        "sm:bg-cover bg-contain", // contain still show full image on smaller screen
         "bg-[url('/images/hero_main.png')]",
         "dark:bg-[url('/images/hero_main_dark.png')]"
       )}

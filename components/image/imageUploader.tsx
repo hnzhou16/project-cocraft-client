@@ -29,7 +29,7 @@ const ImageUploader: React.FC<Props> = ({onUploadComplete}) => {
     try {
       for (const file of files) {
         const extension = file.name.split('.').pop()?.toLowerCase();
-        if (!extension || !['jpg', 'jpeg', 'png', 'webp'].includes(extension)) { // TODO: set up ext type
+        if (!extension || !['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension)) {
           alert(`Unsupported file: ${file.name}`);
           continue;
         }

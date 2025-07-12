@@ -114,7 +114,7 @@ export default function FeedFilterBar({feedType, query, className = ''}: FeedFil
   return (
     <div className={`bg-background border-b p-4 sticky top-16 z-30 ${className}`}>
       <div className="container mx-auto">
-        <div className= "flex flex-row items-center justify-between flex-wrap gap-4">
+        <div className= "flex flex-row items-center justify-between flex-wrap gap-4 overflow-hidden">
           {/* Feed Type Filter */}
           <div className="inline-flex rounded-md shadow-sm" role="group">
             <button
@@ -150,7 +150,7 @@ export default function FeedFilterBar({feedType, query, className = ''}: FeedFil
           </div>
 
           {/* Role Filter */}
-          <div className="inline-flex rounded-md shadow-sm" role="group">
+          <div className="inline-flex flex-wrap rounded-md shadow-sm" role="group">
             <button
               type="button"
               onClick={() => {

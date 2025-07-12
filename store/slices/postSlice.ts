@@ -82,7 +82,7 @@ export const fetchPublicFeed = createAsyncThunk<
         username: pws.username.split("_").join(" "),
         likedByUser: pws.liked_by_user,
       }))
-      console.log('postPublic: ', flattenedPosts)
+      // console.log('postPublic: ', flattenedPosts)
       return {posts: flattenedPosts || [], nextCursor: next_cursor || ''};
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch public feed');
@@ -106,7 +106,7 @@ export const fetchUserFeed = createAsyncThunk<
         username: pws.username.split("_").join(" "),
         likedByUser: pws.liked_by_user,
       }))
-      console.log('postUser: ', flattenedPosts)
+      // console.log('postUser: ', flattenedPosts)
 
       const currentFilter = {...pagination, cursor: undefined, reset: undefined}
 
@@ -139,7 +139,7 @@ export const fetchSearchFeed = createAsyncThunk<
         username: pws.username.split("_").join(" "),
         likedByUser: pws.liked_by_user,
       }))
-      console.log('postSearch: ', flattenedPosts)
+      // console.log('postSearch: ', flattenedPosts)
 
       const currentFilter = {...pagination, cursor: undefined, reset: undefined}
 
@@ -171,7 +171,7 @@ export const fetchPostsByUserId = createAsyncThunk<
         username: pws.username.split("_").join(" "),
         likedByUser: pws.liked_by_user,
       }))
-      console.log('postUserId: ', flattenedPosts)
+      // console.log('postUserId: ', flattenedPosts)
 
       return {
         posts: flattenedPosts || [],

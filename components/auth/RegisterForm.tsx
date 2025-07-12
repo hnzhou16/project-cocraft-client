@@ -1,13 +1,18 @@
-import React, {useActionState, useState} from 'react';
+import React, {useActionState, useEffect, useState} from 'react';
 import Link from 'next/link';
 import {useAppSelector} from '@/store/hooks';
-import {PUBLIC_ROLES, RegisterPayload, Role} from '@/types';
+import {PUBLIC_ROLES} from '@/types';
 import {registerAction} from "@/app/actions/registerAction";
 import {button, cn, form, nav, typography} from "@/utils/classnames";
+import {useRouter} from "next/navigation";
 
 const RegisterForm: React.FC = () => {
-  const {loading, error} = useAppSelector((state: any) => state.auth);
+  const router = useRouter()
+  const {loading} = useAppSelector((state: any) => state.auth);
   const [state, formAction] = useActionState(registerAction, {error: '', success: false});
+
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
 
   const [selectedRole, setSelectedRole] = useState('');
   const [showOptions, setShowOptions] = useState(false);
@@ -16,15 +21,25 @@ const RegisterForm: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [usernameError, setUsernameError] = useState('');
+
+  const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [confirmError, setConfirmError] = useState('')
 
-  // TODO: email exist error
+  const isFormValid = username && email && password && confirmPassword && !passwordError && !confirmError && selectedRole;
+
+  useEffect(() => {
+    if (state.success) {
+      router.push('/login')
+    }
+  }, [state.success]);
+
   function validatePassword(pw: string): string {
-    if (pw.length < 8) return 'Password must be at least 8 characters';
-    if (!/[a-z]/.test(pw)) return 'Must include at least one lowercase letter';
-    if (!/[A-Z]/.test(pw)) return 'Must include at least one uppercase letter';
-    if (!/\d/.test(pw)) return 'Must include at least one number';
+    if (pw.length < 8) return 'Password must be at least 8 characters.';
+    if (!/[a-z]/.test(pw)) return 'Must include at least one lowercase letter.';
+    if (!/[A-Z]/.test(pw)) return 'Must include at least one uppercase letter.';
+    if (!/\d/.test(pw)) return 'Must include at least one number.';
     return '';
   }
 
@@ -32,6 +47,21 @@ const RegisterForm: React.FC = () => {
     setSelectedRole(role);
     setShowOptions(false);
   }
+
+  const handleUsernameBlur = () => {
+    setUsernameError(username.trim() === '' ? 'Username is required.' : '');
+  };
+
+  const handleEmailBlur = () => {
+    if (email.trim() === '') {
+      setEmailError('Email is required.');
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setEmailError('Enter a valid email address.');
+    } else {
+      setEmailError('');
+    }
+  };
+
   const handlePasswordBlur = () => {
     const error = validatePassword(password);
     setPasswordError(error);
@@ -55,8 +85,8 @@ const RegisterForm: React.FC = () => {
         </div>
       )}
 
-      <form action={formAction}>
-        <div className="mb-4">
+      <form action={formAction} className={form.container}>
+        <div>
           <label htmlFor="username" className={form.label}>
             Username
           </label>
@@ -64,12 +94,16 @@ const RegisterForm: React.FC = () => {
             name="username"
             type="text"
             className={form.input}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            onBlur={handleUsernameBlur}
             placeholder="Required"
             required
           />
+          {usernameError && <p className={typography.error}>{usernameError}</p>}
         </div>
 
-        <div className="mb-4">
+        <div>
           <label htmlFor="email" className={form.label}>
             Email
           </label>
@@ -77,12 +111,16 @@ const RegisterForm: React.FC = () => {
             name="email"
             type="email"
             className={form.input}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onBlur={handleEmailBlur}
             placeholder="Required"
             required
           />
+          {emailError && <p className={typography.error}>{emailError}</p>}
         </div>
 
-        <div className="mb-4">
+        <div>
           <label htmlFor="password" className={form.label}>
             Password
           </label>
@@ -94,8 +132,9 @@ const RegisterForm: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               onBlur={handlePasswordBlur}
-              className={passwordError ? form.error : form.input}
+              className={form.input}
               placeholder="Required"
+              autoComplete="new-password"
               required
             />
             <button
@@ -124,7 +163,7 @@ const RegisterForm: React.FC = () => {
           </p>
         </div>
 
-        <div className="mb-4">
+        <div>
           <label htmlFor="confirmPassword" className={form.label}>
             Confirm Password
           </label>
@@ -138,6 +177,7 @@ const RegisterForm: React.FC = () => {
               onBlur={handleConfirmBlur}
               className={confirmError ? form.input : form.error}
               placeholder="Confirm your password"
+              autoComplete="new-password"
               required
             />
             <button
@@ -167,7 +207,7 @@ const RegisterForm: React.FC = () => {
           )}
         </div>
 
-        <div className="mb-4">
+        <div>
           <label htmlFor="role" className={form.label}>
             Role
           </label>
@@ -212,7 +252,7 @@ const RegisterForm: React.FC = () => {
           </div>
         </div>
 
-        <div className="mb-4">
+        <div>
           <label htmlFor="bio" className={form.label}>
             Bio (Optional)
           </label>
@@ -240,7 +280,8 @@ const RegisterForm: React.FC = () => {
         <div className="flex items-center justify-between mb-4">
           <button
             type="submit"
-            className={cn(button.primary, `w-full ${loading ? 'opacity-50 cursor-not-allowed' : ''}`)}
+            className={cn(button.primary, `w-full ${isFormValid ? '' : 'opacity-50 cursor-not-allowed'}`)}
+            disabled={!isFormValid || loading}
           >
             Sign up
           </button>

@@ -7,7 +7,7 @@ import {toggleLike} from '@/store/slices/postSlice';
 import {getPostComments, showCreateComment, toggleCommentVisibility} from "@/store/slices/commentSlice";
 import CommentList from '../comment/CommentList';
 import ImageCarousel from '../image/ImageCarousel';
-import {typography, button, ui, cn, form} from '@/utils/classnames';
+import {typography, button, ui, cn, nav} from '@/utils/classnames';
 import AddCommentForm from "@/components/comment/AddCommentForm";
 
 export interface PostCardProps {
@@ -106,7 +106,7 @@ export default function PostCard({post}: PostCardProps) {
                 <Link
                   key={tag}
                   href={`/search?q=${tag}`}
-                  className={ui.tag}
+                  className={nav.tag}
                 >
                   #{tag}
                 </Link>
@@ -136,7 +136,7 @@ export default function PostCard({post}: PostCardProps) {
 
               <button
                 onClick={toggleComments}
-                className="flex flex-row items-center justify-betweentext-secondary-foreground hover:text-accent"
+                className="flex flex-row items-center justify-between text-secondary-foreground hover:text-accent"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

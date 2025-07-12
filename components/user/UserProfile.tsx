@@ -1,9 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useAppDispatch, useAppSelector} from '@/store/hooks';
 import {getUserProfile, followUser, unfollowUser, getFollowStatus} from '@/store/slices/userSlice';
-import {fetchPostsByUserId} from '@/store/slices/postSlice';
 import {User} from '@/types';
-import PostList from '../post/PostList';
 import {button, cn, nav, typography, ui} from "@/utils/classnames";
 
 interface UserProfileProps {
@@ -42,7 +40,7 @@ const UserProfile: React.FC<UserProfileProps> = ({userId}) => {
   if (userLoading && !selectedUser) {
     return (
       <div className="flex justify-center items-center py-8">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
+        <div className={ui.busy}></div>
       </div>
     );
   }
@@ -90,7 +88,7 @@ const UserProfile: React.FC<UserProfileProps> = ({userId}) => {
             <div className='flex flex-row items-center'>
               <p className={cn(typography.h2)}>{user.username.split('_').join(' ')}</p>
               <div
-                className={cn(ui.badge.base, ui.badge.outline, 'ml-2')}>
+                className={cn(ui.badge, 'ml-2')}>
                 {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
               </div>
             </div>

@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch } from '@/store/hooks';
 import { logout } from '@/store/slices/authSlice';
+import {layout, typography, ui} from "@/utils/classnames";
 
 export default function LogoutPage() {
   const dispatch = useAppDispatch();
@@ -25,11 +26,11 @@ export default function LogoutPage() {
   }, [dispatch, router]);
   
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className={layout.container}>
       <div className="max-w-md mx-auto text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent mx-auto mb-4"></div>
-        <h1 className="text-2xl font-bold text-foreground mb-2">Logging out...</h1>
-        <p className="text-secondary-foreground">Please wait while we log you out.</p>
+        <div className={ui.busy}></div>
+        <p className={typography.h3}>Logging out...</p>
+        <p className={typography.p1}>Please wait while we log you out.</p>
       </div>
     </div>
   );

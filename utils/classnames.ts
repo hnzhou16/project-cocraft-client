@@ -16,12 +16,7 @@ export function cn(...classes: (string | boolean | undefined | null)[]): string 
  */
 export const layout = {
   main: 'bg-card-background rounded-lg shadow-md p-6 mb-6',
-  container: 'container mx-auto px-4',
-  section: 'py-6 md:py-8',
-  card: 'card',
-  cardHeader: 'p-4 border-b',
-  cardBody: 'p-4',
-  cardFooter: 'p-4 border-t',
+  container: 'container mx-auto px-4 py-6', // container sets the max-width oto match the min-width of the current breakpoint
 };
 
 /**
@@ -45,16 +40,10 @@ export const typography = {
  */
 export const form = {
   container: 'space-y-4',
-  group: 'space-y-2',
   label: 'block text-sm font-medium text-primary mb-2',
   input: 'input w-full',
   error: 'input w-full border border-red-500',
   textarea: 'input w-full min-h-[50px]',
-  select: 'input w-full appearance-none pr-8',
-  option: 'input w-full hover:hover:bg-secondary-background',
-  checkbox: 'h-4 w-4 rounded border-input-border text-accent focus:ring-accent',
-  radio: 'h-4 w-4 border-input-border text-accent focus:ring-accent',
-  hint: 'text-xs text-secondary-foreground mt-1',
 };
 
 /**
@@ -72,24 +61,17 @@ export const button = {
     'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent',
   sortDropDown: 'text-primary-foreground block px-4 py-2 text-sm w-full text-left hover:bg-secondary-background',
   sortDropDownActive: 'bg-primary-background text-accent font-bold block block px-4 py-2 text-sm w-full text-left hover:bg-secondary-background',
-  danger: 'btn bg-red-600 hover:bg-red-700 text-white',
   ghost: 'btn bg-transparent hover:bg-secondary-background text-accent',
-  link: 'btn bg-transparent p-0 h-auto text-accent hover:text-accent-hover underline',
   icon: 'p-2 rounded-full hover:bg-secondary-background',
-  sizes: {
-    sm: 'text-xs px-2.5 py-1.5',
-    md: 'text-sm px-4 py-2',
-    lg: 'text-base px-5 py-2.5',
-    xl: 'text-lg px-6 py-3',
-  },
 };
 
 /**
  * Navigation related class names
  */
 export const nav = {
-  link: 'p-2 rounded-md hover:bg-secondary-background hover:text-accent transition-colors',
-  linkActive: 'p-2 rounded-md bg-secondary-background text-accent font-bold',
+  link: 'p-2 rounded-md hover:bg-primary-background transition-colors',
+  linkActive: 'p-2 rounded-md bg-primary-background text-accent font-bold',
+  tag: 'bg-secondary-background hover:bg-secondary-background/80 text-accent px-3 py-1 rounded-full text-xs font-medium',
   icon: 'h-5 w-5',
 };
 
@@ -104,14 +86,8 @@ export const ui = {
     md: 'h-10 w-10 text-base',
     lg: 'h-20 w-20 text-3xl',
   },
-  badge: {
-    base: 'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
-    primary: 'bg-accent text-white',
-    secondary: 'bg-secondary-background text-secondary-foreground',
-    outline: 'bg-transparent border border-accent text-accent',
-  },
-  divider: 'border-t border-border-color my-4',
-  tag: 'bg-secondary-background hover:bg-secondary-background/80 text-accent px-3 py-1 rounded-full text-xs font-medium',
+  badge: 'inline-flex items-center rounded-full px-2.5 py-0.5 border border-accent text-accent text-xs font-medium',
+  busy: 'animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent mx-auto mb-4',
 };
 
 

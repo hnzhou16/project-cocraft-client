@@ -41,7 +41,10 @@ export const apiRequest = async <T>(
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.message || `Request failed with status ${response.status}`);
+
+    const error = new Error(errorData.error.message || `Request failed with status ${response.status}`);
+    (error as any).code = errorData.error.code; // attach server error code
+    throw error;
   }
 
   if (response.status !== 204) {
