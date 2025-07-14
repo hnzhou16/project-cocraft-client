@@ -121,8 +121,9 @@ export default function MainLayout({children}: MainLayoutProps) {
             <div className="flex flex-row items-center justify-between space-x-4">
               <ThemeToggle />
               
+              {/* Desktop Auth Buttons */}
               {isAuthenticated ? (
-                <div className="flex flex-row items-center justify-between space-x-4">
+                <div className="hidden md:flex flex-row items-center justify-between space-x-4">
                   <Link
                     href={`/profile/${user?.id}`}
                     className="flex flex-row"
@@ -139,7 +140,7 @@ export default function MainLayout({children}: MainLayoutProps) {
                   </Link>
                 </div>
               ) : (
-                <div className="flex flex-row items-center justify-between space-x-4">
+                <div className="hidden md:flex flex-row items-center justify-between space-x-4">
                   <Link
                     href="/login"
                     className={typography.link}
@@ -169,7 +170,6 @@ export default function MainLayout({children}: MainLayoutProps) {
             </div>
           </div>
 
-          {/* TODO: Mobile Menu */}
           {isMenuOpen && (
             <div className="md:hidden py-4">
               <nav className="flex flex-col space-y-4">
@@ -194,6 +194,7 @@ export default function MainLayout({children}: MainLayoutProps) {
                     </button>
                   </div>
                 </form>
+
                 <Link
                   href="/"
                   className={cn(isActive('/') ? nav.linkActive : nav.link)}
@@ -202,12 +203,12 @@ export default function MainLayout({children}: MainLayoutProps) {
                   Home
                 </Link>
 
-
                 {isAuthenticated && (
                   <>
                     <Link
                       href={`/profile/${user?.id}`}
                       className={cn(isActive(`/profile/${user?.id}`) ? nav.linkActive : nav.link)}
+                      onClick={() => setIsMenuOpen(false)}
                     >
                       <span>My Profile</span>
                     </Link>
@@ -218,16 +219,33 @@ export default function MainLayout({children}: MainLayoutProps) {
                     >
                       Create Post
                     </Link>
+                    <Link
+                      href="/logout"
+                      className={cn(button.secondary, "w-full")}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Sign Out
+                    </Link>
                   </>
                 )}
+
                 {!isAuthenticated && (
-                  <Link
-                    href="/register"
-                    className={cn(button.primary, "w-full")}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Join Now
-                  </Link>
+                  <>
+                    <Link
+                      href="/login"
+                      className={cn(button.secondary, "w-full")}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Sign In
+                    </Link>
+                    <Link
+                      href="/register"
+                      className={cn(button.primary, "w-full")}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Join Now
+                    </Link>
+                  </>
                 )}
               </nav>
             </div>
