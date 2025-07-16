@@ -199,3 +199,19 @@ export interface CreateReviewPayload {
   score: number;
   comment: string;
 }
+
+// AI Image Generation types
+export interface GenerateAIImagePayload {
+  prompt: string;
+}
+
+export interface GenerateAIImageResponse {
+  image_url: string;
+}
+
+export interface ImageGenerationHistory {
+  id: string;
+  prompt: string;
+  image_url: string;
+  created_at: string;
+}

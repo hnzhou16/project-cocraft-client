@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import {useEffect} from 'react';
 import Link from 'next/link';
 import {button, typography} from "@/utils/classnames";
 
@@ -9,7 +9,7 @@ interface ErrorProps {
   reset: () => void;
 }
 
-export default function Error({ error, reset }: ErrorProps) {
+export default function Error({error, reset}: ErrorProps) {
   useEffect(() => {
     // Log the error to an error reporting service
     console.error('Application error:', error);
@@ -23,20 +23,12 @@ export default function Error({ error, reset }: ErrorProps) {
         <p className={typography.p1}>
           {error.message || 'An unexpected error occurred.'}
         </p>
-        <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <button
-            onClick={reset}
-            className={button.ghost}
-          >
-            Try Again
-          </button>
-          <Link 
-            href="/" 
-            className={typography.link}
-          >
-            Go Home
-          </Link>
-        </div>
+        <button
+          onClick={reset}
+          className={button.ghost}
+        >
+          Try Again
+        </button>
       </div>
     </div>
   );

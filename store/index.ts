@@ -6,6 +6,7 @@ import userReducer from './slices/userSlice';
 import postReducer from './slices/postSlice';
 import commentReducer from './slices/commentSlice';
 import reviewReducer from './slices/reviewSlice';
+import imageReducer from './slices/imageSlice';
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     post: postReducer,
     comment: commentReducer,
     review: reviewReducer,
+    image: imageReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
