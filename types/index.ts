@@ -203,15 +203,22 @@ export interface CreateReviewPayload {
 // AI Image Generation types
 export interface GenerateAIImagePayload {
   prompt: string;
+  refinement?: string;
+  iterations?: number;
 }
 
 export interface GenerateAIImageResponse {
   image_url: string;
+  prompt?: string;
+  refinement?: string;
+  iterations?: number;
 }
 
 export interface ImageGenerationHistory {
   id: string;
   prompt: string;
+  refinement?: string;
+  iterations?: number;
   image_url: string;
   created_at: string;
 }

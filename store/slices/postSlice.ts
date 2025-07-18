@@ -46,7 +46,7 @@ const initialState: PostState = {
   searchFeed: {...initialFeed},
   userPostsFeed: {...initialFeed},
 
-  limit: 5, // TODO: change pagination limit
+  limit: 5,
   currentPost: null,
   selectedUserId: null,
   globalLoading: false,

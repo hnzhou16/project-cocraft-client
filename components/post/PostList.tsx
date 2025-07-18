@@ -40,7 +40,7 @@ export default function PostList({feedType, query, userId}: PostListProps) {
       if (sortBy === 'comments') return b.comment_count - a.comment_count;
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     })
-  }, [posts, sortBy])
+  }, [posts.length, sortBy])
 
   // Initial fetch for all routes
   useEffect(() => {
@@ -142,7 +142,7 @@ export default function PostList({feedType, query, userId}: PostListProps) {
     return (
       <div
         className="bg-secondary-background rounded-lg p-6 text-center">
-        <p className={cn(typography.p1, "mb-0")}>{error}</p>
+        <p className={typography.h4}>{error}</p>
       </div>
     );
   }
@@ -151,8 +151,8 @@ export default function PostList({feedType, query, userId}: PostListProps) {
     return (
       <div
         className="bg-secondary-background rounded-lg p-6 text-center">
-        <p className={typography.h4}>No posts found</p>
-        <p className={typography.p1}>Be the first to create a post!</p>
+        <p className={typography.h4}>No posts found.</p>
+        {/*<p className={typography.p1}>Be the first to create a post!</p>*/}
       </div>
     );
   }
@@ -238,7 +238,7 @@ export default function PostList({feedType, query, userId}: PostListProps) {
         {!hasMore && <p
           className={cn(typography.p1, "text-center")}>{isAuthenticated
           ? "No more posts to load." : "Please log in to see more posts."}</p>}
-        <div ref={loadMoreRef} className="h-10 bg-red-200 mt-10"></div>
+        <div ref={loadMoreRef}></div>
       </div>
     </div>
   );

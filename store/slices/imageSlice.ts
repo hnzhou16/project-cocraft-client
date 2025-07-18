@@ -34,7 +34,7 @@ export const generateAIImage = createAsyncThunk<any, GenerateAIImagePayload, { r
   }
 );
 
-const imageSlice = createSlice<ImageState>({
+const imageSlice = createSlice({
   name: 'image',
   initialState,
   reducers: {

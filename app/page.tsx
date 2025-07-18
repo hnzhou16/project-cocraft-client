@@ -1,13 +1,22 @@
 "use client"
 
-import React, {Suspense} from 'react';
+import React, {Suspense, useEffect, useState} from 'react';
 import ClientFeed from '../components/feed/ClientFeed';
 import {cn, layout, typography} from "@/utils/classnames";
 import {useAppSelector} from "@/store/hooks";
 
 export default function Home() {
   const {isAuthenticated} = useAppSelector((state) => state.auth);
+  const [mounted, setMounted] = useState(false);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    // !!! avoid rendering mismatched content on server vs. client
+    return null;
+  }
   const feedType = isAuthenticated ? "user" : "public";
 
   return (

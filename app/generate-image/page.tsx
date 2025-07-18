@@ -8,7 +8,7 @@ import {button, typography, cn, ui, layout, form} from '@/utils/classnames';
 import {ImageGenerationHistory} from '@/types';
 
 export default function GenerateImagePage() {
-  const [isClient, setIsClient] = useState(false); // !!! must be at the top level to avoid SSR hydration error
+  const [mounted, setMounted] = useState(false); // !!! must be at the top level to avoid SSR hydration error
   const router = useRouter();
   const dispatch = useAppDispatch();
   const {isAuthenticated, loading: authLoading} = useAppSelector((state: any) => state.auth);
@@ -16,14 +16,14 @@ export default function GenerateImagePage() {
   const [prompt, setPrompt] = useState('');
 
   useEffect(() => {
-    setIsClient(true);
+    setMounted(true);
   }, []);
 
   useEffect(() => {
-    if (isClient && !authLoading && !isAuthenticated) {
+    if (mounted && !authLoading && !isAuthenticated) {
       router.push('/login');
     }
-  }, [isClient, authLoading, isAuthenticated]);
+  }, [mounted, authLoading, isAuthenticated]);
 
   useEffect(() => {
     if (error) {
@@ -53,18 +53,29 @@ export default function GenerateImagePage() {
 
   const downloadImage = async (imageUrl: string, prompt: string) => {
     try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
+      const res = await fetch(`/api/download?url=${encodeURIComponent(imageUrl)}&prompt=${encodeURIComponent(prompt)}`);
+      if (!res.ok) {
+        throw new Error('Download failed');
+      }
+
+      // convert the response into a Blob (binary data the browser understands)
+      const blob = await res.blob();
       const url = URL.createObjectURL(blob);
+
+      // create a temporary <a> element for download
       const link = document.createElement('a');
       link.href = url;
-      link.download = `generated-image-${prompt.slice(0, 30).replace(/[^a-zA-Z0-9]/g, '-')}-${Date.now()}.png`;
+      link.download = `${prompt.slice(0, 30).replace(/[^a-zA-Z0-9]/g, '-')}-${Date.now()}.png`;
+
+      // trigger download by "clicking"
       document.body.appendChild(link);
       link.click();
+
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
     } catch (err) {
-      console.error('Failed to download image:', err);
+      console.error('Download error:', err);
+      alert('Failed to download image.');
     }
   };
 
@@ -72,7 +83,7 @@ export default function GenerateImagePage() {
     dispatch(clearHistory());
   };
 
-  if (!isClient || authLoading) {
+  if (!mounted || authLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -91,6 +102,80 @@ export default function GenerateImagePage() {
           Create stunning images with AI. Describe what you want to see and let our AI bring your ideas to life.
         </p>
       </div>
+
+      {/* Input Section */}
+      <div className="bg-card-background rounded-lg border p-6 mb-6">
+        <div className="mb-4">
+          <label htmlFor="prompt" className={cn(typography.h3, "mb-2 block")}>
+            Describe your image
+          </label>
+          <textarea
+            id="prompt"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder="e.g., A modern kitchen with white cabinets, marble countertops, and pendant lighting..."
+            className={cn(form.textarea, "min-h-[70px]")}
+            disabled={isGenerating}
+          />
+        </div>
+
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700">
+            {error}
+          </div>
+        )}
+
+        <div className="flex gap-3">
+          <button
+            onClick={handleGenerateImage}
+            disabled={isGenerating || !prompt.trim()}
+            className={cn(button.primary, isGenerating && "opacity-50 cursor-not-allowed")}
+          >
+            {isGenerating ? 'Generating...' : 'Generate Image'}
+          </button>
+
+          {prompt && (
+            <button
+              onClick={() => setPrompt('')}
+              className={button.secondary}
+              disabled={isGenerating}
+            >
+              Clear
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Current/Selected Image Display */}
+      {currentImage && (
+        <div className="bg-card-background rounded-lg border p-6">
+          <h2 className={cn(typography.h2, "mb-4")}>Current Image</h2>
+          <div className="mb-4 h-[20rem]">
+            <img
+              src={currentImage}
+              alt="Generated image"
+              className="h-full bg-contain rounded-lg shadow-lg"
+            />
+          </div>
+          <div className="flex gap-3 justify-center">
+            <button
+              onClick={() => downloadImage(currentImage, prompt || 'generated-image')}
+              className={button.primary}
+            >
+              Download Image
+            </button>
+            {prompt && (
+              <button
+                onClick={() => handleGenerateImage()}
+                className={button.secondary}
+                disabled={isGenerating}
+              >
+                Regenerate
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Conversation History */}
       {history.length > 0 && (
@@ -151,80 +236,6 @@ export default function GenerateImagePage() {
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-      )}
-
-      {/* Input Section */}
-      <div className="bg-card-background rounded-lg border p-6 mb-6">
-        <div className="mb-4">
-          <label htmlFor="prompt" className={cn(typography.h3, "mb-2 block")}>
-            Describe your image
-          </label>
-          <textarea
-            id="prompt"
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            placeholder="e.g., A modern kitchen with white cabinets, marble countertops, and pendant lighting..."
-            className={cn(form.textarea, "min-h-[70px]")}
-            disabled={isGenerating}
-          />
-        </div>
-
-        {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700">
-            {error}
-          </div>
-        )}
-
-        <div className="flex gap-3">
-          <button
-            onClick={handleGenerateImage}
-            disabled={isGenerating || !prompt.trim()}
-            className={cn(button.primary, isGenerating && "opacity-50 cursor-not-allowed")}
-          >
-            {isGenerating ? 'Generating...' : 'Generate Image'}
-          </button>
-
-          {prompt && (
-            <button
-              onClick={() => setPrompt('')}
-              className={button.secondary}
-              disabled={isGenerating}
-            >
-              Clear
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Current/Selected Image Display */}
-      {currentImage && (
-        <div className="bg-card-background rounded-lg border p-6">
-          <h2 className={cn(typography.h2, "mb-4")}>Current Image</h2>
-          <div className="mb-4">
-            <img
-              src={currentImage}
-              alt="Generated image"
-              className="w-full max-w-2xl mx-auto rounded-lg shadow-lg"
-            />
-          </div>
-          <div className="flex gap-3 justify-center">
-            <button
-              onClick={() => downloadImage(currentImage, prompt || 'generated-image')}
-              className={button.primary}
-            >
-              Download Image
-            </button>
-            {prompt && (
-              <button
-                onClick={() => handleGenerateImage()}
-                className={button.secondary}
-                disabled={isGenerating}
-              >
-                Regenerate
-              </button>
-            )}
           </div>
         </div>
       )}

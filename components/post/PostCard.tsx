@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import {Post} from '@/types';
 import {useAppDispatch, useAppSelector} from '@/store/hooks';
-import {toggleLike} from '@/store/slices/postSlice';
+import {toggleLike, deletePost} from '@/store/slices/postSlice';
 import {getPostComments, showCreateComment, toggleCommentVisibility} from "@/store/slices/commentSlice";
 import CommentList from '../comment/CommentList';
 import ImageCarousel from '../image/ImageCarousel';
@@ -30,12 +30,21 @@ export default function PostCard({post}: PostCardProps) {
   // Use refreshed comment count if available, fall back to post.comment_count
   // !!! use '??' (null, undefined) not '||' (0, '', null, undefined)
   const commentCount = useAppSelector(state => state.comment.commentCountByPostId[post.id] ?? post.comment_count);
-  const {isAuthenticated} = useAppSelector((state: any) => state.auth);
+  const {isAuthenticated, user} = useAppSelector((state: any) => state.auth);
   const showComments = visibleCommentPosts.includes(post.id);
   const comments = commentsByPostId[post.id] || [];
+  
+  // Check if current user is the post owner
+  const isAuthUser = isAuthenticated && user && user.id === post.user_id;
 
   const handleLikeToggle = () => {
     dispatch(toggleLike(post.id));
+  };
+
+  const handleDeletePost = () => {
+    if (window.confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+      dispatch(deletePost(post.id));
+    }
   };
 
   const formatDate = (dateString?: string) => {
@@ -63,19 +72,41 @@ export default function PostCard({post}: PostCardProps) {
       <div className="card overflow-hidden">
         <div className="p-4">
           {/* User Info */}
-          <div className="flex flex-row mb-4">
-            <div className={cn(ui.avatar.base, ui.avatar.md)}>
-              {post.username.charAt(0).toUpperCase()}
+          <div className="flex flex-row justify-between items-start mb-4">
+            <div className="flex flex-row">
+              <div className={cn(ui.avatar.base, ui.avatar.md)}>
+                {post.username.charAt(0).toUpperCase()}
+              </div>
+              <div className="ml-3">
+                <Link
+                  href={`/profile/${post.user_id}`}
+                  className="text-sm font-medium text-primary hover:underline"
+                >
+                  {post.username}
+                </Link>
+                <p className="text-xs text-secondary-foreground">{formatDate(post.created_at)}</p>
+              </div>
             </div>
-            <div className="ml-3">
-              <Link
-                href={`/profile/${post.user_id}`}
-                className="text-sm font-medium text-primary hover:underline"
+            
+            {/* Delete Button - Only show for post owner */}
+            {isAuthUser && (
+              <button
+                onClick={handleDeletePost}
+                className={button.ghost}
+                title="Delete post"
               >
-                {post.username}
-              </Link>
-              <p className="text-xs text-secondary-foreground">{formatDate(post.created_at)}</p>
-            </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+              </button>
+            )}
           </div>
 
           {/* Post Title */}
