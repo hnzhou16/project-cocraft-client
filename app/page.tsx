@@ -23,10 +23,9 @@ export default function Home() {
     <div className="container mx-auto px-4 pb-8">
       {/* Welcome Card */}
       <div className={cn(
-        "w-full bg-center bg-no-repeat h-[30rem]",
-        "sm:bg-cover bg-contain", // contain still show full image on smaller screen
+        "w-full bg-center bg-no-repeat bg-contain h-[30rem]",
         "bg-[url('/images/hero_main.png')]",
-        "dark:bg-[url('/images/hero_main_dark.png')]"
+        "dark:bg-[url('/images/hero_main_dark.png')]",
       )}
       >
       </div>
