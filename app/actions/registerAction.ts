@@ -37,13 +37,17 @@ export async function registerAction(
     await authService.register(userData);
     return {error: '', success: true}
   } catch (err) {
-    switch (err.code) {
-      case 'DUPLICATE_USERNAME':
-        return {error: 'Username already exists.', success: false};
-      case 'DUPLICATE_EMAIL':
-        return {error: 'Email already exists.', success: false};
-      default:
-        return {error: err.message || 'Registration failed.', success: false};
+    if (typeof err === 'object' && err !== null && 'code' in err) {
+      const errorCode = (err as { code: string }).code;
+
+      switch (errorCode) {
+        case 'DUPLICATE_USERNAME':
+          return {error: 'Username already exists.', success: false};
+        case 'DUPLICATE_EMAIL':
+          return {error: 'Email already exists.', success: false};
+      }
     }
+    const message = (err as Error).message || 'Registration failed.';
+    return {error: message, success: false};
   }
 }

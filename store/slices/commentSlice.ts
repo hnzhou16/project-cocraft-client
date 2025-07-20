@@ -80,7 +80,7 @@ export const deleteComment = createAsyncThunk<
   }
 );
 
-const commentSlice = createSlice<CommentState>({
+const commentSlice = createSlice({
   name: 'comment',
   initialState,
   reducers: {
@@ -113,11 +113,11 @@ const commentSlice = createSlice<CommentState>({
   extraReducers: (builder) => {
     builder
       // Get Post Comments
-      .addCase(getPostComments.pending, (state) => {
+      .addCase(getPostComments.pending, (state: CommentState) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getPostComments.fulfilled, (state, action) => {
+      .addCase(getPostComments.fulfilled, (state: CommentState, action) => {
         const {postId, comments, commentCount} = action.payload;
         state.commentCountByPostId[postId] = commentCount
         // Sort comments by creation date (newest first)
@@ -130,16 +130,16 @@ const commentSlice = createSlice<CommentState>({
         }
         state.loading = false;
       })
-      .addCase(getPostComments.rejected, (state, action) => {
+      .addCase(getPostComments.rejected, (state: CommentState, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
       // Create Comment
-      .addCase(createComment.pending, (state) => {
+      .addCase(createComment.pending, (state: CommentState) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(createComment.fulfilled, (state, action) => {
+      .addCase(createComment.fulfilled, (state: CommentState, action) => {
         const {postId, comment} = action.payload;
         state.loading = false;
 
@@ -154,16 +154,16 @@ const commentSlice = createSlice<CommentState>({
         // Clear the selected comment after replying
         state.selectedComment = null;
       })
-      .addCase(createComment.rejected, (state, action) => {
+      .addCase(createComment.rejected, (state: CommentState, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
       // Delete Comment
-      .addCase(deleteComment.pending, (state) => {
+      .addCase(deleteComment.pending, (state: CommentState) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(deleteComment.fulfilled, (state, action) => {
+      .addCase(deleteComment.fulfilled, (state: CommentState, action) => {
         const {postId, commentId} = action.payload;
         state.loading = false;
         if (state.commentsByPostId[postId]) {
@@ -172,7 +172,7 @@ const commentSlice = createSlice<CommentState>({
           );
         }
       })
-      .addCase(deleteComment.rejected, (state, action) => {
+      .addCase(deleteComment.rejected, (state: CommentState, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

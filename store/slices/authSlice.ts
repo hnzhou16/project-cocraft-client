@@ -49,7 +49,7 @@ export const logout = createAsyncThunk<void, void, { rejectValue: string }>(
 );
 
 
-const authSlice = createSlice<AuthState>({
+const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
@@ -60,11 +60,11 @@ const authSlice = createSlice<AuthState>({
   extraReducers: (builder) => {
     builder
       // Get Current User
-      .addCase(getCurrentUser.pending, (state) => {
+      .addCase(getCurrentUser.pending, (state: AuthState) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getCurrentUser.fulfilled, (state, action: PayloadAction<UserWithStats>) => {
+      .addCase(getCurrentUser.fulfilled, (state: AuthState, action: PayloadAction<UserWithStats>) => {
         state.loading = false;
         state.user = action.payload.user;
         state.postCount = action.payload.post_count;
@@ -72,14 +72,14 @@ const authSlice = createSlice<AuthState>({
         state.followingCount = action.payload.following_count;
         state.isAuthenticated = true;
       })
-      .addCase(getCurrentUser.rejected, (state, action) => {
+      .addCase(getCurrentUser.rejected, (state: AuthState, action) => {
         state.loading = false;
         state.user = null;
         state.isAuthenticated = false;
         state.error = action.payload as string;
       })
       // Logout
-      .addCase(logout.fulfilled, (state) => {
+      .addCase(logout.fulfilled, (state: AuthState) => {
         state.user = null;
         state.isAuthenticated = false;
         state.loading = false;

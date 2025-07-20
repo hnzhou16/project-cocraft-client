@@ -4,7 +4,7 @@ import {
   Post,
   PostWithLikeStatus,
   UpdatePostPayload,
-  CursorPaginationQuery
+  CursorPaginationQuery, FeedResponse
 } from '@/types';
 
 export const postService = {
@@ -14,23 +14,23 @@ export const postService = {
   },
 
   // Get public feed
-  getPublicFeed: async (pagination?: CursorPaginationQuery): Promise<PostWithLikeStatus[]> => {
-    return apiCall<PostWithLikeStatus[]>('GET', '/feed/public', undefined, pagination as Record<string, string>);
+  getPublicFeed: async (pagination?: CursorPaginationQuery): Promise<FeedResponse> => {
+    return apiCall<FeedResponse>('GET', '/feed/public', undefined, pagination as Record<string, string>);
   },
 
   // Get user feed (following, mentions, etc.)
-  getUserFeed: async (pagination?: CursorPaginationQuery): Promise<PostWithLikeStatus[]> => {
-    return apiCall<PostWithLikeStatus[]>('GET', '/feed/user', undefined, pagination as Record<string, string>);
+  getUserFeed: async (pagination?: CursorPaginationQuery): Promise<FeedResponse> => {
+    return apiCall<FeedResponse>('GET', '/feed/user', undefined, pagination as Record<string, string>);
   },
 
   // Get all posts by a user
-  getPostsByUserId: async (userId: string, pagination?: CursorPaginationQuery): Promise<PostWithLikeStatus[]> => {
-    return apiCall<PostWithLikeStatus[]>('GET', `/post/user/${userId}`, undefined, pagination as Record<string, string>);
+  getPostsByUserId: async (userId: string, pagination?: CursorPaginationQuery): Promise<FeedResponse> => {
+    return apiCall<FeedResponse>('GET', `/post/user/${userId}`, undefined, pagination as Record<string, string>);
   },
 
   // Search Posts
-  searchPosts: async (pagination?: CursorPaginationQuery): Promise<PostWithLikeStatus[]> => {
-    return apiCall<PostWithLikeStatus[]>('GET', '/feed/search', undefined, pagination as Record<string, string>);
+  searchPosts: async (pagination?: CursorPaginationQuery): Promise<FeedResponse> => {
+    return apiCall<FeedResponse>('GET', '/feed/search', undefined, pagination as Record<string, string>);
   },
 
   // Update a post

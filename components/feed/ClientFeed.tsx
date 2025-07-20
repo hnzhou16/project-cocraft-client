@@ -10,12 +10,13 @@ interface ClientFeedProps {
   showFilter?: boolean; // show FeedFilterBar
   userId?: string; // for user profile
 }
-export default function ClientFeed({feedType, query, showFilter=true, userId}: ClientFeedProps) {
+
+export default function ClientFeed({feedType, query, showFilter = true, userId}: ClientFeedProps) {
   return (
     <div>
-      {showFilter && <FeedFilterBar feedType={feedType} query={query} usrId={userId} />}
+      {showFilter && <FeedFilterBar feedType={feedType} query={query}/>}
       <div className="mt-4">
-        <PostList feedType={feedType} query={query} userId={userId} />
+        <PostList feedType={feedType} query={query} userId={userId}/>
       </div>
     </div>
   );

@@ -33,6 +33,7 @@ export const createReview = createAsyncThunk<Review, CreateReviewPayload, { reje
   async (reviewData: CreateReviewPayload, {rejectWithValue}) => {
     try {
       const response = await reviewService.createReview(reviewData);
+      console.log(response)
       return response;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to create review');
@@ -52,7 +53,7 @@ export const deleteReview = createAsyncThunk<string, {reviewId: string, ratedUse
   }
 );
 
-const reviewSlice = createSlice<ReviewState>({
+const reviewSlice = createSlice({
   name: 'review',
   initialState,
   reducers: {
@@ -66,41 +67,41 @@ const reviewSlice = createSlice<ReviewState>({
   extraReducers: (builder) => {
     builder
       // Get User Reviews
-      .addCase(fetchUserReviews.pending, (state) => {
+      .addCase(fetchUserReviews.pending, (state: ReviewState) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchUserReviews.fulfilled, (state, action: PayloadAction<Review[]>) => {
+      .addCase(fetchUserReviews.fulfilled, (state: ReviewState, action: PayloadAction<Review[]>) => {
         state.loading = false;
         state.reviews = action.payload;
       })
-      .addCase(fetchUserReviews.rejected, (state, action) => {
+      .addCase(fetchUserReviews.rejected, (state: ReviewState, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
       // Create Review
-      .addCase(createReview.pending, (state) => {
+      .addCase(createReview.pending, (state: ReviewState) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(createReview.fulfilled, (state, action: PayloadAction<Review>) => {
+      .addCase(createReview.fulfilled, (state: ReviewState, action: PayloadAction<Review>) => {
         state.loading = false;
-        state.reviews = [action.payload, ...state.reviews];
+        state.reviews = [action.payload, ...(state.reviews || [])];
       })
-      .addCase(createReview.rejected, (state, action) => {
+      .addCase(createReview.rejected, (state: ReviewState, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
       // Delete Review
-      .addCase(deleteReview.pending, (state) => {
+      .addCase(deleteReview.pending, (state: ReviewState) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(deleteReview.fulfilled, (state, action: PayloadAction<string>) => {
+      .addCase(deleteReview.fulfilled, (state: ReviewState, action: PayloadAction<string>) => {
         state.loading = false;
         state.reviews = state.reviews.filter(review => review.id !== action.payload);
       })
-      .addCase(deleteReview.rejected, (state, action) => {
+      .addCase(deleteReview.rejected, (state: ReviewState, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

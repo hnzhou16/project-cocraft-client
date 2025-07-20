@@ -231,7 +231,6 @@ export default function PostList({feedType, query, userId}: PostListProps) {
         {sortedPosts && sortedPosts?.map((post) => (
           <PostCard
             key={`${feedType}-${post.id}`}
-            feedType={feedType}
             post={post}
           />
         ))}

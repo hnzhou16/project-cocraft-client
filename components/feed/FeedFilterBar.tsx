@@ -26,7 +26,7 @@ export default function FeedFilterBar({feedType, query, className = ''}: FeedFil
   const searchParams = useSearchParams();
 
   const {isAuthenticated} = useAppSelector(state => state.auth);
-  const {limit, cursor} = useAppSelector(state => state.post);
+  const {limit} = useAppSelector(state => state.post);
 
   const [feedFilter, setFeedFilter] = useState(INITIAL_FEED_FILTER_STATE);
   const [rolesFilter, setRolesFilter] = useState<Role[]>([]);
@@ -46,7 +46,7 @@ export default function FeedFilterBar({feedType, query, className = ''}: FeedFil
   useEffect(() => {
     const payload: CursorPaginationQuery = {
       limit,
-      cursor,
+      // cursor,
       sort: 'desc',
       following: feedFilter[FeedFilterKey.Following],
       mentioned: feedFilter[FeedFilterKey.Mentioned],
@@ -67,7 +67,7 @@ export default function FeedFilterBar({feedType, query, className = ''}: FeedFil
         dispatch(fetchSearchFeed(payload));
         break;
     }
-  }, [dispatch, searchParams, limit, cursor, isAuthenticated, feedFilter, rolesFilter, feedType, query]);
+  }, [dispatch, searchParams, limit, isAuthenticated, feedFilter, rolesFilter, feedType, query]);
 
   const updateParams = (params: Record<string, string | null | undefined>) => {
     const current = new URLSearchParams(searchParams.toString());

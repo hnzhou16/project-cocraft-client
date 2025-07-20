@@ -4,7 +4,7 @@ import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
 import {
   Post,
   UpdatePostPayload,
-  CursorPaginationQuery, FeedResponse
+  CursorPaginationQuery, FeedResponse, FlattenedFeedResponse
 } from '@/types';
 import {postService} from "@/services";
 
@@ -68,16 +68,16 @@ function updateLikeCount(posts: Post[], postId: string, likeStatus: boolean): Po
 
 // createAsyncThunk<Return type(success), Input type(arg pass to thunk), Config(err type)>
 export const fetchPublicFeed = createAsyncThunk<
-  FeedResponse,
+  FlattenedFeedResponse,
   CursorPaginationQuery | undefined,
   { rejectValue: string }
 >(
   'post/fetchPublicFeed',
-  async (pagination: CursorPaginationQuery | undefined = undefined, {rejectWithValue}) => {
+  async (pagination: CursorPaginationQuery | undefined, {rejectWithValue}) => {
     try {
-      const {posts, next_cursor} = await postService.getPublicFeed(pagination);
+      const {posts_with_status, next_cursor} = await postService.getPublicFeed(pagination);
 
-      const flattenedPosts: Post[] = posts?.map((pws) => ({
+      const flattenedPosts: Post[] = posts_with_status?.map((pws) => ({
         ...pws.post,
         username: pws.username.split("_").join(" "),
         likedByUser: pws.liked_by_user,
@@ -91,22 +91,22 @@ export const fetchPublicFeed = createAsyncThunk<
 );
 
 export const fetchUserFeed = createAsyncThunk<
-  FeedResponse,
+  FlattenedFeedResponse,
   CursorPaginationQuery | undefined,
   { rejectValue: string }
 >(
   'post/fetchUserFeed',
   async (pagination: CursorPaginationQuery, {rejectWithValue}) => {
     try {
-      const {posts, next_cursor} = await postService.getUserFeed(pagination)
+      const {posts_with_status, next_cursor} = await postService.getUserFeed(pagination)
 
       // flatten posts data
-      const flattenedPosts: Post[] = posts?.map((pws) => ({
+      const flattenedPosts: Post[] = posts_with_status?.map((pws) => ({
         ...pws.post,
         username: pws.username.split("_").join(" "),
         likedByUser: pws.liked_by_user,
       }))
-      // console.log('postUser: ', flattenedPosts)
+      // console.log('postUser: ', flattenedPosts, 'cursor: ', next_cursor)
 
       const currentFilter = {...pagination, cursor: undefined, reset: undefined}
 
@@ -124,17 +124,17 @@ export const fetchUserFeed = createAsyncThunk<
 );
 
 export const fetchSearchFeed = createAsyncThunk<
-  FeedResponse,
+  FlattenedFeedResponse,
   CursorPaginationQuery,
   { rejectValue: string }
 >(
   'post/fetchSearchFeed',
   async (pagination: CursorPaginationQuery, {rejectWithValue}) => {
     try {
-      const {posts, next_cursor} = await postService.searchPosts(pagination);
+      const {posts_with_status, next_cursor} = await postService.searchPosts(pagination);
 
       // flatten posts data
-      const flattenedPosts: Post[] = posts?.map((pws) => ({
+      const flattenedPosts: Post[] = posts_with_status?.map((pws) => ({
         ...pws.post,
         username: pws.username.split("_").join(" "),
         likedByUser: pws.liked_by_user,
@@ -156,17 +156,17 @@ export const fetchSearchFeed = createAsyncThunk<
 );
 
 export const fetchPostsByUserId = createAsyncThunk<
-  FeedResponse,
+  FlattenedFeedResponse,
   { userId: string, pagination?: CursorPaginationQuery },
   { rejectValue: string }
 >(
   'post/fetchPostsByUserId',
   async ({userId, pagination}: { userId: string; pagination?: CursorPaginationQuery }, {rejectWithValue}) => {
     try {
-      const {posts, next_cursor} = await postService.getPostsByUserId(userId, pagination);
+      const {posts_with_status, next_cursor} = await postService.getPostsByUserId(userId, pagination);
 
       // flatten posts data
-      const flattenedPosts: Post[] = posts?.map((pws) => ({
+      const flattenedPosts: Post[] = posts_with_status?.map((pws) => ({
         ...pws.post,
         username: pws.username.split("_").join(" "),
         likedByUser: pws.liked_by_user,
@@ -231,8 +231,7 @@ export const deletePost = createAsyncThunk<
   }
 );
 
-
-const postSlice = createSlice<PostState>({
+const postSlice = createSlice({
   name: 'post',
   initialState,
   reducers: {
@@ -246,11 +245,11 @@ const postSlice = createSlice<PostState>({
   extraReducers: (builder) => {
     builder
       // Fetch Public Feed
-      .addCase(fetchPublicFeed.pending, (state) => {
+      .addCase(fetchPublicFeed.pending, (state: PostState) => {
         state.publicFeed.loading = true;
         state.publicFeed.error = null;
       })
-      .addCase(fetchPublicFeed.fulfilled, (state, action: PayloadAction<FeedResponse>) => {
+      .addCase(fetchPublicFeed.fulfilled, (state: PostState, action: PayloadAction<FlattenedFeedResponse>) => {
         const {posts, nextCursor, reset} = action.payload
         state.publicFeed.posts = posts ?? [];
         state.publicFeed.cursor = nextCursor ?? undefined;
@@ -261,16 +260,16 @@ const postSlice = createSlice<PostState>({
           : 'No posts found. Please log in to see more posts. ';
         state.publicFeed.loading = false;
       })
-      .addCase(fetchPublicFeed.rejected, (state, action) => {
+      .addCase(fetchPublicFeed.rejected, (state: PostState, action) => {
         state.publicFeed.loading = false;
         state.publicFeed.error = 'No posts found. Please log in to see more posts.';
       })
       // Fetch User Feed
-      .addCase(fetchUserFeed.pending, (state) => {
+      .addCase(fetchUserFeed.pending, (state: PostState) => {
         state.userFeed.loading = true;
         state.userFeed.error = null;
       })
-      .addCase(fetchUserFeed.fulfilled, (state, action: PayloadAction<FeedResponse>) => {
+      .addCase(fetchUserFeed.fulfilled, (state: PostState, action: PayloadAction<FlattenedFeedResponse>) => {
         const {posts, nextCursor, reset, filter} = action.payload;
 
         if (reset) {
@@ -289,17 +288,17 @@ const postSlice = createSlice<PostState>({
         state.userFeed.hasMore = !!nextCursor;
         state.userFeed.loading = false;
       })
-      .addCase(fetchUserFeed.rejected, (state, action) => {
+      .addCase(fetchUserFeed.rejected, (state: PostState, action) => {
         state.userFeed.loading = false;
         state.userFeed.error = 'No posts found.';
       })
       // Fetch User Posts
-      .addCase(fetchPostsByUserId.pending, (state) => {
+      .addCase(fetchPostsByUserId.pending, (state: PostState) => {
         state.userPostsFeed.loading = true;
         state.userPostsFeed.error = null;
       })
-      .addCase(fetchPostsByUserId.fulfilled, (state, action: PayloadAction<FeedResponse>) => {
-        const {posts, nextCursor, userId} = action.payload;
+      .addCase(fetchPostsByUserId.fulfilled, (state: PostState, action: PayloadAction<FlattenedFeedResponse>) => {
+        const {posts, nextCursor, selectedUserId: userId} = action.payload;
         // rewrite userPostsFeed if hop on a new user profile page
         if (userId !== state.selectedUserId) {
           state.userPostsFeed.posts = posts;
@@ -317,16 +316,16 @@ const postSlice = createSlice<PostState>({
         state.userPostsFeed.hasMore = !!nextCursor;
         state.userPostsFeed.loading = false;
       })
-      .addCase(fetchPostsByUserId.rejected, (state, action) => {
+      .addCase(fetchPostsByUserId.rejected, (state: PostState, action) => {
         state.userPostsFeed.loading = false;
         state.userPostsFeed.error = action.payload as string;
       })
       // Fetch Search Feed
-      .addCase(fetchSearchFeed.pending, (state) => {
+      .addCase(fetchSearchFeed.pending, (state: PostState) => {
         state.searchFeed.loading = true;
         state.searchFeed.error = null;
       })
-      .addCase(fetchSearchFeed.fulfilled, (state, action: PayloadAction<FeedResponse>) => {
+      .addCase(fetchSearchFeed.fulfilled, (state: PostState, action: PayloadAction<FlattenedFeedResponse>) => {
         const {posts, nextCursor, reset, filter} = action.payload;
 
         if (posts && posts.length > 0) {
@@ -347,11 +346,14 @@ const postSlice = createSlice<PostState>({
         state.searchFeed.hasMore = !!nextCursor;
         state.searchFeed.loading = false;
       })
-      .addCase(fetchSearchFeed.rejected, (state, action) => {
+      .addCase(fetchSearchFeed.rejected, (state: PostState, action) => {
         state.searchFeed.loading = false;
         state.searchFeed.error = 'No posts found.';
       })
-      .addCase(toggleLike.fulfilled, (state, action: PayloadAction<{ postId: string; likeStatus: boolean }>) => {
+      .addCase(toggleLike.fulfilled, (state: PostState, action: PayloadAction<{
+        postId: string;
+        likeStatus: boolean
+      }>) => {
         const {postId, likeStatus} = action.payload;
 
         if (state.currentPost?.id === postId) {
@@ -366,11 +368,11 @@ const postSlice = createSlice<PostState>({
         state.publicFeed.posts = updateLikeCount(state.publicFeed.posts, postId, likeStatus);
         state.userFeed.posts = updateLikeCount(state.userFeed.posts, postId, likeStatus);
       })
-      .addCase(updatePost.pending, (state) => {
+      .addCase(updatePost.pending, (state: PostState) => {
         state.globalLoading = true;
         state.globalError = null;
       })
-      .addCase(updatePost.fulfilled, (state, action: PayloadAction<Post>) => {
+      .addCase(updatePost.fulfilled, (state: PostState, action: PayloadAction<Post>) => {
         state.globalLoading = false;
         state.currentPost = action.payload;
         state.userPostsFeed.posts = state.userPostsFeed.posts.map(post =>
@@ -383,17 +385,17 @@ const postSlice = createSlice<PostState>({
           post.id === action.payload.id ? action.payload : post
         );
       })
-      .addCase(updatePost.rejected, (state, action) => {
+      .addCase(updatePost.rejected, (state: PostState, action) => {
         state.globalLoading = false;
         state.globalError = action.payload as string;
       })
       // Delete Post
-      .addCase(deletePost.pending, (state) => {
+      .addCase(deletePost.pending, (state: PostState) => {
         state.globalLoading = true;
         state.globalError = null;
       })
 
-      .addCase(deletePost.fulfilled, (state, action: PayloadAction<string>) => {
+      .addCase(deletePost.fulfilled, (state: PostState, action: PayloadAction<string>) => {
         state.globalLoading = false;
         if (state.currentPost?.id === action.payload) {
           state.currentPost = null;
@@ -402,7 +404,7 @@ const postSlice = createSlice<PostState>({
         state.publicFeed.posts = state.publicFeed.posts.filter(post => post.id !== action.payload);
         state.userFeed.posts = state.userFeed.posts.filter(post => post.id !== action.payload);
       })
-      .addCase(deletePost.rejected, (state, action) => {
+      .addCase(deletePost.rejected, (state: PostState, action) => {
         state.globalLoading = false;
         state.globalError = action.payload as string;
       })

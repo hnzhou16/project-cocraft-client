@@ -2,18 +2,24 @@
 
 import React, {useActionState, useEffect, useState} from 'react';
 import {useRouter} from "next/navigation";
-import {useAppSelector} from '@/store/hooks';
 import {createPostAction} from "@/app/actions/createPostAction";
 import ImageUploader from "@/components/image/imageUploader";
 import {UploadedImage} from "@/types";
 import imageService from "@/services/imageService";
 import {button, cn, form, typography} from "@/utils/classnames";
-import Image from "next/image";
 
 const CreatePostForm: React.FC = () => {
   const router = useRouter()
-  const {loading} = useAppSelector(state => state.post);
-  const [state, formAction] = useActionState(createPostAction, {error: '', success: false})
+  const [loading, setLoading] = useState(false);
+
+  const wrappedAction = async (prevState, formData: FormData) => {
+    setLoading(true);
+    const result = await createPostAction(prevState, formData);
+    setLoading(false);
+    return result;
+  };
+  // wrap createPostAction with a custom function to set loading status
+  const [state, formAction] = useActionState(wrappedAction, {error: '', success: false})
 
   const [images, setImages] = useState<UploadedImage[]>([]);
 

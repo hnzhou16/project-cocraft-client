@@ -115,8 +115,13 @@ export interface PostWithLikeStatus {
 }
 
 export interface FeedResponse {
-  posts: Post[];
+  posts_with_status: PostWithLikeStatus[];
   next_cursor: string;
+}
+
+export interface FlattenedFeedResponse {
+  posts: Post[];
+  nextCursor: string;
   selectedUserId?: string;
   reset?: boolean;
   filter?: CursorPaginationQuery;

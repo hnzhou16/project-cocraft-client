@@ -11,8 +11,6 @@
     "types": [
       "next",
       "node",
-      "jest",
-      "server"
     ], // Add Node.js and Next.js types
     "typeRoots": [
       "node_modules/@types",

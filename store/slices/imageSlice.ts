@@ -51,17 +51,17 @@ const imageSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(generateAIImage.pending, (state) => {
+      .addCase(generateAIImage.pending, (state: ImageState) => {
         state.isGenerating = true;
         state.error = null;
       })
-      .addCase(generateAIImage.fulfilled, (state, action) => {
+      .addCase(generateAIImage.fulfilled, (state: ImageState, action) => {
         state.isGenerating = false;
         state.history.unshift(action.payload);
         state.currentImage = action.payload.image_url;
         state.error = null;
       })
-      .addCase(generateAIImage.rejected, (state, action) => {
+      .addCase(generateAIImage.rejected, (state: ImageState, action) => {
         state.isGenerating = false;
         state.error = action.payload as string;
       });
