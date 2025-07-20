@@ -19,7 +19,7 @@ export default function MainLayout({children}: MainLayoutProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const {user, postCount, followerCount, followingCount, isAuthenticated, loading, error} = useAppSelector((state: any) => state.auth);
+  const {user, postCount, followerCount, followingCount, isAuthenticated, loading, error} = useAppSelector(state => state.auth);
 
   // Handle scroll event
   // useCallback memorizes the function — it returns the same function instance unless its dependencies change.
@@ -44,8 +44,8 @@ export default function MainLayout({children}: MainLayoutProps) {
 
   // Fetch user on MainLayout
   useEffect(() => {
-    dispatch(getCurrentUser())
-  }, [isAuthenticated, pathname])
+      dispatch(getCurrentUser())
+  }, [dispatch, isAuthenticated, pathname])
 
   useEffect(() => {
     // public pages where unauthenticated user have access

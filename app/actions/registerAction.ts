@@ -36,7 +36,7 @@ export async function registerAction(
   try {
     await authService.register(userData);
     return {error: '', success: true}
-  } catch (err: any) {
+  } catch (err) {
     switch (err.code) {
       case 'DUPLICATE_USERNAME':
         return {error: 'Username already exists.', success: false};

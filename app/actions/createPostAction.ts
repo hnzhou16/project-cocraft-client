@@ -7,8 +7,8 @@ import {cookies} from "next/headers";
 export async function createPostAction(
   prevState: { error?: string; success?: boolean }, formData: FormData
 ): Promise<{ success: boolean } | { error: string }> {
-  const cookieStore = cookies()
-  const token = cookieStore.get("token")?.value;
+  const cookieStore = await cookies()
+  const token = cookieStore.get("token" as any)?.value;
 
   const title = formData.get('title') as string;
   const content = formData.get('content') as string;
@@ -26,6 +26,7 @@ export async function createPostAction(
     await postService.createPost(postData, token)
     return {success: true}
   } catch (error) {
-    return {error: "Failed to create post."}
+    console.log(error)
+    return {error: `Failed to create post.`}
   }
 }

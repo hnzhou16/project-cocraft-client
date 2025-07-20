@@ -11,8 +11,8 @@ export default function GenerateImagePage() {
   const [mounted, setMounted] = useState(false); // !!! must be at the top level to avoid SSR hydration error
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const {isAuthenticated, loading: authLoading} = useAppSelector((state: any) => state.auth);
-  const {history, isGenerating, error, currentImage} = useAppSelector((state: any) => state.image);
+  const {isAuthenticated, loading: authLoading} = useAppSelector(state => state.auth);
+  const {history, isGenerating, error, currentImage} = useAppSelector(state => state.image);
   const [prompt, setPrompt] = useState('');
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export default function GenerateImagePage() {
     if (mounted && !authLoading && !isAuthenticated) {
       router.push('/login');
     }
-  }, [mounted, authLoading, isAuthenticated]);
+  }, [router, mounted, authLoading, isAuthenticated]);
 
   useEffect(() => {
     if (error) {
@@ -181,7 +181,7 @@ export default function GenerateImagePage() {
       {history.length > 0 && (
         <div className="bg-card-background rounded-lg border p-6 mb-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className={cn(typography.h2)}>Generation History</h2>
+          <h2 className={cn(typography.h2)}>Generation History</h2>
             <button
               onClick={handleClearHistory}
               className={cn(button.secondary, "text-sm")}

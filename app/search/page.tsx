@@ -11,7 +11,7 @@ export default function SearchPage() {
   const searchParams = useSearchParams();
 
   const [query, setQuery] = useState<string | null>(null);
-  const { isAuthenticated } = useAppSelector((state: any) => state.auth);
+  const { isAuthenticated } = useAppSelector(state => state.auth);
 
   useEffect(() => {
     const q = searchParams.get("q")?.trim() || "";
@@ -29,7 +29,7 @@ export default function SearchPage() {
     <div className={layout.container}>
       {/* Main Content */}
       {query && <div className={layout.main}>
-        <p className={cn(typography.h2, "mb_6")}>Search Results for <span className="italic">"{query}"</span></p>
+        <p className={cn(typography.h2, "mb_6")}>Search Results for <span className="italic">&quot;{query}&quot;</span></p>
         <Suspense fallback={<div className="animate-pulse h-96 bg-gray-200 rounded-lg"></div> as React.ReactNode}>
           <ClientFeed feedType="search" query={query}/>
         </Suspense>

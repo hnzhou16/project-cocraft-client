@@ -32,7 +32,8 @@ export default function RootLayout({
     {/* set font outfit variable instead of just classname on body element, so nextjs preload font, better performance,
     and the font becomes available to all child components */}
     <body
-      className={`${outfit.variable} font-outfit`}
+      suppressHydrationWarning
+      className={`${outfit.variable} font-outfit antialiased`}
     >
     <ReduxProvider>
       <MainLayout>{children}</MainLayout>

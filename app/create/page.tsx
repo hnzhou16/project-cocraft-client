@@ -7,7 +7,7 @@ import CreatePostForm from '../../components/post/CreatePostForm';
 import {cn, layout, typography} from "@/utils/classnames";
 
 export default function CreatePostPage() {
-  const { isAuthenticated } = useAppSelector((state: any) => state.auth);
+  const { isAuthenticated } = useAppSelector(state => state.auth);
   const router = useRouter();
   
   useEffect(() => {

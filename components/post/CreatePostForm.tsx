@@ -8,10 +8,11 @@ import ImageUploader from "@/components/image/imageUploader";
 import {UploadedImage} from "@/types";
 import imageService from "@/services/imageService";
 import {button, cn, form, typography} from "@/utils/classnames";
+import Image from "next/image";
 
 const CreatePostForm: React.FC = () => {
   const router = useRouter()
-  const {loading} = useAppSelector((state: any) => state.post);
+  const {loading} = useAppSelector(state => state.post);
   const [state, formAction] = useActionState(createPostAction, {error: '', success: false})
 
   const [images, setImages] = useState<UploadedImage[]>([]);
@@ -20,7 +21,7 @@ const CreatePostForm: React.FC = () => {
     if (state.success) {
       router.push('/')
     }
-  }, [state.success]);
+  }, [router, state.success]);
 
   const handleUploadComplete = (newImages: UploadedImage[]) => {
     setImages((prev) => [...prev, ...newImages]);
@@ -103,7 +104,7 @@ const CreatePostForm: React.FC = () => {
                 const imageUrl = `${process.env.NEXT_PUBLIC_S3_BASE_URL}/${img.key}`;
                 return (
                   <div key={index} className="relative">
-                    <img src={imageUrl} alt={`Uploaded ${index}`} className="rounded shadow" />
+                    <img src={imageUrl} alt={`Uploaded ${index}`} className="rounded shadow"/>
                     <button
                       type="button"
                       onClick={() => handleRemoveImage(index)}
@@ -112,7 +113,7 @@ const CreatePostForm: React.FC = () => {
                     >
                       ×
                     </button>
-                    <input type="hidden" name="images[]" value={img.key} />
+                    <input type="hidden" name="images[]" value={img.key}/>
                   </div>
                 );
               })}

@@ -8,7 +8,7 @@ export default function NotFound() {
         <p className={typography.h1}>404</p>
         <p className={typography.h2}>Page Not Found</p>
         <p className={typography.p1}>
-          The page you are looking for doesn't exist or has been moved.
+          The page you are looking for doesn&apos;t exist or has been moved.
         </p>
         <Link 
           href="/" 

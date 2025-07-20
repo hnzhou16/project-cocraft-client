@@ -23,15 +23,21 @@ export async function loginAction(
     // server-side authentication don't need redux dispatch anymore (which is for client-side state management)
     // cookies package can only use in server components
     const token = await authService.login(credentials)
-    cookies().set('token', token, {
+
+    const cookieStore = await cookies();
+
+    cookieStore.set({
+      name: 'token',
+      value: token,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       path: '/',
       maxAge: 60 * 60 * 24 * 3, // 3 day
-    });
+    } as any);
 
     return {success: true};
   } catch (error) {
-    return {error: 'Invalid email or password.'};
+    console.log(error)
+    return {error: `Invalid email or password.`};
   }
 }

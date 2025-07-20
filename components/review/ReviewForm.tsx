@@ -1,4 +1,4 @@
-import React, {useActionState, useState} from 'react';
+import React, {useState} from 'react';
 import {useAppDispatch, useAppSelector} from '@/store/hooks';
 import {createReview} from '@/store/slices/reviewSlice';
 import {CreateReviewPayload} from '@/types';
@@ -11,7 +11,7 @@ interface ReviewFormProps {
 
 const ReviewForm: React.FC<ReviewFormProps> = ({ratedUserId, onSuccess}) => {
   const dispatch = useAppDispatch();
-  const {loading, error} = useAppSelector((state: any) => state.review);
+  const {loading, error} = useAppSelector(state => state.review);
 
   const [score, setScore] = useState<number>(5);
   const [hovered, setHovered] = useState<number | null>(null); // temporary hover state

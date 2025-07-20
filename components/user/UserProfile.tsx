@@ -11,9 +11,9 @@ interface UserProfileProps {
 const UserProfile: React.FC<UserProfileProps> = ({userId}) => {
   const dispatch = useAppDispatch();
   const {selectedProfile, isFollowing, loading: userLoading, error: userError}
-    = useAppSelector((state: any) => state.user);
+    = useAppSelector(state => state.user);
   const {user: selectedUser, post_count, follower_count, following_count} = selectedProfile;
-  const {user: authUser} = useAppSelector((state: any) => state.auth);
+  const {user: authUser} = useAppSelector(state => state.auth);
 
   const [isAuthUser, setIsAuthUser] = useState(false);
 

@@ -10,7 +10,7 @@ import {button, cn, form, typography} from "@/utils/classnames";
 const LoginForm: React.FC = () => {
   const dispatch = useAppDispatch()
   const router = useRouter();
-  const {loading} = useAppSelector((state: any) => state.auth);
+  const {loading} = useAppSelector(state => state.auth);
   const [state, formAction] = useActionState(loginAction, {error: '', success: false});
 
   // userEffect ensures the navigation happens after render completion
@@ -54,6 +54,7 @@ const LoginForm: React.FC = () => {
             id="password"
             className={form.input}
             placeholder="Enter your password"
+            autoComplete="current-password"
             required
           />
         </div>
@@ -72,7 +73,7 @@ const LoginForm: React.FC = () => {
 
         <div className="text-center">
           <p className={typography.p2}>
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Link href="/register" className={typography.link}>
               Register here
             </Link>

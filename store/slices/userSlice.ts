@@ -67,7 +67,6 @@ export const getFollowStatus = createAsyncThunk<boolean, string, {rejectValue: s
   async (userId: string, { rejectWithValue }) => {
     try {
       const response = await userService.getFollowStatus(userId);
-      console.log('getFollowStatus', response)
       return response;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to get follow status');

@@ -14,7 +14,7 @@ export default function ProfilePage() {
   const {userId} = useParams();
 
   const [isAuthUser, setIsAuthUser] = useState(false);
-  const {user: authUser, isAuthenticated} = useAppSelector((state: any) => state.auth);
+  const {user: authUser, isAuthenticated} = useAppSelector(state => state.auth);
 
   useEffect(() => {
     // Redirect to login if not authenticated

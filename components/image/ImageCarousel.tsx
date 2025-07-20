@@ -42,7 +42,7 @@ export default function ImageCarousel({images, altText, baseUrl}: ImageCarouselP
 
       return () => clearInterval(interval); // Clean up on unmount
     }
-  }, [images, isPaused]); // Re-run effect if images or pause state changes
+  }, [images, nextImage, isPaused]); // Re-run effect if images or pause state changes
 
   // Keyboard navigation for carousel
   useEffect(() => {
@@ -61,7 +61,7 @@ export default function ImageCarousel({images, altText, baseUrl}: ImageCarouselP
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isPaused, images]);
+  }, [isPaused, images, nextImage, prevImage]);
 
   // Handle touch events for swipe gestures
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -142,7 +142,7 @@ export default function ImageCarousel({images, altText, baseUrl}: ImageCarouselP
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [fullscreenImage, images]);
+  }, [fullscreenImage, images, closeFullscreen, nextImage, prevImage]);
 
   if (!images || images.length === 0) {
     return null;

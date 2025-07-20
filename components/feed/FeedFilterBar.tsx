@@ -41,7 +41,7 @@ export default function FeedFilterBar({feedType, query, className = ''}: FeedFil
       // replace the current URL with no query string (no reload)
       router.replace(window.location.pathname);
     }
-  }, []);
+  }, [router, searchParams]);
 
   useEffect(() => {
     const payload: CursorPaginationQuery = {
@@ -67,7 +67,7 @@ export default function FeedFilterBar({feedType, query, className = ''}: FeedFil
         dispatch(fetchSearchFeed(payload));
         break;
     }
-  }, [isAuthenticated, searchParams, feedFilter, rolesFilter, feedType, query]);
+  }, [dispatch, searchParams, limit, cursor, isAuthenticated, feedFilter, rolesFilter, feedType, query]);
 
   const updateParams = (params: Record<string, string | null | undefined>) => {
     const current = new URLSearchParams(searchParams.toString());

@@ -21,10 +21,10 @@ interface PostListProps {
 export default function PostList({feedType, query, userId}: PostListProps) {
   const dispatch = useAppDispatch();
 
-  const {isAuthenticated, user} = useAppSelector((state) => state.auth);
+  const {isAuthenticated} = useAppSelector(state => state.auth);
   const {limit, filterParams} = useAppSelector(state => state.post)
   // !!! reuse postList for all pages, dynamically load the right feed
-  const feed = useAppSelector((state: any) => state.post[`${feedType}Feed`]);
+  const feed = useAppSelector(state => state.post[`${feedType}Feed`]);
   // !!! each feed tracks its own cursor, hasMore, etc.
   const {posts, cursor, hasMore, loading, error} = feed;
 
@@ -40,7 +40,7 @@ export default function PostList({feedType, query, userId}: PostListProps) {
       if (sortBy === 'comments') return b.comment_count - a.comment_count;
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     })
-  }, [posts.length, sortBy])
+  }, [posts, posts.length, sortBy])
 
   // Initial fetch for all routes
   useEffect(() => {
@@ -50,7 +50,7 @@ export default function PostList({feedType, query, userId}: PostListProps) {
       ...filterParams, // !!! carry on the filter when fetching more
       limit,
       sort: 'desc',
-      ...(query? {search: query} : {}),
+      ...(query ? {search: query} : {}),
     };
 
     // !!! only dispatches on infinite scrolling (separate from the ones in FeedFilterBar)
@@ -69,7 +69,7 @@ export default function PostList({feedType, query, userId}: PostListProps) {
         dispatch(fetchPostsByUserId({userId: userId, pagination: payload}));
         break;
     }
-  }, [query, userId]);
+  }, [dispatch, feedType, filterParams, limit, query, userId]);
 
   // Infinite scroll observer
   useEffect(() => {
@@ -122,7 +122,7 @@ export default function PostList({feedType, query, userId}: PostListProps) {
     return () => {
       if (observer.current) observer.current.disconnect(); // clean up
     };
-  }, [cursor, loading, hasMore, feedType, posts.length]);
+  }, [dispatch, limit, query, cursor, loading, hasMore, feedType, posts.length, userId]);
 
   if (loading) {
     return (
@@ -238,6 +238,18 @@ export default function PostList({feedType, query, userId}: PostListProps) {
         {!hasMore && <p
           className={cn(typography.p1, "text-center")}>{isAuthenticated
           ? "No more posts to load." : "Please log in to see more posts."}</p>}
+
+        {loading &&
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-secondary-foreground rounded-lg p-6 animate-pulse">
+                <div className="h-4 bg-secondary-foreground rounded w-3/4 mb-4"></div>
+                <div className="h-4 bg-secondary-foreground rounded w-1/2 mb-2"></div>
+                <div className="h-4 bg-secondary-foreground rounded w-1/4"></div>
+              </div>
+            ))}
+          </div>}
+
         <div ref={loadMoreRef}></div>
       </div>
     </div>

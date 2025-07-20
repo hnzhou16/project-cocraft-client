@@ -8,7 +8,7 @@ import {useRouter} from "next/navigation";
 
 const RegisterForm: React.FC = () => {
   const router = useRouter()
-  const {loading} = useAppSelector((state: any) => state.auth);
+  const {loading} = useAppSelector(state => state.auth);
   const [state, formAction] = useActionState(registerAction, {error: '', success: false});
 
   const [username, setUsername] = useState('');
@@ -33,7 +33,7 @@ const RegisterForm: React.FC = () => {
     if (state.success) {
       router.push('/login')
     }
-  }, [state.success]);
+  }, [router, state.success]);
 
   function validatePassword(pw: string): string {
     if (pw.length < 8) return 'Password must be at least 8 characters.';

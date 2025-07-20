@@ -23,14 +23,13 @@ export default function PostCard({post}: PostCardProps) {
   const likeCount = post.like_count;
 
   const showAddComment = useAppSelector(state => !!state.comment.visibleAddComment.includes(post.id))
-  const temp = useAppSelector(state => state.comment.visibleAddComment)
 
   // Get comments state from Redux
   const {commentsByPostId, loadedPosts, visibleCommentPosts, loading} = useAppSelector(state => state.comment);
   // Use refreshed comment count if available, fall back to post.comment_count
   // !!! use '??' (null, undefined) not '||' (0, '', null, undefined)
   const commentCount = useAppSelector(state => state.comment.commentCountByPostId[post.id] ?? post.comment_count);
-  const {isAuthenticated, user} = useAppSelector((state: any) => state.auth);
+  const {isAuthenticated, user} = useAppSelector(state => state.auth);
   const showComments = visibleCommentPosts.includes(post.id);
   const comments = commentsByPostId[post.id] || [];
   

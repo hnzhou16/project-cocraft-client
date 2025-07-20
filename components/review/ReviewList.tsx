@@ -13,14 +13,14 @@ const ReviewList: React.FC<ReviewListProps> = ({userId}) => {
 
   const dispatch = useAppDispatch();
 
-  const {user: authUser} = useAppSelector((state: any) => state.auth);
-  const {reviews, loading, error} = useAppSelector((state: any) => state.review );
+  const {user: authUser} = useAppSelector(state => state.auth);
+  const {reviews, loading, error} = useAppSelector(state => state.review );
 
   useEffect(() => {
     if (userId) {
       dispatch(fetchUserReviews(userId))
     }
-  }, [userId]);
+  }, [dispatch, userId]);
 
   const handleDelete = (reviewId: string, ratedUserId: string) => {
     if (window.confirm('Are you sure you want to delete this review?')) {

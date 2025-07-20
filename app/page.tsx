@@ -17,6 +17,7 @@ export default function Home() {
     // !!! avoid rendering mismatched content on server vs. client
     return null;
   }
+
   const feedType = isAuthenticated ? "user" : "public";
 
   return (

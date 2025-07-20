@@ -7,7 +7,7 @@ import {useAppSelector} from '@/store/hooks';
 import {layout, typography} from "@/utils/classnames";
 
 export default function RegisterPage() {
-  const {isAuthenticated} = useAppSelector((state: any) => state.auth);
+  const {isAuthenticated} = useAppSelector(state => state.auth);
   const router = useRouter();
 
   useEffect(() => {

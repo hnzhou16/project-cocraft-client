@@ -3,7 +3,7 @@
 import React, {useState} from 'react';
 import imageService from "@/services/imageService";
 import {GenerateImagePayload, UploadedImage} from "@/types";
-import {button} from "@/utils/classnames";
+import {button, typography} from "@/utils/classnames";
 
 interface Props {
   onUploadComplete: (uploadedImages: UploadedImage[]) => void;
@@ -44,7 +44,7 @@ const ImageUploader: React.FC<Props> = ({onUploadComplete}) => {
 
       onUploadComplete(uploadedImages);
       setUploadStatus(`Uploaded ${uploadedImages.length} file(s) successfully.`);
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
       setUploadStatus('One or more uploads failed.');
     } finally {
@@ -62,7 +62,7 @@ const ImageUploader: React.FC<Props> = ({onUploadComplete}) => {
       >
         {uploading ? 'Uploading...' : 'Upload Selected Images'}
       </button>
-      {/*{uploadStatus && <p className="text-sm mt-2">{uploadStatus}</p>}*/}
+      {uploadStatus && <p className={typography.p3}></p>}
     </div>
   );
 };

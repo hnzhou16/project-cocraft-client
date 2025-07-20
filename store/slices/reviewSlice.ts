@@ -71,7 +71,6 @@ const reviewSlice = createSlice<ReviewState>({
         state.error = null;
       })
       .addCase(fetchUserReviews.fulfilled, (state, action: PayloadAction<Review[]>) => {
-        console.log(action.payload)
         state.loading = false;
         state.reviews = action.payload;
       })
