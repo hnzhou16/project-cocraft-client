@@ -32,7 +32,7 @@ export default function PostCard({post}: PostCardProps) {
   const {isAuthenticated, user} = useAppSelector(state => state.auth);
   const showComments = visibleCommentPosts.includes(post.id);
   const comments = commentsByPostId[post.id] || [];
-  
+
   // Check if current user is the post owner
   const isAuthUser = isAuthenticated && user && user.id === post.user_id;
 
@@ -72,21 +72,18 @@ export default function PostCard({post}: PostCardProps) {
         <div className="p-4">
           {/* User Info */}
           <div className="flex flex-row justify-between items-start mb-4">
-            <div className="flex flex-row">
+            <Link
+              href={`/profile/${post.user_id}`}
+              className="flex flex-row">
               <div className={cn(ui.avatar.base, ui.avatar.md)}>
                 {post.username.charAt(0).toUpperCase()}
               </div>
               <div className="ml-3">
-                <Link
-                  href={`/profile/${post.user_id}`}
-                  className="text-sm font-medium text-primary hover:underline"
-                >
-                  {post.username}
-                </Link>
+                <p className="text-sm font-medium text-primary hover:underline">{post.username}</p>
                 <p className="text-xs text-secondary-foreground">{formatDate(post.created_at)}</p>
               </div>
-            </div>
-            
+            </Link>
+
             {/* Delete Button - Only show for post owner */}
             {isAuthUser && (
               <button
