@@ -30,10 +30,12 @@ export async function loginAction(
       name: 'token',
       value: token,
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: false,
+      // secure: process.env.NODE_ENV === 'production', // TODO: cookie setting
       path: '/',
       maxAge: 60 * 60 * 24 * 3, // 3 day
     });
+
 
     return {success: true, error: ''};
   } catch (error) {
