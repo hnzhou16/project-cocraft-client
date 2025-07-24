@@ -29,10 +29,11 @@ export async function loginAction(
     cookieStore.set({
       name: 'token',
       value: token,
+      Path: "/",
       httpOnly: true,
-      secure: false,
-      // secure: process.env.NODE_ENV === 'production', // TODO: cookie setting
+      secure: process.env.NODE_ENV === 'production',
       path: '/',
+      domain: '.cocrafthome.com', // !!! add this when deploy
       maxAge: 60 * 60 * 24 * 3, // 3 day
     });
 
