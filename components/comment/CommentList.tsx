@@ -9,7 +9,7 @@ interface CommentListProps {
   error?: string | null;
 }
 
-export default function CommentList({comments, loading = false, error = null}: React.FC<CommentListProps>) {
+export default function CommentList({comments, loading = false, error = null}: CommentListProps) {
   if (loading) {
     return (
       <div className="items-center justify-center py-4">
