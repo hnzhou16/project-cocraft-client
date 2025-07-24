@@ -4,7 +4,7 @@ import Link from 'next/link';
 import {Post} from '@/types';
 import {useAppDispatch, useAppSelector} from '@/store/hooks';
 import {toggleLike, deletePost} from '@/store/slices/postSlice';
-import {getPostComments, showCreateComment, toggleCommentVisibility} from "@/store/slices/commentSlice";
+import {getPostComments, showCreateComment, toggleCommentVisibility, showCommentsSection} from "@/store/slices/commentSlice";
 import CommentList from '../comment/CommentList';
 import ImageCarousel from '../image/ImageCarousel';
 import {typography, button, ui, cn, nav} from '@/utils/classnames';
@@ -190,7 +190,14 @@ export default function PostCard({post}: PostCardProps) {
           {isAuthenticated && showAddComment && (
             <div className="mb-6">
               {/* !!! add callback/dispatch to Form to trigger a refresh of comments onSuccess */}
-              <AddCommentForm postId={post.id as string} onSuccess={() => dispatch(getPostComments(post.id))}/>
+              <AddCommentForm
+                postId={post.id as string}
+                onSuccess={() => {
+                  dispatch(showCommentsSection(post.id))
+                  dispatch(getPostComments(post.id))
+                }
+                }
+              />
             </div>
           )}
 

@@ -9,7 +9,7 @@ interface CommentListProps {
   error?: string | null;
 }
 
-const CommentList: React.FC<CommentListProps> = ({comments, loading = false, error = null}) => {
+export default function CommentList({comments, loading = false, error = null}: React.FC<CommentListProps>) {
   if (loading) {
     return (
       <div className="items-center justify-center py-4">
@@ -43,5 +43,3 @@ const CommentList: React.FC<CommentListProps> = ({comments, loading = false, err
     </div>
   );
 };
-
-export default CommentList;

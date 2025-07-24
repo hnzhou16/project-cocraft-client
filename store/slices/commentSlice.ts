@@ -100,6 +100,12 @@ const commentSlice = createSlice({
         state.visibleCommentPosts.push(postId);
       }
     },
+    showCommentsSection: (state: CommentState, action: PayloadAction<string>) => {
+      const postId = action.payload;
+      if (!state.visibleCommentPosts.includes(postId)) {
+        state.visibleCommentPosts.push(postId);
+      }
+    },
     selectCommentForReply: (state: CommentState, action: PayloadAction<CommentWithParentAndUser | null>) => {
       state.selectedComment = action.payload;
     },
@@ -185,5 +191,6 @@ export const {
   toggleCommentVisibility,
   selectCommentForReply,
   showCreateComment,
+  showCommentsSection
 } = commentSlice.actions;
 export default commentSlice.reducer;
