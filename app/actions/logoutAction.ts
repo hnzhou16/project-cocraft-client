@@ -8,5 +8,8 @@ export async function logoutAction() {
     name: 'token',
     value: '',
     maxAge: 0,
-    path: '/',});
+    path: '/',
+    // TODO: only add this when deploy
+    domain: '.cocrafthome.com',
+  });
 }
