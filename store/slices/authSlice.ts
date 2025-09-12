@@ -68,7 +68,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload.user;
         state.postCount = action.payload.post_count;
-        state.followerCount = action.payload.following_count;
+        state.followerCount = action.payload.follower_count;
         state.followingCount = action.payload.following_count;
         state.isAuthenticated = true;
       })

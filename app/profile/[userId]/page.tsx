@@ -2,15 +2,18 @@
 
 import React, {Suspense, useEffect, useState} from 'react';
 import {useParams, useRouter} from 'next/navigation';
-import {useAppSelector} from '@/store/hooks';
+import {useAppDispatch, useAppSelector} from '@/store/hooks';
 import UserProfile from "@/components/user/UserProfile";
 import ReviewList from "@/components/review/ReviewList";
 import ReviewForm from "@/components/review/ReviewForm";
 import {cn, layout, typography} from "@/utils/classnames";
 import ClientFeed from "@/components/feed/ClientFeed";
+import {useDispatch} from "react-redux";
+import {getUserProfile} from "@/store/slices/userSlice";
 
 export default function ProfilePage() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const {userId} = useParams();
 
   const [isAuthUser, setIsAuthUser] = useState(false);
@@ -48,14 +51,14 @@ export default function ProfilePage() {
       </div>
 
       {/* Reviews */}
-      <div className="card overflow-hidden">
+      <div id="reviews" className="card overflow-hidden">
         <div className="bg-background rounded-lg shadow-md p-6">
           <p className={typography.h3}>Reviews</p>
           {userId && <ReviewList userId={userId as string}/>}
         </div>
 
         {!isAuthUser && authUser && (
-          <ReviewForm ratedUserId={userId as string}/>
+          <ReviewForm ratedUserId={userId as string} onSuccess={() => dispatch(getUserProfile(userId as string))}/>
         )}
       </div>
     </div>

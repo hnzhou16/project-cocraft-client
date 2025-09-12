@@ -3,6 +3,7 @@ import {useAppDispatch, useAppSelector} from '@/store/hooks';
 import {getUserProfile, followUser, unfollowUser, getFollowStatus} from '@/store/slices/userSlice';
 import {User} from '@/types';
 import {button, cn, nav, typography, ui} from "@/utils/classnames";
+import {getCurrentUser} from "@/store/slices/authSlice";
 
 interface UserProfileProps {
   userId: string;
@@ -35,6 +36,7 @@ const UserProfile: React.FC<UserProfileProps> = ({userId}) => {
     } else {
       dispatch(followUser(userId));
     }
+    dispatch(getCurrentUser());
   };
 
   if (userLoading && !selectedUser) {
@@ -146,11 +148,18 @@ const UserProfile: React.FC<UserProfileProps> = ({userId}) => {
 
           <div className="absolute right-6 bottom-6 flex items-center">
             {user.rating && user.rating.rating_count && user.rating.rating_count > 0 && user.rating.total_rating && (
-              <div className="flex items-center justify-center sm:justify-start">
+              <div className="flex items-center justify-center sm:justify-start cursor-pointer"
+                   onClick={() => {
+                     const el = document.getElementById("reviews"); // scroll to reviews
+                     if (el) {
+                       el.scrollIntoView({behavior: "smooth"});
+                     }
+                   }}
+              >
                 <span className="text-accent">★</span>
-                <span className={typography.p2}>
+                <span className={cn(typography.p2, "hover:underline")}>
                     {(user.rating.total_rating / user.rating.rating_count).toFixed(1)} ({user.rating.rating_count} {user.rating.rating_count === 1 ? 'review' : 'reviews'})
-                  </span>
+                </span>
               </div>
             )}
 

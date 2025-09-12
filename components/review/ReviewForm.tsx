@@ -31,7 +31,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({ratedUserId, onSuccess}) => {
       .then(() => {
         setScore(5);
         setComment('');
-        if (onSuccess) onSuccess();
+        if (onSuccess) onSuccess(); // pass back the onSuccess state
       })
       .catch((err) => {
         console.error('Failed to create review:', err);

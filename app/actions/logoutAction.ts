@@ -10,6 +10,6 @@ export async function logoutAction() {
     maxAge: 0,
     path: '/',
     // TODO: only add this when deploy
-    domain: '.cocrafthome.com',
+    // domain: '.cocrafthome.com',
   });
 }
