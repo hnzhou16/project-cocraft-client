@@ -33,7 +33,7 @@ export async function loginAction(
       secure: process.env.NODE_ENV === 'production',
       path: '/',
       // TODO: only add this when deploy
-      // domain: '.cocrafthome.com',
+      domain: '.cocrafthome.com',
       maxAge: 60 * 60 * 24 * 3, // 3 day
     });
 
