@@ -8,7 +8,6 @@ import ReviewList from "@/components/review/ReviewList";
 import ReviewForm from "@/components/review/ReviewForm";
 import {cn, layout, typography} from "@/utils/classnames";
 import ClientFeed from "@/components/feed/ClientFeed";
-import {useDispatch} from "react-redux";
 import {getUserProfile} from "@/store/slices/userSlice";
 
 export default function ProfilePage() {
