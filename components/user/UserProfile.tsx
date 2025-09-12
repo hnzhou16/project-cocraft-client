@@ -30,13 +30,13 @@ const UserProfile: React.FC<UserProfileProps> = ({userId}) => {
     }
   }, [dispatch, userId, authUser, isFollowing]);
 
-  const handleFollow = () => {
+  const handleFollow = async () => {
     if (isFollowing) {
-      dispatch(unfollowUser(userId));
+      await dispatch(unfollowUser(userId)).unwrap();
     } else {
-      dispatch(followUser(userId));
+      await dispatch(followUser(userId)).unwrap();
     }
-    dispatch(getCurrentUser());
+    await dispatch(getCurrentUser());
   };
 
   if (userLoading && !selectedUser) {
