@@ -84,6 +84,10 @@ export interface RegisterPayload {
   profile?: Profile;
 }
 
+export interface ActivatePayload {
+  token: string;
+}
+
 export interface LoginPayload {
   email: string;
   password: string;

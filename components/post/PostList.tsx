@@ -73,7 +73,7 @@ export default function PostList({feedType, query, userId}: PostListProps) {
 
   // Infinite scroll observer
   useEffect(() => {
-    // !!! here may be double fetching (both useEffect in act) if too few posts
+    // !!! here may be double fetching (both useEffect in act) if too few posts (no post at all)
     if (!cursor) return;
 
     // observe the DOM at the bottom

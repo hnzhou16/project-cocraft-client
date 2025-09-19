@@ -49,8 +49,9 @@ export default function MainLayout({children}: MainLayoutProps) {
 
   useEffect(() => {
     // public pages where unauthenticated user have access
-    const publicRoutes = ['/', '/login', '/register']; // add others if needed
-    const isPublic = publicRoutes.includes(pathname);
+    const publicRoutes = ['/', '/login', '/register', '/activate'];
+
+    const isPublic = publicRoutes.some(route => pathname === route || pathname.startsWith(route + '/'));
 
     if (!loading && !isAuthenticated && error && !isPublic) {
       if (pathname !== '/') {

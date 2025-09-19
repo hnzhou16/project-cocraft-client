@@ -23,6 +23,7 @@ const RegisterForm: React.FC = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [usernameError, setUsernameError] = useState('');
 
+  const [showMessage, setShowMessage] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [confirmError, setConfirmError] = useState('')
@@ -31,7 +32,15 @@ const RegisterForm: React.FC = () => {
 
   useEffect(() => {
     if (state.success) {
-      router.push('/login')
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      setShowMessage(true);
+
+      const timer = setTimeout(() => {
+        router.push("/login");
+      }, 5000);
+
+      return () => clearTimeout(timer);
     }
   }, [router, state.success]);
 
@@ -83,6 +92,12 @@ const RegisterForm: React.FC = () => {
           <strong className="font-bold">Error: </strong>
           <span className="block sm:inline">{state.error}</span>
         </div>
+      )}
+
+      {showMessage && (
+        <p className={cn(typography.p1, "text-accent")}>
+          Email sent! please check your inbox to activate your account.
+        </p>
       )}
 
       <form action={formAction} className={form.container}>

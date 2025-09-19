@@ -35,7 +35,7 @@ export default function FeedFilterBar({feedType, query, className = ''}: FeedFil
     const currentPath = window.location.pathname;
     const hasParams = Array.from(searchParams.entries()).length > 0;
 
-    // !!! clear query parameters if any ONLY for homepage
+    // !!! clear query parameters if any, ONLY for homepage
     // !!! otherwise it'll clear all searching results on the searching page
     if (hasParams && currentPath === '/') {
       // replace the current URL with no query string (no reload)
