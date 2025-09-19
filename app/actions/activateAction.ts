@@ -10,7 +10,7 @@ export async function activateAction(token: string): Promise<{ success: boolean;
 
   try {
     const payload: ActivatePayload = {token};
-    const res = await authService.activate(payload);
+    await authService.activate(payload);
 
     return {success: true, error: ""};
   } catch (error) {
