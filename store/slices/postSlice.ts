@@ -284,6 +284,16 @@ const postSlice = createSlice({
             state.userFeed.posts = [...state.userFeed.posts, ...uniquePosts];
           }
         }
+
+        // !!! Cursor freshness check
+        if (!state.userFeed.cursor) {
+          state.userFeed.cursor = nextCursor;
+        } else if (nextCursor && nextCursor !== state.userFeed.cursor) {
+          if (nextCursor < state.userFeed.cursor) {
+            state.userFeed.cursor = nextCursor;
+          }
+        }
+
         state.userFeed.cursor = nextCursor;
         state.userFeed.hasMore = !!nextCursor;
         state.userFeed.loading = false;

@@ -91,6 +91,7 @@ export default function PostList({feedType, query, userId}: PostListProps) {
         // !!! 'hasMore' flags when no more posts to avoid loading errors
         if (entry.isIntersecting && !loading && hasMore && isValidCursor) {
           const payload: CursorPaginationQuery = {
+            ...filterParams, // !!! carry on the filter when fetching more
             limit,
             cursor,
             sort: 'desc',
