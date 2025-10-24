@@ -10,8 +10,13 @@ import {button, cn, form, nav, typography} from "@/utils/classnames";
 const LoginForm: React.FC = () => {
   const dispatch = useAppDispatch()
   const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
   const {loading} = useAppSelector(state => state.auth);
+
   const [state, formAction] = useActionState(loginAction, {error: '', success: false});
 
   // userEffect ensures the navigation happens after render completion
@@ -20,6 +25,15 @@ const LoginForm: React.FC = () => {
       router.push('/')
     }
   }, [state.success, dispatch, router])
+
+  const handleDemo = () => {
+
+    const demoEmail = "sarahj@gmail.com";
+    const demoPassword = "AAAaaa111";
+
+    setEmail(demoEmail);
+    setPassword(demoPassword);
+  }
 
   return (
     <div className="bg-primary-background rounded-lg shadow-md p-6 w-full max-w-md mx-auto">
@@ -41,6 +55,8 @@ const LoginForm: React.FC = () => {
             id="email"
             className={form.input}
             placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
@@ -56,6 +72,8 @@ const LoginForm: React.FC = () => {
               id="password"
               className={form.input}
               placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
               required
             />
@@ -82,7 +100,7 @@ const LoginForm: React.FC = () => {
 
         </div>
 
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col items-center justify-between gap-2 mb-4">
           <button
             type="submit"
             disabled={loading}
@@ -91,6 +109,15 @@ const LoginForm: React.FC = () => {
             }`)}
           >
             {loading ? 'Logging in...' : 'Login'}
+          </button>
+          <button
+            onClick={handleDemo}
+            disabled={loading}
+            className={cn(button.secondary, `focus:outline-none focus:shadow-outline w-full ${
+              loading ? 'opacity-50 cursor-not-allowed' : ''
+            }`)}
+          >
+            {loading ? 'Logging in...' : 'Demo Account'}
           </button>
         </div>
 
