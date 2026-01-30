@@ -32,6 +32,8 @@ export default function FeedFilterBar({feedType, query, className = ''}: FeedFil
   const [rolesFilter, setRolesFilter] = useState<Role[]>([]);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const currentPath = window.location.pathname;
     const hasParams = Array.from(searchParams.entries()).length > 0;
 
