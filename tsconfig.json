@@ -10,7 +10,7 @@
     "moduleResolution": "bundler",
     "types": [
       "next",
-      "node",
+      "node"
     ], // Add Node.js and Next.js types
     "typeRoots": [
       "node_modules/@types",
@@ -24,7 +24,7 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "incremental": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "plugins": [
       {
         "name": "next"
@@ -50,6 +50,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "types/**/*.d.ts", // Add custom type declarations
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"
